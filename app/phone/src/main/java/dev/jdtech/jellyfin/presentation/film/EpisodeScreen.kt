@@ -62,6 +62,7 @@ import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
 import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+import dev.jdtech.jellyfin.presentation.utils.rememberExternalPlayerLauncher
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
 import java.util.UUID
@@ -84,6 +85,15 @@ fun EpisodeScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+
+    val externalPlayerLauncher = rememberExternalPlayerLauncher { positionMs ->
+        coroutineScope.launch {
+            if (positionMs != null) {
+                externalPlayerVm.reportStop(episodeId, positionMs)
+            }
+            viewModel.loadEpisode(episodeId = episodeId)
+        }
+    }
 
     LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 
@@ -120,6 +130,7 @@ fun EpisodeScreen(
                             itemId = episodeId,
                             itemKind = BaseItemKind.EPISODE,
                             startFromBeginning = action.startFromBeginning,
+                            externalPlayerLauncher = externalPlayerLauncher,
                             launchInternalPlayer = {
                                 val intent = Intent(context, PlayerActivity::class.java)
                                 intent.putExtra("itemId", episodeId.toString())

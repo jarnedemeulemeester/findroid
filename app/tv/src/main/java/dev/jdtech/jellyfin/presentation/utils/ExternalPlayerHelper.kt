@@ -1,13 +1,21 @@
 package dev.jdtech.jellyfin.presentation.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.Composable
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,16 +27,31 @@ import javax.inject.Inject
 @HiltViewModel
 class ExternalPlayerViewModel @Inject constructor(
     val appPreferences: AppPreferences,
-    val playlistManager: PlaylistManager
-) : ViewModel()
+    val playlistManager: PlaylistManager,
+    private val repository: JellyfinRepository,
+) : ViewModel() {
+
+    suspend fun reportStop(itemId: UUID, positionMs: Long) {
+        try {
+            repository.postPlaybackStop(
+                itemId = itemId,
+                positionTicks = positionMs.times(10000),
+                playedPercentage = 0,
+            )
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to report playback stop after external player")
+        }
+    }
+}
 
 suspend fun launchExternalPlayerIfEnabled(
     context: Context,
     appPreferences: AppPreferences,
     playlistManager: PlaylistManager,
     itemId: UUID,
-    itemKind: BaseItemKind,           // BaseItemKind enum, no String
+    itemKind: BaseItemKind,
     startFromBeginning: Boolean,
+    externalPlayerLauncher: ActivityResultLauncher<Intent>,
     launchInternalPlayer: () -> Unit
 ) {
     val useExternalPlayer = appPreferences.getValue(appPreferences.playerExternal)
@@ -42,7 +65,7 @@ suspend fun launchExternalPlayerIfEnabled(
         try {
             val startItem = playlistManager.getInitialItem(
                 itemId = itemId,
-                itemKind = itemKind,  // passed directly, no fromName()
+                itemKind = itemKind,
                 mediaSourceIndex = null,
                 startFromBeginning = startFromBeginning,
             )
@@ -60,32 +83,30 @@ suspend fun launchExternalPlayerIfEnabled(
                     } else {
                         "S${startItem.parentIndexNumber}:E${startItem.indexNumber}-${startItem.indexNumberEnd}"
                     }
-                    if (startItem.seriesName != null) "${ startItem.seriesName} - $identifier" else identifier
+                    if (startItem.seriesName != null) "${startItem.seriesName} - $identifier" else identifier
                 } else {
                     startItem.name
                 }
 
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     setDataAndType(videoUrl.toUri(), "video/*")
+
+                    putExtra("return_result", true)
+                    putExtra("secure_uri", true)
+                    putExtra("title", title)
+                    putExtra("position", startItem.playbackPosition.toInt())
+                    putExtra("subtitles_location", subUris.firstOrNull()?.toString())
+
                     if (subUris.isNotEmpty()) {
                         val parcels = Array<Parcelable>(subUris.size) { subUris[it] }
                         putExtra("subs", parcels)
                         putExtra("subs.name", subNames)
                         putExtra("subs.enable", arrayOf(parcels[0]))
-                        putExtra("subtitles_location", subUris[0].toString())
                     }
-                    // pass filename/title to external player
-                    putExtra("title", title)
-                    // Pass playback position to external player (milliseconds)
-                    putExtra("position", startItem.playbackPosition.toInt())
-                }
-
-                val chooserIntent = Intent.createChooser(intent, "Select Video Player").apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
 
                 withContext(Dispatchers.Main) {
-                    context.startActivity(chooserIntent)
+                    externalPlayerLauncher.launch(intent)
                 }
             } else {
                 withContext(Dispatchers.Main) {
@@ -98,5 +119,53 @@ suspend fun launchExternalPlayerIfEnabled(
                 Toast.makeText(context, "Error fetching media for external player", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+}
+
+@Composable
+fun rememberExternalPlayerLauncher(
+    onResult: (positionMs: Long?) -> Unit
+): ManagedActivityResultLauncher<Intent, ActivityResult> {
+    return rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val resultCode = result.resultCode
+        val data = result.data
+
+        val positionMs: Long? = when (data?.action) {
+            "com.mxtech.intent.result.VIEW" -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    when (data.getStringExtra("end_by")) {
+                        "user" -> {
+                            val pos = data.getIntExtra("position", -1)
+                            if (pos > 0) pos.toLong() else null
+                        }
+                        "playback_completion" -> null
+                        else -> null
+                    }
+                } else null
+            }
+            "org.videolan.vlc.player.result" -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val pos = data.getLongExtra("extra_position", -1L)
+                    val dur = data.getLongExtra("extra_duration", -1L)
+                    if (pos > 0L && pos != dur) pos else null
+                } else null
+            }
+            "is.xyz.mpv.result" -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val pos = data.getIntExtra("position", -1)
+                    if (pos > 0) pos.toLong() else null
+                } else null
+            }
+            else -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.getIntExtra("position", -1)?.takeIf { it > 0 }?.toLong()
+                } else null
+            }
+        }
+
+        // Pass the parsed result back to whatever screen called this
+        onResult(positionMs)
     }
 }

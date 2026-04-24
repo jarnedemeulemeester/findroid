@@ -71,6 +71,7 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
 import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+import dev.jdtech.jellyfin.presentation.utils.rememberExternalPlayerLauncher
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.utils.getShowDateString
@@ -82,13 +83,22 @@ fun ShowScreen(
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
-    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel() // Injected here
+    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val coroutineScope = rememberCoroutineScope()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val externalPlayerLauncher = rememberExternalPlayerLauncher { positionMs ->
+        coroutineScope.launch {
+            if (positionMs != null) {
+                externalPlayerVm.reportStop(showId, positionMs)
+            }
+            viewModel.loadShow(showId = showId)
+        }
+    }
 
     LaunchedEffect(true) { viewModel.loadShow(showId) }
 
@@ -98,13 +108,18 @@ fun ShowScreen(
             when (action) {
                 is ShowAction.Play -> {
                     coroutineScope.launch {
+                        val targetEpisode = state.nextUp
+                        val playItemId = if (!action.startFromBeginning && targetEpisode != null) targetEpisode.id else showId
+                        val playItemKind = if (!action.startFromBeginning && targetEpisode != null) BaseItemKind.EPISODE else BaseItemKind.SERIES
+
                         launchExternalPlayerIfEnabled(
                             context = context,
                             appPreferences = externalPlayerVm.appPreferences,
                             playlistManager = externalPlayerVm.playlistManager,
-                            itemId = showId,
-                            itemKind = BaseItemKind.SERIES,
-                            startFromBeginning = false,
+                            itemId = playItemId,      // Passes specific Episode ID if resuming
+                            itemKind = playItemKind,  // Passes EPISODE kind if resuming
+                            startFromBeginning = action.startFromBeginning,
+                            externalPlayerLauncher = externalPlayerLauncher,
                             launchInternalPlayer = {
                                 navigateToPlayer(showId)
                             }

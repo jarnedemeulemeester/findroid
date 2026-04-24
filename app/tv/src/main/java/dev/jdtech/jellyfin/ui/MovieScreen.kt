@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,25 +55,34 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.utils.format
 import java.util.UUID
-
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
 import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
 import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+import dev.jdtech.jellyfin.presentation.utils.rememberExternalPlayerLauncher
 
 @Composable
 fun MovieScreen(
     movieId: UUID,
     navigateToPlayer: (itemId: UUID) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
-    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel() // Injected here
+    externalPlayerVm: ExternalPlayerViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
+    val externalPlayerLauncher = rememberExternalPlayerLauncher { positionMs ->
+        coroutineScope.launch {
+            if (positionMs != null) {
+                externalPlayerVm.reportStop(movieId, positionMs)
+            }
+            // Instantly refresh the UI
+            viewModel.loadMovie(movieId = movieId)
+        }
+    }
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -89,8 +99,8 @@ fun MovieScreen(
                             itemId = movieId,
                             itemKind = BaseItemKind.MOVIE,
                             startFromBeginning = action.startFromBeginning,
+                            externalPlayerLauncher = externalPlayerLauncher, // Passed the launcher
                             launchInternalPlayer = {
-                                // Uses Compose Navigation instead of an Intent!
                                 navigateToPlayer(movieId)
                             }
                         )
@@ -313,13 +323,6 @@ private fun MovieScreenLayout(state: MovieState, onAction: (MovieAction) -> Unit
                             )
                         }
                     }
-                    //                    Spacer(modifier =
-                    // Modifier.height(MaterialTheme.spacings.large))
-                    //                    Text(
-                    //                        text = stringResource(id =
-                    // CoreR.string.cast_amp_crew),
-                    //                        style = MaterialTheme.typography.headlineMedium,
-                    //                    )
                 }
             }
 

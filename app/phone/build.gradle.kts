@@ -86,6 +86,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.runtime)
     implementation(projects.core)
     implementation(projects.data)
     implementation(projects.player.core)

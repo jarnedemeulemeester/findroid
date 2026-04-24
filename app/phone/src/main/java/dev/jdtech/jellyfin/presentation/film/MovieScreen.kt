@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film
 
-import kotlinx.coroutines.launch
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -62,7 +61,9 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
 import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+import dev.jdtech.jellyfin.presentation.utils.rememberExternalPlayerLauncher
 import java.util.UUID
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
 @Composable
 fun MovieScreen(
@@ -81,6 +82,15 @@ fun MovieScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+
+    val externalPlayerLauncher = rememberExternalPlayerLauncher { positionMs ->
+        coroutineScope.launch {
+            if (positionMs != null) {
+                externalPlayerVm.reportStop(movieId, positionMs)
+            }
+            viewModel.loadMovie(movieId = movieId)
+        }
+    }
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -115,6 +125,7 @@ fun MovieScreen(
                             itemId = movieId,
                             itemKind = BaseItemKind.MOVIE,
                             startFromBeginning = action.startFromBeginning,
+                            externalPlayerLauncher = externalPlayerLauncher,
                             launchInternalPlayer = {
                                 val intent = Intent(context, PlayerActivity::class.java)
                                 intent.putExtra("itemId", movieId.toString())
