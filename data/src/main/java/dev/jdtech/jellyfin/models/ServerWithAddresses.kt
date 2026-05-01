@@ -7,4 +7,6 @@ data class ServerWithAddresses(
     @Embedded val server: Server,
     @Relation(parentColumn = "id", entityColumn = "serverId") val addresses: List<ServerAddress>,
     @Relation(parentColumn = "currentUserId", entityColumn = "id") val user: User?,
+    @Relation(parentColumn = "currentServerAddressId", entityColumn = "id")
+    val currentAddress: ServerAddress?,
 )
