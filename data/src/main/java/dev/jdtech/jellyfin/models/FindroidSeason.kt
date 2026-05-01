@@ -19,6 +19,7 @@ data class FindroidSeason(
     override val played: Boolean,
     override val favorite: Boolean,
     override val canPlay: Boolean,
+    override val canShuffle: Boolean = false,
     override val canDownload: Boolean,
     override val runtimeTicks: Long = 0L,
     override val playbackPositionTicks: Long = 0L,
