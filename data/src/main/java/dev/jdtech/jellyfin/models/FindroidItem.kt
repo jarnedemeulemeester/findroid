@@ -34,6 +34,7 @@ suspend fun BaseItemDto.toFindroidItem(
         BaseItemKind.SERIES -> toFindroidShow(jellyfinRepository)
         BaseItemKind.BOX_SET -> toFindroidBoxSet(jellyfinRepository)
         BaseItemKind.FOLDER -> toFindroidFolder(jellyfinRepository)
+        BaseItemKind.TRAILER -> toFindroidTrailer()
         else -> null
     }
 }
