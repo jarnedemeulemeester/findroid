@@ -28,6 +28,8 @@
     <string name="pref_player_gestures_seek_trickplay">Trickplay on seek gesture</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Display preview images on seek gesture</string>
     <string name="mpv_player">mpv player</string>
+    <string name="external_player">External Player</string>
+    <string name="external_player_summary">Use the default external video player app on your device like MX Player and VLC.</string>
     <string name="download_mobile_data">Download using mobile data</string>
     <string name="download_roaming">Download when roaming</string>
     <string name="mpv_player_summary">Use the experimental mpv player to play videos. mpv has support for more video, audio and subtitle codecs.</string>

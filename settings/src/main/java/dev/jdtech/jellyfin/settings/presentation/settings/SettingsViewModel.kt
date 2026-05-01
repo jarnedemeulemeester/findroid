@@ -33,6 +33,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
     private val eventsChannel = Channel<SettingsEvent>()
     val events = eventsChannel.receiveAsFlow()
 
+    private var currentDeviceType: DeviceType = DeviceType.PHONE
+
     private val topLevelPreferences =
         listOf(
             PreferenceGroup(
@@ -242,6 +244,18 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                             )
                                     ),
                                     PreferenceGroup(
+                                        nameStringResource = R.string.external_player,
+                                        preferences =
+                                            listOf(
+                                                PreferenceSwitch(
+                                                    nameStringResource = R.string.external_player,
+                                                    descriptionStringRes =
+                                                        R.string.external_player_summary,
+                                                    backendPreference = appPreferences.playerExternal,
+                                                ),
+                                            )
+                                    ),
+                                    PreferenceGroup(
                                         nameStringResource = R.string.mpv_player,
                                         preferences =
                                             listOf(
@@ -249,6 +263,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     nameStringResource = R.string.mpv_player,
                                                     descriptionStringRes =
                                                         R.string.mpv_player_summary,
+                                                    dependencies = listOf(appPreferences.playerExternal),
+                                                    invertDependencies = true,
                                                     backendPreference = appPreferences.playerMpv,
                                                 ),
                                                 PreferenceSelect(
@@ -712,6 +728,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
         )
 
     fun loadPreferences(indexes: IntArray = intArrayOf(), deviceType: DeviceType) {
+        currentDeviceType = deviceType
         viewModelScope.launch {
             var preferences = topLevelPreferences
 
@@ -745,9 +762,10 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                 preference.copy(
                                                     enabled =
                                                         preference.enabled &&
-                                                            preference.dependencies.all {
-                                                                appPreferences.getValue(it)
-                                                            },
+                                                                preference.dependencies.all {
+                                                                    val value = appPreferences.getValue(it)
+                                                                    if (preference.invertDependencies) !value else value
+                                                                },
                                                     value =
                                                         appPreferences.getValue(
                                                             preference.backendPreference
@@ -847,6 +865,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                             action.preference.value,
                         )
                 }
+                loadPreferences(deviceType = currentDeviceType)
             }
             else -> Unit
         }

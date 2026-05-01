@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.rememberCoroutineScope
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
@@ -60,7 +61,11 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.getShowDateString
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+import dev.jdtech.jellyfin.presentation.utils.rememberExternalPlayerLauncher
 import java.util.UUID
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
 
 @Composable
@@ -74,8 +79,19 @@ fun ShowScreen(
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val coroutineScope = rememberCoroutineScope()
+    val externalPlayerVm: ExternalPlayerViewModel = hiltViewModel()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val externalPlayerLauncher = rememberExternalPlayerLauncher { positionMs ->
+        coroutineScope.launch {
+            if (positionMs != null) {
+                externalPlayerVm.reportStop(showId, positionMs)
+            }
+            viewModel.loadShow(showId = showId)
+        }
+    }
 
     LaunchedEffect(true) { viewModel.loadShow(showId = showId) }
 
@@ -84,10 +100,27 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", showId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
-                    context.startActivity(intent)
+                    coroutineScope.launch {
+                        val targetEpisode = state.nextUp
+                        val playItemId = if (!action.startFromBeginning && targetEpisode != null) targetEpisode.id else showId
+                        val playItemKind = if (!action.startFromBeginning && targetEpisode != null) BaseItemKind.EPISODE else BaseItemKind.SERIES
+
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = playItemId,      // Passes specific Episode ID if resuming
+                            itemKind = playItemKind,  // Passes EPISODE kind if resuming
+                            startFromBeginning = action.startFromBeginning,
+                            externalPlayerLauncher = externalPlayerLauncher,
+                            launchInternalPlayer = {
+                                val intent = Intent(context, PlayerActivity::class.java)
+                                intent.putExtra("itemId", showId.toString())
+                                intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
                 }
                 is ShowAction.PlayTrailer -> {
                     try {

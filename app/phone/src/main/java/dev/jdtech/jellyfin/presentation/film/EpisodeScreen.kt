@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import kotlinx.coroutines.launch
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.rememberCoroutineScope
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
@@ -58,6 +60,9 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+import dev.jdtech.jellyfin.presentation.utils.rememberExternalPlayerLauncher
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
 import java.util.UUID
@@ -75,9 +80,20 @@ fun EpisodeScreen(
 ) {
     val context = LocalContext.current
     val isOfflineMode = LocalOfflineMode.current
+    val coroutineScope = rememberCoroutineScope()
+    val externalPlayerVm: ExternalPlayerViewModel = hiltViewModel()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+
+    val externalPlayerLauncher = rememberExternalPlayerLauncher { positionMs ->
+        coroutineScope.launch {
+            if (positionMs != null) {
+                externalPlayerVm.reportStop(episodeId, positionMs)
+            }
+            viewModel.loadEpisode(episodeId = episodeId)
+        }
+    }
 
     LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 
@@ -106,11 +122,24 @@ fun EpisodeScreen(
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", episodeId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
-                    intent.putExtra("startFromBeginning", action.startFromBeginning)
-                    context.startActivity(intent)
+                    coroutineScope.launch {
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = episodeId,
+                            itemKind = BaseItemKind.EPISODE,
+                            startFromBeginning = action.startFromBeginning,
+                            externalPlayerLauncher = externalPlayerLauncher,
+                            launchInternalPlayer = {
+                                val intent = Intent(context, PlayerActivity::class.java)
+                                intent.putExtra("itemId", episodeId.toString())
+                                intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
+                                intent.putExtra("startFromBeginning", action.startFromBeginning)
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
                 is EpisodeAction.OnHomeClick -> navigateHome()

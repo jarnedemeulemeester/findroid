@@ -228,7 +228,7 @@ fun NavigationRoot(
                     navController.navigate(
                         PlayerRoute(
                             itemId = itemId.toString(),
-                            itemKind = BaseItemKind.SEASON.serialName,
+                            itemKind = BaseItemKind.EPISODE.serialName, // was SEASON
                         )
                     )
                 },

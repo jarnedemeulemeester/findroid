@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import kotlinx.coroutines.launch
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.rememberCoroutineScope
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
@@ -49,6 +51,9 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.presentation.utils.ExternalPlayerViewModel
+import dev.jdtech.jellyfin.presentation.utils.launchExternalPlayerIfEnabled
+import dev.jdtech.jellyfin.presentation.utils.rememberExternalPlayerLauncher
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
 
@@ -63,6 +68,17 @@ fun SeasonScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+    val externalPlayerVm: ExternalPlayerViewModel = hiltViewModel()
+
+    val externalPlayerLauncher = rememberExternalPlayerLauncher { positionMs ->
+        coroutineScope.launch {
+            if (positionMs != null) {
+                externalPlayerVm.reportStop(seasonId, positionMs)
+            }
+            viewModel.loadSeason(seasonId = seasonId)
+        }
+    }
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
@@ -71,10 +87,27 @@ fun SeasonScreen(
         onAction = { action ->
             when (action) {
                 is SeasonAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", seasonId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.SEASON.serialName)
-                    context.startActivity(intent)
+                    coroutineScope.launch {
+                        val targetEpisode = state.episodes.firstOrNull { !it.played }
+                        val playItemId = if (!action.startFromBeginning && targetEpisode != null) targetEpisode.id else seasonId
+                        val playItemKind = if (!action.startFromBeginning && targetEpisode != null) BaseItemKind.EPISODE else BaseItemKind.SEASON
+
+                        launchExternalPlayerIfEnabled(
+                            context = context,
+                            appPreferences = externalPlayerVm.appPreferences,
+                            playlistManager = externalPlayerVm.playlistManager,
+                            itemId = playItemId,      // Passes specific Episode ID if resuming
+                            itemKind = playItemKind,  // Passes EPISODE kind if resuming
+                            startFromBeginning = action.startFromBeginning,
+                            externalPlayerLauncher = externalPlayerLauncher,
+                            launchInternalPlayer = {
+                                val intent = Intent(context, PlayerActivity::class.java)
+                                intent.putExtra("itemId", seasonId.toString())
+                                intent.putExtra("itemKind", BaseItemKind.SEASON.serialName)
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
                 }
                 is SeasonAction.OnBackClick -> navigateBack()
                 is SeasonAction.OnHomeClick -> navigateHome()
