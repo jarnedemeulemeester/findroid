@@ -1,5 +1,10 @@
 package dev.jdtech.jellyfin.presentation.setup.addserver
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,12 +40,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -60,9 +68,33 @@ fun AddServerScreen(
     onBackClick: () -> Unit,
     viewModel: AddServerViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) { viewModel.discoverServers() }
+    var hasLocalNetworkAccessPermission by remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+            mutableStateOf(
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_LOCAL_NETWORK,
+                ) == PackageManager.PERMISSION_GRANTED
+            )
+        } else {
+            mutableStateOf(true)
+        }
+    }
+
+    val localNetworkAccessPermissionResultLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted -> hasLocalNetworkAccessPermission = isGranted },
+        )
+
+    LaunchedEffect(hasLocalNetworkAccessPermission) {
+        if (hasLocalNetworkAccessPermission) {
+            viewModel.discoverServers()
+        }
+    }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -72,9 +104,17 @@ fun AddServerScreen(
 
     AddServerScreenLayout(
         state = state,
+        isLocalNetworkPermissionGranted = hasLocalNetworkAccessPermission,
         onAction = { action ->
             when (action) {
                 is AddServerAction.OnBackClick -> onBackClick()
+                is AddServerAction.RequestLocalNetworkAccessPermission -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+                        localNetworkAccessPermissionResultLauncher.launch(
+                            Manifest.permission.ACCESS_LOCAL_NETWORK
+                        )
+                    }
+                }
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -83,8 +123,12 @@ fun AddServerScreen(
 }
 
 @Composable
-private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAction) -> Unit) {
-    val context = LocalContext.current
+private fun AddServerScreenLayout(
+    state: AddServerState,
+    isLocalNetworkPermissionGranted: Boolean,
+    onAction: (AddServerAction) -> Unit,
+) {
+    val resources = LocalResources.current
     val focusRequester = remember { FocusRequester() }
     val scrollState = rememberScrollState()
 
@@ -130,6 +174,26 @@ private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAct
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
+            if (!isLocalNetworkPermissionGranted) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(SetupR.string.local_network_permission_disclaimer),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = { onAction(AddServerAction.RequestLocalNetworkAccessPermission) },
+                        modifier = Modifier.widthIn(max = 300.dp),
+                    ) {
+                        Text(text = stringResource(SetupR.string.local_network_permission_button))
+                    }
+                }
+            }
             OutlinedTextField(
                 value = serverAddress,
                 leadingIcon = {
@@ -155,7 +219,7 @@ private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAct
                 supportingText = {
                     if (state.error != null) {
                         Text(
-                            text = state.error!!.joinToString { it.asString(context.resources) },
+                            text = state.error!!.joinToString { it.asString(resources) },
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
@@ -181,5 +245,11 @@ private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAct
 @PreviewScreenSizes
 @Composable
 private fun AddServerScreenLayoutPreview() {
-    FindroidTheme { AddServerScreenLayout(state = AddServerState(), onAction = {}) }
+    FindroidTheme {
+        AddServerScreenLayout(
+            state = AddServerState(),
+            isLocalNetworkPermissionGranted = false,
+            onAction = {},
+        )
+    }
 }

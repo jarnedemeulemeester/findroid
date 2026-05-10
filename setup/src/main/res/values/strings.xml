@@ -39,4 +39,6 @@
    <string name="add_server_address">Add server address</string>
    <string name="remove_server_address">Remove server address</string>
    <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
+   <string name="local_network_permission_disclaimer">Local network access is required to discover and connect to servers on your local network.</string>
+   <string name="local_network_permission_button">Grant permission</string>
 </resources>
