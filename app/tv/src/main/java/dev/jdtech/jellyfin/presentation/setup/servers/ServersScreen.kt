@@ -31,6 +31,7 @@ import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyDiscoveredServer
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyServer
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyServerAddress
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddresses
@@ -176,6 +177,8 @@ private fun ServersScreenLayout(state: ServersState, onAction: (ServersAction) -
 @Preview(device = "id:tv_1080p")
 @Composable
 private fun ServersScreenLayoutPreview() {
+
+
     FindroidTheme {
         ServersScreenLayout(
             state =
@@ -193,6 +196,7 @@ private fun ServersScreenLayoutPreview() {
                                         )
                                     ),
                                 user = null,
+                                currentAddress = dummyServerAddress
                             )
                         )
                 ),

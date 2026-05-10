@@ -35,6 +35,7 @@
    <string name="remove_user_dialog">Remove user</string>
    <string name="remove_user_dialog_text">Are you sure you want to remove the user %s?</string>
    <string name="addresses">Addresses</string>
+   <string name="open_dashboard">Open dashboard (admin only)</string>
    <string name="add_address">Add address</string>
    <string name="add_server_address">Add server address</string>
    <string name="remove_server_address">Remove server address</string>
