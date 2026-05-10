@@ -18,7 +18,7 @@ androidx-window = "1.5.1"
 androidx-work = "2.11.2"
 coil = "3.4.0"
 hilt = "2.59.2"
-jellyfin = "1.8.5"
+jellyfin = "1.8.8"
 kotlin = "2.3.21"
 kotlinx-serialization = "1.11.0"
 ksp = "2.3.7"
@@ -28,6 +28,8 @@ material = "1.13.0"
 media3-ffmpeg-decoder = "1.9.0+1"
 okhttp = "5.3.2"
 timber = "5.0.1"
+slf4j = "2.0.17"
+slf4j-android = "2.0.17-0"
 
 [libraries]
 aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
@@ -76,6 +78,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 media3-ffmpeg-decoder = { group = "org.jellyfin.media3", name = "media3-ffmpeg-decoder", version.ref = "media3-ffmpeg-decoder" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+slf4j-android = { group = "uk.uuid.slf4j", name = "slf4j-android", version.ref = "slf4j-android" }
 
 [plugins]
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
