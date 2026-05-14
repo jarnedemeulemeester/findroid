@@ -29,14 +29,14 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Decode keystore file
-        uses: timheuer/base64-to-file@v1
+        uses: timheuer/base64-to-file@v2
         id: findroid_keystore
         with:
           fileName: 'findroid-keystore.jks'
           encodedString: ${{ secrets.FINDROID_KEYSTORE }}
 
       - name: Decode Play API credentials file
-        uses: timheuer/base64-to-file@v1
+        uses: timheuer/base64-to-file@v2
         id: findroid_play_api_credentials
         with:
           fileName: 'findroid-play-api-credentials.json'
