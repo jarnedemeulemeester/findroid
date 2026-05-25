@@ -460,7 +460,7 @@ private fun navigateHome(navController: NavHostController) {
     }
 }
 
-private fun navigateToItem(navController: NavHostController, item: FindroidItem) {
+internal fun navigateToItem(navController: NavHostController, item: FindroidItem) {
     when (item) {
         is FindroidBoxSet ->
             navController.safeNavigate(
