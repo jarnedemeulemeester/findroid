@@ -5,6 +5,7 @@ import java.util.UUID
 
 sealed interface ShowAction {
     data class Play(val startFromBeginning: Boolean = false) : ShowAction
+    data class Shuffle(val startFromBeginning: Boolean = false) : ShowAction
 
     data class PlayTrailer(val trailer: String) : ShowAction
 
