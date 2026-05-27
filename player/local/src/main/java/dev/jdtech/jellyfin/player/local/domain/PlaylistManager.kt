@@ -6,6 +6,7 @@ import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
@@ -45,25 +46,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                 BaseItemKind.SERIES -> {
                     val nextUpEpisode = repository.getNextUp(itemId).firstOrNull()
 
-                    val season =
-                        if (nextUpEpisode != null) {
-                            repository.getSeason(nextUpEpisode.seasonId)
-                        } else {
-                            val seasons = repository.getSeasons(itemId)
-                            if (seasons.isEmpty()) {
-                                return null
-                            }
-                            seasons.first()
-                        }
-
                     val episodes =
-                        repository
-                            .getEpisodes(
-                                seriesId = itemId,
-                                seasonId = season.id,
-                                fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
-                            )
-                            .filter { !it.missing }
+                        when (nextUpEpisode) {
+                            null -> getEpisodesBySeries(itemId)
+                            else -> getEpisodesByEpisode(nextUpEpisode)
+                        }
 
                     if (episodes.isEmpty()) {
                         return null
@@ -75,20 +62,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                     episode
                 }
                 BaseItemKind.SEASON -> {
-                    val season = repository.getSeason(itemId)
-                    val episodes =
-                        repository
-                            .getEpisodes(
-                                seriesId = season.seriesId,
-                                seasonId = season.id,
-                                fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
-                            )
-                            .filter { !it.missing }
-
-                    if (episodes.isEmpty()) {
-                        return null
-                    }
-
+                    val episodes = getEpisodesBySeason(itemId)
                     val episode = episodes.first()
 
                     items = episodes
@@ -96,15 +70,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                 }
                 BaseItemKind.EPISODE -> {
                     val episode = repository.getEpisode(itemId)
-
-                    val episodes =
-                        repository
-                            .getEpisodes(
-                                seriesId = episode.seriesId,
-                                seasonId = episode.seasonId,
-                                fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
-                            )
-                            .filter { !it.missing }
+                    val episodes = getEpisodesByEpisode(episode)
 
                     items = episodes
                     episode
@@ -198,6 +164,58 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
 
     fun setCurrentMediaItemIndex(itemId: UUID) {
         currentItemIndex = items.indexOfFirst { it.id == itemId }
+    }
+
+    private suspend fun getEpisodesBySeries(seriesId: UUID): List<FindroidEpisode> {
+        val seasons = repository.getSeasons(seriesId)
+        val currentSeason = seasons.first()
+        val nextSeason = seasons.firstOrNull { it.indexNumber == currentSeason.indexNumber + 1 }
+
+        return getEpisodes(currentSeason, nextSeason)
+    }
+
+    private suspend fun getEpisodesBySeason(seasonId: UUID): List<FindroidEpisode> {
+        val currentSeason = repository.getSeason(seasonId)
+        val seasons = repository.getSeasons(currentSeason.seriesId)
+        val nextSeason = seasons.firstOrNull { it.indexNumber == currentSeason.indexNumber + 1 }
+
+        return getEpisodes(currentSeason, nextSeason)
+    }
+
+    private suspend fun getEpisodesByEpisode(episode: FindroidEpisode): List<FindroidEpisode> {
+        val seasons = repository.getSeasons(episode.seriesId)
+        val currentSeason = seasons.firstOrNull { it.id == episode.seasonId } ?: seasons.first()
+        val nextSeason = seasons.firstOrNull { it.indexNumber == currentSeason.indexNumber + 1 }
+
+        return getEpisodes(currentSeason, nextSeason)
+    }
+
+    private suspend fun getEpisodes(
+        currentSeason: FindroidSeason,
+        nextSeason: FindroidSeason?,
+    ): List<FindroidEpisode> {
+        val currentSeasonEpisodes =
+            repository
+                .getEpisodes(
+                    seriesId = currentSeason.seriesId,
+                    seasonId = currentSeason.id,
+                    fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
+                )
+                .filter { !it.missing }
+
+        if (nextSeason == null) return currentSeasonEpisodes
+
+        val nextSeasonEpisodes =
+            repository
+                .getEpisodes(
+                    seriesId = nextSeason.seriesId,
+                    seasonId = nextSeason.id,
+                    fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
+                )
+                .filter { !it.missing }
+
+        val fullEpisodeList = currentSeasonEpisodes + nextSeasonEpisodes
+        return fullEpisodeList
     }
 
     private suspend fun FindroidItem.toPlayerItem(
