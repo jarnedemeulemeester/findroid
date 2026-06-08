@@ -3,5 +3,5 @@
     <string name="continue_watching">Reprendre la lecture</string>
     <string name="next_up">À suivre</string>
     <string name="latest_library">Derniers %1$s</string>
-    <string name="search_placeholder">Rechercher des films et des séries TV</string>
+    <string name="search_placeholder">Rechercher des films et des séries</string>
 </resources>
