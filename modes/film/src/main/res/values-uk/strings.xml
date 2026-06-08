@@ -3,4 +3,5 @@
     <string name="continue_watching">Продовжити перегляд</string>
     <string name="next_up">Наступний</string>
     <string name="latest_library">Останні %1$s</string>
+    <string name="search_placeholder">Шукати фільми та шоу</string>
 </resources>
