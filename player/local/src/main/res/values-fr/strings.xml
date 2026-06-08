@@ -6,9 +6,9 @@
     <string name="select_playback_speed">Sélectionner la vitesse de lecture</string>
     <string name="external">Externe</string>
     <string name="player_controls_exit">Quitter le lecteur</string>
-    <string name="player_controls_rewind">Rembobiner</string>
+    <string name="player_controls_rewind">Retour rapide</string>
     <string name="player_controls_fast_forward">Avance rapide</string>
-    <string name="player_controls_skip_intro">Passer l’introduction</string>
+    <string name="player_controls_skip_intro">Passer l\'intro</string>
     <string name="player_controls_lock">Verrouiller le lecteur</string>
     <string name="player_controls_play_pause">Lecture / Pause</string>
     <string name="player_controls_skip_back">Reculer</string>

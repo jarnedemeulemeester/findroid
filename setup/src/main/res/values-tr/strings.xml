@@ -26,4 +26,17 @@
     <string name="addresses">Adresler</string>
     <string name="remove_server_address">Sunucu adresini kaldır</string>
     <string name="remove_server_address_dialog_text">%1$s sunucu adresini kaldırmak istediğinizden emin misiniz</string>
+    <string name="add_server_error_no_id">Bu sunucunun id\'si yok, sunucuda sorun var gibi görünüyor</string>
+    <string name="login_btn_quick_connect">Hızlı Bağlanmak (Quick Connect)</string>
+    <string name="servers">Sunucular</string>
+    <string name="servers_no_servers">Sunucu bulunamadı</string>
+    <string name="servers_btn_add_server">Sunucu ekle</string>
+    <string name="welcome">Findroid\'e Hoş Geldiniz</string>
+    <string name="welcome_btn_continue">Devam et</string>
+    <string name="welcome_btn_learn_more">Jellyfin hakkında daha fazla bilgi edin</string>
+    <string name="welcome_text">Findroid üçüncü pari Jellyfin istemcisidir. Findroid kendi başına hiçbir içerik barındırmamamktadır.\n\nBu istemciyi kullanabilmek için, Kendi Jellyfin sunucunuzu kurmalısınız.</string>
+    <string name="confirm">Onayla</string>
+    <string name="cancel">İptal et</string>
+    <string name="or">veya</string>
+    <string name="server_subtitle">Sunucu:%s</string>
 </resources>

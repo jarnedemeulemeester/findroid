@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="sort_by">Сортирайте по</string>
     <string name="jellyfin_banner">Jellyfin банер</string>
     <string name="remove">Премахване</string>
-    <string name="cancel">Отменяне</string>
+    <string name="cancel">Отказ</string>
     <string name="title_home">Начало</string>
     <string name="title_media">Моята медия</string>
     <string name="title_favorite">Любими</string>
@@ -38,7 +38,7 @@
     <string name="view_details_underlined"><u>Вижте детайли</u></string>
     <string name="unknown_error">Непозната грешка</string>
     <string name="search_hint">Търсене на филми, предавания, епизоди…</string>
-    <string name="cast_amp_crew">Актьори и Екипаж</string>
+    <string name="cast_amp_crew"><![CDATA[Актьори и снимачен екип]]></string>
     <string name="check_button_description">Маркирайте като гледано или негледано</string>
     <string name="series_poster">Постер на сериала</string>
     <string name="no_search_results">Няма резултати от търсенето</string>
@@ -91,4 +91,21 @@
     <string name="unmark_as_played">Махни маркирано като гледано</string>
     <string name="watch_trailer">Гледай трейлър</string>
     <string name="add_to_favorites">Добави към любими</string>
-    </resources>
+    <string name="title_download">Изтегляния</string>
+    <string name="offline_mode">Офлайн режим</string>
+    <string name="none">Няма</string>
+    <string name="title_settings">Настройки</string>
+    <string name="show_stacktrace">Покажи стек трасировка</string>
+    <string name="season_number">Сезон %1$d</string>
+    <string name="episode_number">Епизод %1$d</string>
+    <string name="sort_by_options_6">Случаен</string>
+    <string name="runtime_minutes_left">Остават %1$d минути</string>
+    <string name="delete_download">Изтриване на изтегленото</string>
+    <string name="delete_download_message">Сигурни ли сте, че искате да изтриете това от вашето устройство?</string>
+    <string name="not_set">Незададен</string>
+    <string name="manage_servers">Управление на сървъри</string>
+    <string name="download_pending">В очакване…</string>
+    <string name="download_paused">Пауза</string>
+    <string name="download_downloading">Изтегляне…</string>
+    <string name="download_failed">Неуспешно изтегляне</string>
+</resources>

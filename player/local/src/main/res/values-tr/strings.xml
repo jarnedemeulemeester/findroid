@@ -17,4 +17,10 @@
     <string name="player_controls_skip_forward">İleri geç</string>
     <string name="player_trickplay">Zaman çizelgesi önizleme</string>
     <string name="player_controls_progress">İlerleme çubuğu</string>
+    <string name="player_controls_skip_outro">Çıkışı atla</string>
+    <string name="player_controls_next_episode">Sonraki Bölüm</string>
+    <string name="player_controls_skip_recap">Özeti atla</string>
+    <string name="player_controls_skip_preview">Önizlemeyi atla</string>
+    <string name="player_controls_skip_commercial">Reklamı atla</string>
+    <string name="player_controls_skip_unknown">Atla</string>
 </resources>

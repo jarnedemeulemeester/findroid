@@ -16,7 +16,6 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '4.0.1'
           bundler-cache: true
 
       - name: Set up JDK 21
@@ -26,17 +25,17 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Decode keystore file
-        uses: timheuer/base64-to-file@v1
+        uses: timheuer/base64-to-file@v2
         id: findroid_keystore
         with:
           fileName: 'findroid-keystore.jks'
           encodedString: ${{ secrets.FINDROID_KEYSTORE }}
 
       - name: Decode Play API credentials file
-        uses: timheuer/base64-to-file@v1
+        uses: timheuer/base64-to-file@v2
         id: findroid_play_api_credentials
         with:
           fileName: 'findroid-play-api-credentials.json'
@@ -58,7 +57,7 @@ jobs:
           rename -- '-release' '' *.apk
 
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: |

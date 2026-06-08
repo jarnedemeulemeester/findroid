@@ -15,7 +15,7 @@
     <string name="genres">Genres</string>
     <string name="view_all">Voir tout</string>
     <string name="writers">Scénaristes</string>
-    <string name="shows_label">Séries TV</string>
+    <string name="shows_label">Séries</string>
     <string name="hide">Masquer</string>
     <string name="sort_by">Trier par</string>
     <string name="sort_order">Ordre de tri</string>
@@ -71,7 +71,7 @@
     <string name="external">Externe</string>
     <string name="select_storage_location">Sélectionner l’emplacement de stockage</string>
     <string name="storage_unavailable">L’emplacement de stockage est indisponible</string>
-    <string name="storage_name">%1$s (%2$d MB libres)</string>
+    <string name="storage_name">%1$s (%2$d Mo libres)</string>
     <string name="offline_mode_icon">Icône du mode hors ligne</string>
     <string name="offline_mode_go_online">Passer en ligne</string>
     <string name="downloading_error">Erreur lors du téléchargement</string>
@@ -79,10 +79,10 @@
     <string name="cancel_download">Annuler le téléchargement</string>
     <string name="stop_download">Arrêter le téléchargement</string>
     <string name="internal">Interne</string>
-    <string name="no_server_connection">Aucune connexion au serveur Jellyfin, pour regarder hors ligne activez le mode hors ligne</string>
+    <string name="no_server_connection">Aucune connexion au serveur Jellyfin. Pour regarder hors ligne, activez le mode hors ligne</string>
     <string name="cancel_download_message">Êtes-vous sûr de vouloir annuler le téléchargement ?</string>
     <string name="preparing_download">Préparation du téléchargement</string>
-    <string name="downloaded_indicator">Indicateur téléchargé</string>
+    <string name="downloaded_indicator">Indicateur de téléchargement</string>
     <string name="unmark_as_played">Marquer comme non vu</string>
     <string name="live_tv">TV en direct</string>
     <string name="add_to_favorites">Ajouter aux favoris</string>
