@@ -19,10 +19,10 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.R as SettingsR
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceFileEdit
 
 @Composable
-fun SettingsCategoryCard(preference: PreferenceCategory, modifier: Modifier = Modifier) {
+fun SettingsFileEditCard(preference: PreferenceFileEdit, modifier: Modifier = Modifier) {
     SettingsBaseCard(
         preference = preference,
         onClick = { preference.onClick(preference) },
@@ -59,12 +59,13 @@ fun SettingsCategoryCard(preference: PreferenceCategory, modifier: Modifier = Mo
 
 @Preview
 @Composable
-private fun SettingsCategoryCardPreview() {
+private fun SettingsFileEditCardPreview() {
     FindroidTheme {
-        SettingsCategoryCard(
+        SettingsFileEditCard(
             preference =
-                PreferenceCategory(
+                PreferenceFileEdit(
                     nameStringResource = SettingsR.string.settings_category_player,
+                    filePath = "",
                 )
         )
     }
@@ -72,13 +73,14 @@ private fun SettingsCategoryCardPreview() {
 
 @Preview
 @Composable
-private fun SettingsCategoryCardDescriptionPreview() {
+private fun SettingsFileEditCardDescriptionPreview() {
     FindroidTheme {
-        SettingsCategoryCard(
+        SettingsFileEditCard(
             preference =
-                PreferenceCategory(
+                PreferenceFileEdit(
                     nameStringResource = SettingsR.string.settings_category_player,
                     descriptionStringRes = SettingsR.string.settings_category_player,
+                    filePath = "",
                 )
         )
     }
@@ -86,13 +88,14 @@ private fun SettingsCategoryCardDescriptionPreview() {
 
 @Preview
 @Composable
-private fun SettingsCategoryCardIconPreview() {
+private fun SettingsFileEditCardIconPreview() {
     FindroidTheme {
-        SettingsCategoryCard(
+        SettingsFileEditCard(
             preference =
-                PreferenceCategory(
+                PreferenceFileEdit(
                     nameStringResource = SettingsR.string.settings_category_player,
                     iconDrawableId = CoreR.drawable.ic_play,
+                    filePath = "",
                 )
         )
     }

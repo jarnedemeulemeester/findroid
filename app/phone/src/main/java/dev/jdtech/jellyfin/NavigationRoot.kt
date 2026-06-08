@@ -52,6 +52,7 @@ import dev.jdtech.jellyfin.presentation.film.PersonScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
+import dev.jdtech.jellyfin.presentation.settings.SettingsFileEditScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addresses.ServerAddressesScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
@@ -103,6 +104,8 @@ data class LibraryRoute(
 @Serializable data class PersonRoute(val personId: String)
 
 @Serializable data class SettingsRoute(val indexes: IntArray)
+
+@Serializable data object SettingsFileEditRoute
 
 @Serializable data object AboutRoute
 
@@ -440,11 +443,17 @@ fun NavigationRoot(
                     navigateToSettings = { indexes ->
                         navController.safeNavigate(SettingsRoute(indexes = indexes))
                     },
+                    navigateToSettingsFileEdit = { name ->
+                        navController.safeNavigate(SettingsFileEditRoute)
+                    },
                     navigateToServers = { navController.safeNavigate(ServersRoute) },
                     navigateToUsers = { navController.safeNavigate(UsersRoute) },
                     navigateToAbout = { navController.safeNavigate(AboutRoute) },
                     navigateBack = { navController.safePopBackStack() },
                 )
+            }
+            composable<SettingsFileEditRoute> {
+                SettingsFileEditScreen()
             }
             composable<AboutRoute> {
                 AboutScreen(navigateBack = { navController.safePopBackStack() })

@@ -55,6 +55,7 @@ import timber.log.Timber
 fun SettingsScreen(
     indexes: IntArray = intArrayOf(),
     navigateToSettings: (indexes: IntArray) -> Unit,
+    navigateToSettingsFileEdit: (name: String) -> Unit,
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,
     navigateToAbout: () -> Unit,
@@ -70,6 +71,7 @@ fun SettingsScreen(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is SettingsEvent.NavigateToSettings -> navigateToSettings(event.indexes)
+            is SettingsEvent.NavigateToSettingsFileEdit -> navigateToSettingsFileEdit("nav")
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> navigateToAbout()

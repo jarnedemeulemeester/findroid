@@ -100,4 +100,7 @@
     <string name="media_segments_type_outro">Outro</string>
     <string name="media_segments_type_intro">Intro</string>
     <string name="none">None</string>
+    <string name="pref_player_backend">Player backend</string>
+    <string name="mpv_options">mpv options</string>
+    <string name="mpv_conf_file">mpv.conf</string>
 </resources>
