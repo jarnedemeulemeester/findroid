@@ -22,6 +22,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import coil3.SingletonImageLoader
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -57,6 +58,15 @@ fun SettingsScreen(
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> Unit
             is SettingsEvent.UpdateTheme -> Unit
+            is SettingsEvent.UpdateImageQuality -> {
+                val imageLoader = SingletonImageLoader.get(context)
+                imageLoader.memoryCache?.clear()
+                imageLoader.diskCache?.clear()
+
+                try {
+                    (context as Activity).restart()
+                } catch (_: Exception) {}
+            }
             is SettingsEvent.LaunchIntent -> {
                 try {
                     context.startActivity(event.intent)
