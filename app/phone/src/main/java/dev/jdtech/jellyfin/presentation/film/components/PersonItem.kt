@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,18 +23,34 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyPerson
 import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalImageQuality
+import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
+import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun PersonItem(person: FindroidItemPerson, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val imageQuality = LocalImageQuality.current
+
+    val imageUri = remember(person, imageQuality) {
+        person.image.uri
+            .withJellyfinResize(width = 300, height = 450, imageQuality = imageQuality)
+            .toLocalFilesUri(context)
+    }
+
     Column(
         modifier =
-            modifier.width(110.dp).clip(MaterialTheme.shapes.small).clickable(onClick = onClick)
+            modifier
+                .width(110.dp)
+                .clip(MaterialTheme.shapes.small)
+                .clickable(onClick = onClick)
     ) {
         AsyncImage(
-            model = person.image.uri,
+            model = imageUri,
             contentDescription = null,
             modifier =
-                Modifier.clip(MaterialTheme.shapes.small)
+                Modifier
+                    .clip(MaterialTheme.shapes.small)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .fillMaxWidth()
                     .height(160.dp),

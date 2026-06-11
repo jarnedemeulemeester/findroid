@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
-import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -26,7 +26,10 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalImageQuality
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
+import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
+import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun ItemHeader(
@@ -36,19 +39,14 @@ fun ItemHeader(
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val context = LocalContext.current
-    var backdropUri =
-        when (item) {
+    val imageQuality = LocalImageQuality.current
+    val backdropUri = remember(item, imageQuality) {
+        val uri = when (item) {
             is FindroidEpisode -> item.images.primary
             else -> item.images.backdrop
         }
-
-    // Ugly workaround to append the files directory when loading local images
-    if (backdropUri?.scheme == null) {
-        backdropUri =
-            Uri.Builder()
-                .appendEncodedPath("${context.filesDir}")
-                .appendEncodedPath(backdropUri?.path)
-                .build()
+        uri.withJellyfinResize(width = 1920, height = 1080, imageQuality = imageQuality)
+            .toLocalFilesUri(context)
     }
 
     ItemHeaderBase(
@@ -77,20 +75,15 @@ fun ItemHeader(
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val context = LocalContext.current
-    var backdropUri =
-        when (item) {
+    val imageQuality = LocalImageQuality.current
+    val backdropUri = remember(item, imageQuality) {
+        val uri = when (item) {
             is FindroidEpisode -> item.images.primary
             is FindroidSeason -> item.images.showBackdrop
             else -> item.images.backdrop
         }
-
-    // Ugly workaround to append the files directory when loading local images
-    if (backdropUri?.scheme == null) {
-        backdropUri =
-            Uri.Builder()
-                .appendEncodedPath("${context.filesDir}")
-                .appendEncodedPath(backdropUri?.path)
-                .build()
+        uri.withJellyfinResize(width = 1920, height = 1080, imageQuality = imageQuality)
+            .toLocalFilesUri(context)
     }
 
     ItemHeaderBase(

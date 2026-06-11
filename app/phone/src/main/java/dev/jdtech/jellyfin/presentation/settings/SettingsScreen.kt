@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.SingletonImageLoader
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -100,6 +101,15 @@ fun SettingsScreen(
                 } else {
                     AppCompatDelegate.setDefaultNightMode(nightMode)
                 }
+            }
+            is SettingsEvent.UpdateImageQuality -> {
+                val imageLoader = SingletonImageLoader.get(context)
+                imageLoader.memoryCache?.clear()
+                imageLoader.diskCache?.clear()
+
+                try {
+                    (context as Activity).restart()
+                } catch (_: Exception) {}
             }
             is SettingsEvent.LaunchIntent -> {
                 try {

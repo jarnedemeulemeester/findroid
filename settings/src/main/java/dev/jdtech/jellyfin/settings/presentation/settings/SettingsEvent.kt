@@ -13,6 +13,8 @@ sealed interface SettingsEvent {
 
     data class UpdateTheme(val theme: String) : SettingsEvent
 
+    data object UpdateImageQuality : SettingsEvent
+
     data class LaunchIntent(val intent: Intent) : SettingsEvent
 
     data object RestartActivity : SettingsEvent

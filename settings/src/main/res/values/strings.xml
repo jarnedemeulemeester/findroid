@@ -63,6 +63,13 @@
     <string name="offline_mode">Offline Mode</string>
     <string name="offline_mode_summary">Watch movies and series without a connection to the server</string>
     <string name="theme">Theme</string>
+    <string name="images_quality">Images quality</string>
+    <string name="images_quality_summary">Adjust the quality and resolution of images to save bandwidth or improve clarity</string>
+    <string name="images_quality_tiny">Tiny</string>
+    <string name="images_quality_small">Small</string>
+    <string name="images_quality_default">Default</string>
+    <string name="images_quality_large">Large</string>
+    <string name="images_quality_original">Original</string>
     <string name="theme_system">Follow system</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>

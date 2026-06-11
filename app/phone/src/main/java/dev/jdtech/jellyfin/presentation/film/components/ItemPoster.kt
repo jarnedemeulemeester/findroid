@@ -1,17 +1,19 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.presentation.utils.LocalImageQuality
+import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
+import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 enum class Direction {
     HORIZONTAL,
@@ -19,28 +21,38 @@ enum class Direction {
 }
 
 @Composable
-fun ItemPoster(item: FindroidItem, direction: Direction, modifier: Modifier = Modifier) {
+fun ItemPoster(
+    item: FindroidItem,
+    direction: Direction,
+    modifier: Modifier = Modifier,
+    episodeCard: Boolean = false,
+) {
     val context = LocalContext.current
-    var imageUri = item.images.primary
+    val imageQuality = LocalImageQuality.current
 
-    when (direction) {
-        Direction.HORIZONTAL -> {
-            if (item is FindroidMovie) imageUri = item.images.backdrop
-        }
-        Direction.VERTICAL -> {
-            when (item) {
-                is FindroidEpisode -> imageUri = item.images.showPrimary
+    val imageUri = remember(item, direction, episodeCard, imageQuality) {
+        val baseUri = when (direction) {
+            Direction.HORIZONTAL -> {
+                item.images.backdrop ?: item.images.primary
+            }
+            Direction.VERTICAL -> {
+                if (item is FindroidEpisode) item.images.showPrimary ?: item.images.primary
+                else item.images.primary ?: item.images.backdrop
             }
         }
-    }
 
-    // Ugly workaround to append the files directory when loading local images
-    if (imageUri?.scheme == null) {
-        imageUri =
-            Uri.Builder()
-                .appendEncodedPath("${context.filesDir}")
-                .appendEncodedPath(imageUri?.path)
-                .build()
+        val (width, height) = if (episodeCard) {
+            400 to 225
+        } else {
+            when (direction) {
+                Direction.HORIZONTAL -> 640 to 360
+                Direction.VERTICAL -> 400 to 600
+            }
+        }
+
+        baseUri
+            .withJellyfinResize(width, height, imageQuality = imageQuality)
+            .toLocalFilesUri(context)
     }
 
     AsyncImage(
@@ -49,7 +61,7 @@ fun ItemPoster(item: FindroidItem, direction: Direction, modifier: Modifier = Mo
         contentScale = ContentScale.Crop,
         modifier =
             modifier
-                .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
+                .aspectRatio(if (direction == Direction.HORIZONTAL) 16f / 9f else 2f / 3f)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
     )
 }

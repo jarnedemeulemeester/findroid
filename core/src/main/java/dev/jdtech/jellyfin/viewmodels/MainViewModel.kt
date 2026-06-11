@@ -44,6 +44,7 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
                     hasCurrentServer = checkHasCurrentServer(),
                     hasCurrentUser = checkHasCurrentUser(),
                     isOfflineMode = checkIsOfflineMode(),
+                    imageQuality = checkImagesQuality(),
                 )
             _state.emit(mainState)
         }
@@ -84,6 +85,10 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
     private fun checkIsOfflineMode(): Boolean {
         return appPreferences.getValue(appPreferences.offlineMode)
     }
+
+    private fun checkImagesQuality(): String {
+        return appPreferences.getValue(appPreferences.imagesSize)
+    }
 }
 
 data class MainState(
@@ -93,4 +98,5 @@ data class MainState(
     val hasCurrentServer: Boolean = false,
     val hasCurrentUser: Boolean = false,
     val isOfflineMode: Boolean = false,
+    val imageQuality: String = "default",
 )

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
@@ -30,9 +32,14 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalImageQuality
+import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
+import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
+    val context = LocalContext.current
+    val imageQuality = LocalImageQuality.current
     val colorStops =
         arrayOf(
             0.0f to Color.Black.copy(alpha = 0.1f),
@@ -40,14 +47,22 @@ fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
             1f to Color.Black.copy(alpha = 0.6f),
         )
 
+    val imageUri = remember(item, imageQuality) {
+        item.images.backdrop
+            .withJellyfinResize(width = 1280, height = 720, imageQuality = imageQuality)
+            .toLocalFilesUri(context)
+    }
+
     Box(
-        modifier =
-            Modifier.aspectRatio(1.77f).clip(MaterialTheme.shapes.large).clickable {
+        modifier = Modifier
+            .aspectRatio(16f / 9f)
+            .clip(MaterialTheme.shapes.large)
+            .clickable {
                 onAction(HomeAction.OnItemClick(item))
             }
     ) {
         AsyncImage(
-            model = item.images.backdrop,
+            model = imageUri,
             placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
             contentDescription = null,
             contentScale = ContentScale.Crop,

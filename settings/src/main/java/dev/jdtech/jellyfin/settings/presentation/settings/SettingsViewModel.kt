@@ -17,12 +17,12 @@ import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
-import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(private val appPreferences: AppPreferences) :
@@ -158,6 +158,21 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     supportedDeviceTypes = listOf(DeviceType.PHONE),
                                                     backendPreference = appPreferences.dynamicColors,
                                                 ),
+                                                PreferenceSelect(
+                                                    nameStringResource = R.string.images_quality,
+                                                    descriptionStringRes = R.string.images_quality_summary,
+                                                    iconDrawableId = R.drawable.ic_image_size,
+                                                    backendPreference = appPreferences.imagesSize,
+                                                    onUpdate = {
+                                                        viewModelScope.launch {
+                                                            eventsChannel.send(
+                                                                SettingsEvent.UpdateImageQuality
+                                                            )
+                                                        }
+                                                    },
+                                                    options = R.array.images_size,
+                                                    optionValues = R.array.images_size_value,
+                                                )
                                             ),
                                     ),
                                     PreferenceGroup(
@@ -731,7 +746,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                 }
             }
 
-            // Update all (visible) preferences with there current values
+            // Update all (visible) preferences with their current values
             preferences =
                 preferences
                     .map { preferenceGroup ->
