@@ -11,18 +11,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.presentation.utils.LocalImageQuality
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
-import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
-
-    @Inject
-    lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +31,6 @@ class MainActivity : AppCompatActivity() {
                 if (!state.isLoading) {
                     CompositionLocalProvider(
                         LocalOfflineMode provides state.isOfflineMode,
-                        LocalImageQuality provides state.imageQuality,
                     ) {
                         NavigationRoot(
                             navController = navController,

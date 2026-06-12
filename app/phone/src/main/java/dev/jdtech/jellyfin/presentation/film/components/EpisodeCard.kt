@@ -48,7 +48,6 @@ fun EpisodeCard(episode: FindroidEpisode, onClick: () -> Unit, modifier: Modifie
                 item = episode,
                 direction = Direction.HORIZONTAL,
                 modifier = Modifier.clip(MaterialTheme.shapes.small),
-                episodeCard = true,
             )
             Row(
                 modifier = Modifier.align(Alignment.TopEnd).padding(MaterialTheme.spacings.small),

@@ -3,7 +3,7 @@ package dev.jdtech.jellyfin.presentation.film.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,28 +31,20 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.presentation.utils.LocalImageQuality
 import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
 import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
     val context = LocalContext.current
-    val imageQuality = LocalImageQuality.current
     val colorStops =
         arrayOf(
             0.0f to Color.Black.copy(alpha = 0.1f),
             0.5f to Color.Black.copy(alpha = 0.5f),
             1f to Color.Black.copy(alpha = 0.6f),
         )
-
-    val imageUri = remember(item, imageQuality) {
-        item.images.backdrop
-            .withJellyfinResize(width = 1280, height = 720, imageQuality = imageQuality)
-            .toLocalFilesUri(context)
-    }
-
-    Box(
+    
+    BoxWithConstraints(
         modifier = Modifier
             .aspectRatio(16f / 9f)
             .clip(MaterialTheme.shapes.large)
@@ -61,6 +52,10 @@ fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
                 onAction(HomeAction.OnItemClick(item))
             }
     ) {
+        val imageUri = item.images.backdrop
+            .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
+            .toLocalFilesUri(context)
+
         AsyncImage(
             model = imageUri,
             placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
@@ -74,7 +69,8 @@ fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
         Column(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
             modifier =
-                Modifier.padding(
+                Modifier
+                    .padding(
                         horizontal = MaterialTheme.spacings.default,
                         vertical = MaterialTheme.spacings.medium,
                     )

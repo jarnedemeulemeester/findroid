@@ -2,50 +2,33 @@ package dev.jdtech.jellyfin.presentation.utils
 
 import android.content.Context
 import android.net.Uri
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import timber.log.Timber
-
-val LocalImageQuality = compositionLocalOf<String> { error("Image Quality not defined") }
 
 /**
  * Appends Jellyfin-specific resize parameters to an image URI if it's a remote URL.
  */
+@Composable
 fun Uri?.withJellyfinResize(
-    width: Int,
-    height: Int,
+    widthDp: Dp,
+    heightDp: Dp,
     quality: Int = 80,
-    imageQuality: String = "default",
 ): Uri? {
     if (this == null || scheme?.startsWith("http") != true) return this
 
-    var finalWidth = width
-    var finalHeight = height
-    var finalQuality = quality
+    val density = LocalDensity.current
 
-    Timber.d("Loading image with quality: $imageQuality")
+    val targetWidthPx = with(density) { widthDp.toPx().toInt() }
+    val targetHeightPx = with(density) { heightDp.toPx().toInt() }
 
-    when (imageQuality) {
-            "tiny" -> {
-                finalWidth /= 3
-                finalHeight /= 3
-                finalQuality = 50
-            }
-            "small" -> {
-                finalWidth /= 2
-                finalHeight /= 2
-            }
-            "large" -> {
-                finalWidth = (finalWidth * 1.5f).toInt()
-                finalHeight = (finalHeight * 1.5f).toInt()
-                finalQuality = 90
-            }
-            "original" -> return this
-        }
+    Timber.d("Jellyfin resize: ${targetWidthPx}x$targetHeightPx")
 
     return buildUpon()
-        .appendQueryParameter("fillWidth", finalWidth.toString())
-        .appendQueryParameter("fillHeight", finalHeight.toString())
-        .appendQueryParameter("quality", finalQuality.toString())
+        .appendQueryParameter("fillWidth", targetWidthPx.toString())
+        .appendQueryParameter("fillHeight", targetHeightPx.toString())
+        .appendQueryParameter("quality", quality.toString())
         .build()
 }
 

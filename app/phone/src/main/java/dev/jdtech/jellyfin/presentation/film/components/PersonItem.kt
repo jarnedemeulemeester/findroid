@@ -2,15 +2,16 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -23,20 +24,12 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyPerson
 import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.presentation.utils.LocalImageQuality
 import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
 import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun PersonItem(person: FindroidItemPerson, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val imageQuality = LocalImageQuality.current
-
-    val imageUri = remember(person, imageQuality) {
-        person.image.uri
-            .withJellyfinResize(width = 300, height = 450, imageQuality = imageQuality)
-            .toLocalFilesUri(context)
-    }
 
     Column(
         modifier =
@@ -45,17 +38,26 @@ fun PersonItem(person: FindroidItemPerson, onClick: () -> Unit, modifier: Modifi
                 .clip(MaterialTheme.shapes.small)
                 .clickable(onClick = onClick)
     ) {
-        AsyncImage(
-            model = imageUri,
-            contentDescription = null,
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .clip(MaterialTheme.shapes.small)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .fillMaxWidth()
-                    .height(160.dp),
-            contentScale = ContentScale.Crop,
-        )
+                    .height(160.dp)
+        ) {
+            val imageUri =
+                person.image.uri
+                    .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
+                    .toLocalFilesUri(context)
+
+            AsyncImage(
+                model = imageUri,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+        }
         Spacer(Modifier.height(MaterialTheme.spacings.extraSmall))
         Text(
             text = person.name,

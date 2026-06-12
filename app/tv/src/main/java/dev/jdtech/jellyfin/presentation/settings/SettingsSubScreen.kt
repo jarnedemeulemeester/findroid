@@ -27,13 +27,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import coil3.SingletonImageLoader
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsGroupCard
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsMultiSelectDetailsCard
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsSelectDetailsCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -46,6 +44,7 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.restart
 import timber.log.Timber
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSubScreen(
@@ -68,15 +67,6 @@ fun SettingsSubScreen(
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> Unit
             is SettingsEvent.UpdateTheme -> Unit
-            is SettingsEvent.UpdateImageQuality -> {
-                val imageLoader = SingletonImageLoader.get(context)
-                imageLoader.memoryCache?.clear()
-                imageLoader.diskCache?.clear()
-
-                try {
-                    (context as Activity).restart()
-                } catch (_: Exception) {}
-            }
             is SettingsEvent.LaunchIntent -> {
                 try {
                     context.startActivity(event.intent)

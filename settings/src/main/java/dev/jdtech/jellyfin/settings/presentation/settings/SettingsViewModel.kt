@@ -158,21 +158,6 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     supportedDeviceTypes = listOf(DeviceType.PHONE),
                                                     backendPreference = appPreferences.dynamicColors,
                                                 ),
-                                                PreferenceSelect(
-                                                    nameStringResource = R.string.images_quality,
-                                                    descriptionStringRes = R.string.images_quality_summary,
-                                                    iconDrawableId = R.drawable.ic_image_size,
-                                                    backendPreference = appPreferences.imagesSize,
-                                                    onUpdate = {
-                                                        viewModelScope.launch {
-                                                            eventsChannel.send(
-                                                                SettingsEvent.UpdateImageQuality
-                                                            )
-                                                        }
-                                                    },
-                                                    options = R.array.images_size,
-                                                    optionValues = R.array.images_size_value,
-                                                )
                                             ),
                                     ),
                                     PreferenceGroup(
