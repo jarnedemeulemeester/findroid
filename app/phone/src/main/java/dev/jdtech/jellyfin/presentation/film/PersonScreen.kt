@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.presentation.film
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,21 +13,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
@@ -34,6 +40,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyPersonDetail
@@ -49,6 +56,9 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.presentation.utils.toBlurHash
+import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
+import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 import java.util.UUID
 
 @Composable
@@ -201,17 +211,44 @@ private fun PersonScreenLayout(state: PersonState, onAction: (PersonAction) -> U
 
 @Composable
 private fun PersonImage(person: FindroidPerson, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = person.images.primary,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
+    val context = LocalContext.current
+
+    BoxWithConstraints(
         modifier =
             modifier
                 .height(320.dp)
-                .aspectRatio(0.66f)
+                .aspectRatio(2f / 3f)
                 .clip(MaterialTheme.shapes.extraLarge)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
-    )
+        contentAlignment = Alignment.Center,
+    ) {
+        val image = person.images.primary
+
+        val imageUri =
+            image?.uri
+                .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
+                .toLocalFilesUri(context)
+
+        val blurPlaceholder = remember(image?.blurHash) {
+            image?.blurHash.toBlurHash()
+        }
+
+        Icon(
+            painter = painterResource(R.drawable.ic_user),
+            contentDescription = null,
+            modifier = Modifier.size(96.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+        )
+
+        AsyncImage(
+            model = imageUri,
+            contentDescription = null,
+            placeholder = blurPlaceholder,
+            error = blurPlaceholder,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
 
 @PreviewScreenSizes

@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.presentation.utils.toBlurHash
 import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
 import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
@@ -28,7 +30,7 @@ fun ItemPoster(
 ) {
     val context = LocalContext.current
 
-    val baseUri = when (direction) {
+    val image = when (direction) {
         Direction.HORIZONTAL -> {
             item.images.backdrop ?: item.images.primary
         }
@@ -45,14 +47,20 @@ fun ItemPoster(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
     ) {
         val imageUri =
-            baseUri
+            image?.uri
                 .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
                 .toLocalFilesUri(context)
+
+        val blurPlaceholder = remember(image?.blurHash) {
+            image?.blurHash.toBlurHash()
+        }
 
         AsyncImage(
             model = imageUri,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            placeholder = blurPlaceholder,
+            error = blurPlaceholder,
             modifier = Modifier.fillMaxSize(),
         )
     }

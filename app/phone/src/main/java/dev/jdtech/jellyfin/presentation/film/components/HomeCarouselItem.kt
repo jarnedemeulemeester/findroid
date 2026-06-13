@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +32,7 @@ import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.toBlurHash
 import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
 import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
@@ -52,15 +54,21 @@ fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
                 onAction(HomeAction.OnItemClick(item))
             }
     ) {
-        val imageUri = item.images.backdrop
+        val image = item.images.backdrop
+
+        val imageUri = image?.uri
             .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
             .toLocalFilesUri(context)
 
+        val blurPlaceholder = remember(image?.blurHash) {
+            image?.blurHash.toBlurHash()
+        }
+
         AsyncImage(
             model = imageUri,
-            placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            placeholder = blurPlaceholder ?: ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
             modifier = Modifier.fillMaxWidth(),
         )
         Canvas(modifier = Modifier.fillMaxSize()) {

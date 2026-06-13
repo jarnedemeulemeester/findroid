@@ -3,8 +3,11 @@ package dev.jdtech.jellyfin.presentation.utils
 import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import com.vanniktech.blurhash.BlurHash
 import timber.log.Timber
 
 /**
@@ -30,6 +33,25 @@ fun Uri?.withJellyfinResize(
         .appendQueryParameter("fillHeight", targetHeightPx.toString())
         .appendQueryParameter("quality", quality.toString())
         .build()
+}
+
+/**
+ * Creates a [BitmapPainter] from a BlurHash string.
+ */
+fun String?.toBlurHash(
+    width: Int = 25,
+    height: Int = 25,
+): BitmapPainter? {
+    if (!this.isNullOrEmpty()) {
+        val bitmap = BlurHash.decode(
+            blurHash = this,
+            width = width,
+            height = height,
+        )
+        return bitmap?.asImageBitmap()?.let { BitmapPainter(it) }
+    } else {
+        return null
+    }
 }
 
 /**

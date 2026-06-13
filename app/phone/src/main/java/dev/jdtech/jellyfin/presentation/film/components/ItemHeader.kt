@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -27,6 +28,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
+import dev.jdtech.jellyfin.presentation.utils.toBlurHash
 import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
 import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
@@ -42,13 +44,18 @@ fun ItemHeader(
         showLogo = showLogo,
         backdropImage = {
             val context = LocalContext.current
-            val uri = when (item) {
+            val image = when (item) {
                 is FindroidEpisode -> item.images.primary
                 else -> item.images.backdrop
             }
 
-            val backdropUri = uri.withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
+            val backdropUri = image?.uri
+                .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
                 .toLocalFilesUri(context)
+
+            val blurPlaceholder = remember(image?.blurHash) {
+                image?.blurHash.toBlurHash()
+            }
 
             AsyncImage(
                 model = backdropUri,
@@ -57,7 +64,7 @@ fun ItemHeader(
                     Modifier
                         .fillMaxSize()
                         .parallaxLayoutModifier(scrollState = scrollState, rate = 2),
-                placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
+                placeholder = blurPlaceholder ?: ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                 contentScale = ContentScale.Crop,
             )
         },
@@ -77,14 +84,19 @@ fun ItemHeader(
         showLogo = showLogo,
         backdropImage = {
             val context = LocalContext.current
-            val uri = when (item) {
+            val image = when (item) {
                 is FindroidEpisode -> item.images.primary
                 is FindroidSeason -> item.images.showBackdrop
                 else -> item.images.backdrop
             }
 
-            val backdropUri = uri.withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
+            val backdropUri = image?.uri
+                .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
                 .toLocalFilesUri(context)
+
+            val blurPlaceholder = remember(image?.blurHash) {
+                image?.blurHash.toBlurHash()
+            }
 
             AsyncImage(
                 model = backdropUri,
@@ -93,7 +105,7 @@ fun ItemHeader(
                     Modifier
                         .fillMaxSize()
                         .parallaxLayoutModifier(lazyListState = lazyListState, rate = 2),
-                placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
+                placeholder = blurPlaceholder ?: ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                 contentScale = ContentScale.Crop,
             )
         },
@@ -110,7 +122,7 @@ private fun ItemHeaderBase(
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
 
-    val logoUri =
+    val logo =
         when (item) {
             is FindroidEpisode -> item.images.showLogo
             else -> item.images.logo
@@ -133,7 +145,7 @@ private fun ItemHeaderBase(
         content()
         if (showLogo) {
             AsyncImage(
-                model = logoUri,
+                model = logo?.uri,
                 contentDescription = null,
                 modifier =
                     Modifier
