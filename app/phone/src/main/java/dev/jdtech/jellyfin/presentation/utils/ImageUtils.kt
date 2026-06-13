@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import com.vanniktech.blurhash.BlurHash
 import timber.log.Timber
+import java.io.File
 
 /**
  * Appends Jellyfin-specific resize parameters to an image URI if it's a remote URL.
@@ -59,8 +60,8 @@ fun String?.toBlurHash(
  */
 fun Uri?.toLocalFilesUri(context: Context): Uri? {
     if (this == null || scheme != null) return this
-    return Uri.Builder()
-        .appendEncodedPath(context.filesDir.absolutePath)
-        .appendEncodedPath(path)
-        .build()
+
+    Timber.d("file: $this")
+
+    return Uri.fromFile(File(context.filesDir, path!!))
 }
