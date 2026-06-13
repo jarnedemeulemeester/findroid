@@ -10,20 +10,6 @@
         <item>light</item>
         <item>dark</item>
     </string-array>
-    <string-array name="images_size">
-        <item>@string/images_quality_tiny</item>
-        <item>@string/images_quality_small</item>
-        <item>@string/images_quality_default</item>
-        <item>@string/images_quality_large</item>
-        <item>@string/images_quality_original</item>
-    </string-array>
-    <string-array name="images_size_value">
-        <item>tiny</item>
-        <item>small</item>
-        <item>default</item>
-        <item>large</item>
-        <item>original</item>
-    </string-array>
     <string-array name="mpv_hwdec">
         <item>no</item>
         <item>mediacodec</item>
