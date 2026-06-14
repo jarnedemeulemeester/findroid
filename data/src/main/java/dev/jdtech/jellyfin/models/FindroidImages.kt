@@ -41,27 +41,36 @@ fun BaseItemDto.toFindroidImages(jellyfinRepository: JellyfinRepository): Findro
                 .appendQueryParameter("tag", tag)
                 .build()
         }
+    val showPrimaryOwnerId = parentPrimaryImageItemId ?: seriesId
     val showPrimary =
-        seriesPrimaryImageTag?.let { tag ->
+        showPrimaryOwnerId?.let { ownerId ->
+            seriesPrimaryImageTag?.let { tag -> ownerId to tag }
+        }?.let { (ownerId, tag) ->
             baseUrl
                 .buildUpon()
-                .appendEncodedPath("items/$seriesId/Images/${ImageType.PRIMARY}")
+                .appendEncodedPath("items/$ownerId/Images/${ImageType.PRIMARY}")
                 .appendQueryParameter("tag", tag)
                 .build()
         }
+    val showBackdropOwnerId = parentBackdropItemId ?: seriesId
     val showBackdrop =
-        seriesPrimaryImageTag?.let { tag ->
+        showBackdropOwnerId?.let { ownerId ->
+            parentBackdropImageTags?.firstOrNull()?.let { tag -> ownerId to tag }
+        }?.let { (ownerId, tag) ->
             baseUrl
                 .buildUpon()
-                .appendEncodedPath("items/$seriesId/Images/${ImageType.BACKDROP}/0")
+                .appendEncodedPath("items/$ownerId/Images/${ImageType.BACKDROP}/0")
                 .appendQueryParameter("tag", tag)
                 .build()
         }
+    val showLogoOwnerId = parentLogoItemId ?: seriesId
     val showLogo =
-        seriesPrimaryImageTag?.let { tag ->
+        showLogoOwnerId?.let { ownerId ->
+            parentLogoImageTag?.let { tag -> ownerId to tag }
+        }?.let { (ownerId, tag) ->
             baseUrl
                 .buildUpon()
-                .appendEncodedPath("items/$seriesId/Images/${ImageType.LOGO}")
+                .appendEncodedPath("items/$ownerId/Images/${ImageType.LOGO}")
                 .appendQueryParameter("tag", tag)
                 .build()
         }
@@ -80,6 +89,7 @@ fun FindroidMovieDto.toLocalFindroidImages(itemId: UUID): FindroidImages {
     return FindroidImages(
         primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
         backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+        logo = Uri.Builder().appendEncodedPath("images/$itemId/logo").build(),
     )
 }
 
@@ -87,6 +97,7 @@ fun FindroidShowDto.toLocalFindroidImages(itemId: UUID): FindroidImages {
     return FindroidImages(
         primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
         backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+        logo = Uri.Builder().appendEncodedPath("images/$itemId/logo").build(),
     )
 }
 
@@ -94,8 +105,10 @@ fun FindroidSeasonDto.toLocalFindroidImages(itemId: UUID): FindroidImages {
     return FindroidImages(
         primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
         backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+        logo = Uri.Builder().appendEncodedPath("images/$itemId/logo").build(),
         showPrimary = Uri.Builder().appendEncodedPath("images/$seriesId/primary").build(),
         showBackdrop = Uri.Builder().appendEncodedPath("images/$seriesId/backdrop").build(),
+        showLogo = Uri.Builder().appendEncodedPath("images/$seriesId/logo").build(),
     )
 }
 
@@ -103,7 +116,9 @@ fun FindroidEpisodeDto.toLocalFindroidImages(itemId: UUID): FindroidImages {
     return FindroidImages(
         primary = Uri.Builder().appendEncodedPath("images/$itemId/primary").build(),
         backdrop = Uri.Builder().appendEncodedPath("images/$itemId/backdrop").build(),
+        logo = Uri.Builder().appendEncodedPath("images/$itemId/logo").build(),
         showPrimary = Uri.Builder().appendEncodedPath("images/$seriesId/primary").build(),
         showBackdrop = Uri.Builder().appendEncodedPath("images/$seriesId/backdrop").build(),
+        showLogo = Uri.Builder().appendEncodedPath("images/$seriesId/logo").build(),
     )
 }

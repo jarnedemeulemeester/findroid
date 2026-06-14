@@ -6,6 +6,7 @@ import dev.jdtech.jellyfin.models.UiText
 data class DownloaderState(
     val status: Int = 0,
     val progress: Float = 0f,
+    val detailsText: UiText? = null,
     val errorText: UiText? = null,
 ) {
     val isDownloading: Boolean
@@ -14,6 +15,10 @@ data class DownloaderState(
                 arrayOf(
                     DownloadManager.STATUS_PENDING,
                     DownloadManager.STATUS_RUNNING,
+                    DownloadManager.STATUS_PAUSED,
                     DownloadManager.STATUS_FAILED,
                 )
+
+    val hasDeterminateProgress: Boolean
+        get() = progress > 0f || status == DownloadManager.STATUS_SUCCESSFUL
 }

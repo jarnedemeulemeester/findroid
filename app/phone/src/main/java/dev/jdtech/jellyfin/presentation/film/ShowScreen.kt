@@ -42,6 +42,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
 import dev.jdtech.jellyfin.film.presentation.show.ShowState
@@ -59,6 +63,7 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.getShowDateString
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -71,16 +76,38 @@ fun ShowScreen(
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
+    downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+    val launchStoragePermission =
+        rememberStoragePermissionRequestLauncher {
+            downloaderViewModel.onStoragePermissionResult()
+        }
 
     LaunchedEffect(true) { viewModel.loadShow(showId = showId) }
 
+    LaunchedEffect(state.show) { state.show?.let { show -> downloaderViewModel.update(show) } }
+
+    ObserveAsEvents(downloaderViewModel.events) { event ->
+        when (event) {
+            is DownloaderEvent.Successful,
+            is DownloaderEvent.Deleted,
+            is DownloaderEvent.BatchQueued -> {
+                viewModel.loadShow(showId = showId)
+            }
+            is DownloaderEvent.StoragePermissionRequired -> {
+                launchStoragePermission(event)
+            }
+        }
+    }
+
     ShowScreenLayout(
         state = state,
+        downloaderState = downloaderState,
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
@@ -104,11 +131,17 @@ fun ShowScreen(
             }
             viewModel.onAction(action)
         },
+        onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
 }
 
 @Composable
-private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
+private fun ShowScreenLayout(
+    state: ShowState,
+    downloaderState: DownloaderState,
+    onAction: (ShowAction) -> Unit,
+    onDownloaderAction: (DownloaderAction) -> Unit,
+) {
     val safePadding = rememberSafePadding()
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
@@ -204,9 +237,16 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                             }
                         },
                         onTrailerClick = { uri -> onAction(ShowAction.PlayTrailer(uri)) },
-                        onDownloadClick = {},
-                        onDownloadCancelClick = {},
-                        onDownloadDeleteClick = {},
+                        onDownloadClick = { profile ->
+                            onDownloaderAction(DownloaderAction.Download(show, profile))
+                        },
+                        onDownloadCancelClick = {
+                            onDownloaderAction(DownloaderAction.CancelDownload(show))
+                        },
+                        onDownloadDeleteClick = {
+                            onDownloaderAction(DownloaderAction.DeleteDownload(show))
+                        },
+                        downloaderState = downloaderState,
                         modifier = Modifier.fillMaxWidth(),
                         canPlay = state.seasons.isNotEmpty(),
                     )
@@ -300,5 +340,12 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
 @PreviewScreenSizes
 @Composable
 private fun EpisodeScreenLayoutPreview() {
-    FindroidTheme { ShowScreenLayout(state = ShowState(show = dummyShow), onAction = {}) }
+    FindroidTheme {
+        ShowScreenLayout(
+            state = ShowState(show = dummyShow),
+            downloaderState = DownloaderState(),
+            onAction = {},
+            onDownloaderAction = {},
+        )
+    }
 }

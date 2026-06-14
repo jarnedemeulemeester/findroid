@@ -42,6 +42,8 @@ suspend fun BaseItemDto.toFindroidMovie(
     sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())
     if (serverDatabase != null) {
         sources.addAll(serverDatabase.getSources(id).map { it.toFindroidSource(serverDatabase) })
+        serverDatabase.getReadyOfflineVideoAssetByItemId(id.toString())?.toOfflineFindroidSource()
+            ?.let { sources.add(it) }
     }
     return FindroidMovie(
         id = id,
@@ -73,7 +75,9 @@ suspend fun BaseItemDto.toFindroidMovie(
 
 fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID): FindroidMovie {
     val userData = database.getUserDataOrCreateNew(id, userId)
-    val sources = database.getSources(id).map { it.toFindroidSource(database) }
+    val sources =
+        database.getSources(id).map { it.toFindroidSource(database) } +
+            listOfNotNull(database.getReadyOfflineVideoAssetByItemId(id.toString())?.toOfflineFindroidSource())
     val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
     for (source in sources) {
         database.getTrickplayInfo(source.id)?.toFindroidTrickplayInfo()?.let {
@@ -99,7 +103,7 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         endDate = endDate,
         canDownload = false,
         canPlay = true,
-        sources = database.getSources(id).map { it.toFindroidSource(database) },
+        sources = sources,
         trailer = null,
         images = toLocalFindroidImages(itemId = id),
         chapters = chapters ?: emptyList(),

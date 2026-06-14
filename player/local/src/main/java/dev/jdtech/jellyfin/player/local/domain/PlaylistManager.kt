@@ -98,15 +98,18 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                     val episode = repository.getEpisode(itemId)
 
                     val episodes =
-                        repository
-                            .getEpisodes(
-                                seriesId = episode.seriesId,
-                                seasonId = episode.seasonId,
-                                fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
-                            )
-                            .filter { !it.missing }
+                        runCatching {
+                                repository
+                                    .getEpisodes(
+                                        seriesId = episode.seriesId,
+                                        seasonId = episode.seasonId,
+                                        fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
+                                    )
+                                    .filter { !it.missing }
+                            }
+                            .getOrDefault(emptyList())
 
-                    items = episodes
+                    items = episodes.ifEmpty { listOf(episode) }
                     episode
                 }
                 else -> null

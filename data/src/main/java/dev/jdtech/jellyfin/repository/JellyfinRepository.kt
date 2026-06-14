@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
+import dev.jdtech.jellyfin.models.FindroidUserDataDto
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.SortOrder
 import java.util.UUID
@@ -98,9 +99,19 @@ interface JellyfinRepository {
 
     suspend fun postPlaybackStart(itemId: UUID)
 
-    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int)
+    suspend fun postPlaybackStop(
+        itemId: UUID,
+        positionTicks: Long,
+        playedPercentage: Int,
+        favorite: Boolean? = null,
+    )
 
-    suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean)
+    suspend fun postPlaybackProgress(
+        itemId: UUID,
+        positionTicks: Long,
+        isPaused: Boolean,
+        favorite: Boolean? = null,
+    )
 
     suspend fun markAsFavorite(itemId: UUID)
 
@@ -117,6 +128,8 @@ interface JellyfinRepository {
     suspend fun getUserConfiguration(): UserConfiguration?
 
     suspend fun getDownloads(): List<FindroidItem>
+
+    suspend fun getUserData(itemId: UUID): FindroidUserDataDto?
 
     fun getUserId(): UUID
 }

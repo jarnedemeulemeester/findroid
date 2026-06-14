@@ -1,30 +1,29 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import android.app.DownloadManager
-import android.os.Environment
-import android.os.StatFs
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,8 +33,10 @@ import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.isDownloaded
+import dev.jdtech.jellyfin.offline.download.OfflineProfile
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
@@ -45,7 +46,7 @@ fun ItemButtonsBar(
     onPlayClick: (startFromBeginning: Boolean) -> Unit,
     onMarkAsPlayedClick: () -> Unit,
     onMarkAsFavoriteClick: () -> Unit,
-    onDownloadClick: (storageIndex: Int) -> Unit,
+    onDownloadClick: (profile: OfflineProfile) -> Unit,
     onDownloadCancelClick: () -> Unit,
     onDownloadDeleteClick: () -> Unit,
     onTrailerClick: (uri: String) -> Unit,
@@ -53,7 +54,6 @@ fun ItemButtonsBar(
     downloaderState: DownloaderState? = null,
     canPlay: Boolean = true,
 ) {
-    val context = LocalContext.current
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     val trailerUri =
@@ -67,12 +67,14 @@ fun ItemButtonsBar(
             else -> null
         }
 
-    var storageSelectionDialogOpen by remember { mutableStateOf(false) }
+    var profileSelectionDialogOpen by remember { mutableStateOf(false) }
     var cancelDownloadDialogOpen by remember { mutableStateOf(false) }
     var deleteDownloadDialogOpen by remember { mutableStateOf(false) }
 
-    var selectedStorageIndex by remember { mutableIntStateOf(0) }
-    var storageLocations = remember { context.getExternalFilesDirs(null) }
+    var selectedProfile by remember { mutableStateOf(OfflineProfile.Default480p) }
+    val isDownloaded =
+        item.isDownloaded() || downloaderState?.status == DownloadManager.STATUS_SUCCESSFUL
+    val canDownload = item.canDownload || item is FindroidShow || item is FindroidSeason
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         Column(
@@ -154,23 +156,17 @@ fun ItemButtonsBar(
                     }
                 }
                 if (downloaderState != null && !downloaderState.isDownloading) {
-                    if (item.isDownloaded()) {
+                    if (isDownloaded) {
                         FilledTonalIconButton(onClick = { deleteDownloadDialogOpen = true }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_trash),
                                 contentDescription = null,
                             )
                         }
-                    } else if (item.canDownload) {
+                    } else if (canDownload) {
                         FilledTonalIconButton(
                             onClick = {
-                                storageLocations = context.getExternalFilesDirs(null)
-                                if (storageLocations.size > 1) {
-                                    storageSelectionDialogOpen = true
-                                } else {
-                                    selectedStorageIndex = 0
-                                    onDownloadClick(selectedStorageIndex)
-                                }
+                                profileSelectionDialogOpen = true
                             }
                         ) {
                             Icon(
@@ -187,34 +183,21 @@ fun ItemButtonsBar(
                         DownloaderCard(
                             state = downloaderState,
                             onCancelClick = { cancelDownloadDialogOpen = true },
-                            onRetryClick = { onDownloadClick(selectedStorageIndex) },
+                            onRetryClick = { onDownloadClick(selectedProfile) },
                         )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
                 }
             }
         }
-        if (storageSelectionDialogOpen) {
-            val locations = remember {
-                storageLocations.map { dir ->
-                    val locationStringRes =
-                        if (Environment.isExternalStorageRemovable(dir)) CoreR.string.external
-                        else CoreR.string.internal
-                    val locationString = context.getString(locationStringRes)
-
-                    val stat = StatFs(dir.path)
-                    val availableMegaBytes = stat.availableBytes.div(1000000)
-                    context.getString(CoreR.string.storage_name, locationString, availableMegaBytes)
-                }
-            }
-            StorageSelectionDialog(
-                storageLocations = locations,
-                onSelect = { storageIndex ->
-                    selectedStorageIndex = storageIndex
-                    onDownloadClick(selectedStorageIndex)
-                    storageSelectionDialogOpen = false
+        if (profileSelectionDialogOpen) {
+            DownloadProfileDialog(
+                onSelect = { profile ->
+                    selectedProfile = profile
+                    onDownloadClick(profile)
+                    profileSelectionDialogOpen = false
                 },
-                onDismiss = { storageSelectionDialogOpen = false },
+                onDismiss = { profileSelectionDialogOpen = false },
             )
         }
         if (cancelDownloadDialogOpen) {
@@ -236,6 +219,26 @@ fun ItemButtonsBar(
             )
         }
     }
+}
+
+@Composable
+private fun DownloadProfileDialog(
+    onSelect: (OfflineProfile) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Download quality") },
+        text = { Text(text = "Default is optimized for Android Auto and phone storage.") },
+        confirmButton = {
+            TextButton(onClick = { onSelect(OfflineProfile.Default480p) }) {
+                Text(text = "480p default")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onSelect(OfflineProfile.High720p) }) { Text(text = "720p high") }
+        },
+    )
 }
 
 @Preview(showBackground = true)

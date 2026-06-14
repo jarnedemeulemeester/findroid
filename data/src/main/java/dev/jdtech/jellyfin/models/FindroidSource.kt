@@ -1,6 +1,9 @@
 package dev.jdtech.jellyfin.models
 
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
+import dev.jdtech.jellyfin.offline.download.OfflineAssetKind
+import dev.jdtech.jellyfin.offline.download.OfflineAssetStatus
+import dev.jdtech.jellyfin.offline.download.OfflineStorageScope
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.util.UUID
@@ -55,6 +58,26 @@ fun FindroidSourceDto.toFindroidSource(serverDatabaseDao: ServerDatabaseDao): Fi
         mediaStreams =
             serverDatabaseDao.getMediaStreamsBySourceId(id).map { it.toFindroidMediaStream() },
         downloadId = downloadId,
+    )
+}
+
+fun OfflineAssetDto.toOfflineFindroidSource(): FindroidSource? {
+    val finalPath = finalPath ?: return null
+    if (
+        kind != OfflineAssetKind.VIDEO ||
+            storageScope != OfflineStorageScope.PUBLIC_MEDIA ||
+            status != OfflineAssetStatus.READY
+    ) {
+        return null
+    }
+    val file = File(finalPath)
+    return FindroidSource(
+        id = sourceId ?: assetId,
+        name = "Offline",
+        type = FindroidSourceType.LOCAL,
+        path = finalPath,
+        size = bytes ?: file.takeIf { it.exists() }?.length() ?: 0L,
+        mediaStreams = emptyList(),
     )
 }
 

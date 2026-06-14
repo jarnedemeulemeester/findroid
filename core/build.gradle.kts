@@ -31,6 +31,7 @@ android {
 
 dependencies {
     implementation(projects.data)
+    api(projects.offline.download)
     implementation(projects.player.core)
     implementation(projects.settings)
     implementation(libs.androidx.appcompat)
@@ -50,4 +51,5 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.slf4j.api)
     implementation(libs.slf4j.android)
+    testImplementation(libs.junit)
 }

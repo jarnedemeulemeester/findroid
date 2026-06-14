@@ -69,6 +69,10 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
             DownloadManager.STATUS_FAILED -> MaterialTheme.colorScheme.errorContainer
             else -> ProgressIndicatorDefaults.linearTrackColor
         }
+    val showDeterminateProgress =
+        state.hasDeterminateProgress &&
+            state.status != DownloadManager.STATUS_PENDING &&
+            state.status != DownloadManager.STATUS_PAUSED
 
     OutlinedCard {
         Row(
@@ -85,15 +89,30 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
                         color = textColor,
                         style = MaterialTheme.typography.bodyLarge,
                     )
-                    Text(
-                        text = animatedProgress.times(100).roundToInt().toString() + "%",
-                        color = textColor,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
+                    if (showDeterminateProgress) {
+                        Text(
+                            text = animatedProgress.times(100).roundToInt().toString() + "%",
+                            color = textColor,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
                 }
                 Spacer(Modifier.height(MaterialTheme.spacings.small))
                 when (state.status) {
-                    DownloadManager.STATUS_PENDING -> {
+                    DownloadManager.STATUS_PENDING,
+                    DownloadManager.STATUS_RUNNING -> {
+                        if (showDeterminateProgress) {
+                            LinearProgressIndicator(
+                                progress = { animatedProgress },
+                                modifier = Modifier.fillMaxWidth(),
+                                color = progressIndicatorColor,
+                                trackColor = progressTrackColor,
+                            )
+                        } else {
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
+                    }
+                    DownloadManager.STATUS_PAUSED -> {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                     else -> {
@@ -110,6 +129,13 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
                     Text(
                         text = state.errorText!!.asString(),
                         color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                if (state.detailsText != null) {
+                    Text(
+                        text = state.detailsText!!.asString(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -131,6 +157,22 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
                                 painter = painterResource(CoreR.drawable.ic_rotate_ccw),
                                 contentDescription = null,
                             )
+                        }
+                    }
+                    DownloadManager.STATUS_PAUSED -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
+                            FilledTonalIconButton(onClick = onRetryClick) {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_rotate_ccw),
+                                    contentDescription = null,
+                                )
+                            }
+                            FilledTonalIconButton(onClick = onCancelClick) {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_x),
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     }
                 }

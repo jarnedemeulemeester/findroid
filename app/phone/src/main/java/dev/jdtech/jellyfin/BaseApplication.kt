@@ -24,6 +24,7 @@ import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.MpvCleanupWorker
+import dev.jdtech.jellyfin.offline.OfflineDownloadRecoveryWorker
 import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
@@ -65,6 +66,7 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
 
         scheduleUserDataSync(workManager)
         scheduleMpvCleanup(workManager)
+        scheduleOfflineDownloadRecovery(workManager)
     }
 
     @OptIn(ExperimentalCoilApi::class, ExperimentalTime::class)
@@ -123,6 +125,16 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             uniqueWorkName = "mpv_cleanup",
             existingWorkPolicy = ExistingWorkPolicy.KEEP,
             request = cleanupRequest
+        )
+    }
+
+    private fun scheduleOfflineDownloadRecovery(workManager: WorkManager) {
+        val recoveryRequest = OneTimeWorkRequestBuilder<OfflineDownloadRecoveryWorker>().build()
+
+        workManager.enqueueUniqueWork(
+            uniqueWorkName = "offline_download_recovery",
+            existingWorkPolicy = ExistingWorkPolicy.KEEP,
+            request = recoveryRequest,
         )
     }
 }

@@ -10,6 +10,13 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryOfflineImpl
+import dev.jdtech.jellyfin.repository.JellyfinOfflinePackagePlanner
+import dev.jdtech.jellyfin.repository.JellyfinOfflineTransferPlanner
+import dev.jdtech.jellyfin.repository.OfflinePackagePlanner
+import dev.jdtech.jellyfin.repository.OfflinePackageRepository
+import dev.jdtech.jellyfin.repository.OfflinePackageRepositoryImpl
+import dev.jdtech.jellyfin.repository.OfflineTransferPlanner
+import dev.jdtech.jellyfin.offline.download.OfflinePackageManifestFactory
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Singleton
 
@@ -58,4 +65,22 @@ object RepositoryModule {
             false -> jellyfinRepositoryImpl
         }
     }
+
+    @Singleton
+    @Provides
+    fun provideOfflinePackageRepository(
+        serverDatabase: ServerDatabaseDao
+    ): OfflinePackageRepository = OfflinePackageRepositoryImpl(serverDatabase)
+
+    @Singleton
+    @Provides
+    fun provideOfflineTransferPlanner(jellyfinApi: JellyfinApi): OfflineTransferPlanner =
+        JellyfinOfflineTransferPlanner(jellyfinApi)
+
+    @Singleton
+    @Provides
+    fun provideOfflinePackagePlanner(
+        jellyfinApi: JellyfinApi,
+        manifestFactory: OfflinePackageManifestFactory,
+    ): OfflinePackagePlanner = JellyfinOfflinePackagePlanner(jellyfinApi, manifestFactory)
 }

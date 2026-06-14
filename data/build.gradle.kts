@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    api(projects.offline.download)
     implementation(projects.settings)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.room.runtime)
@@ -44,4 +45,6 @@ dependencies {
     implementation(libs.jellyfin.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
+
+    testImplementation(libs.junit)
 }

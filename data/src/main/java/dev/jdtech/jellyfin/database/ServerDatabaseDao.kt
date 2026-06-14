@@ -6,6 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import dev.jdtech.jellyfin.offline.download.OfflineAssetStatus
+import dev.jdtech.jellyfin.offline.download.OfflineDownloadFailureKind
+import dev.jdtech.jellyfin.offline.download.OfflinePackageReadiness
 import dev.jdtech.jellyfin.models.FindroidEpisodeDto
 import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.FindroidMovieDto
@@ -15,6 +18,9 @@ import dev.jdtech.jellyfin.models.FindroidShowDto
 import dev.jdtech.jellyfin.models.FindroidSourceDto
 import dev.jdtech.jellyfin.models.FindroidTrickplayInfoDto
 import dev.jdtech.jellyfin.models.FindroidUserDataDto
+import dev.jdtech.jellyfin.models.OfflineAssetDto
+import dev.jdtech.jellyfin.models.OfflineItemSnapshotDto
+import dev.jdtech.jellyfin.models.OfflinePackageDto
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.ServerAddress
 import dev.jdtech.jellyfin.models.ServerWithAddressAndUser
@@ -23,6 +29,7 @@ import dev.jdtech.jellyfin.models.ServerWithAddressesAndUsers
 import dev.jdtech.jellyfin.models.ServerWithUsers
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ServerDatabaseDao {
@@ -93,6 +100,8 @@ interface ServerDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) fun insertSource(source: FindroidSourceDto)
 
     @Query("SELECT * FROM movies WHERE id = :id") fun getMovie(id: UUID): FindroidMovieDto
+
+    @Query("SELECT * FROM movies WHERE id = :id") fun findMovie(id: UUID): FindroidMovieDto?
 
     @Query(
         "SELECT * FROM movies JOIN sources ON movies.id = sources.itemId ORDER BY movies.name ASC"
@@ -175,6 +184,8 @@ interface ServerDatabaseDao {
 
     @Query("SELECT * FROM episodes WHERE id = :id") fun getEpisode(id: UUID): FindroidEpisodeDto
 
+    @Query("SELECT * FROM episodes WHERE id = :id") fun findEpisode(id: UUID): FindroidEpisodeDto?
+
     @Query(
         "SELECT * FROM episodes WHERE seriesId = :seriesId ORDER BY parentIndexNumber ASC, indexNumber ASC"
     )
@@ -211,6 +222,35 @@ interface ServerDatabaseDao {
     fun getUserData(itemId: UUID, userId: UUID): FindroidUserDataDto?
 
     @Transaction
+    fun setPlaybackState(
+        userId: UUID,
+        itemId: UUID,
+        played: Boolean,
+        playbackPositionTicks: Long,
+        toBeSynced: Boolean,
+        favoriteFallback: Boolean?,
+    ) {
+        val userData =
+            getUserData(itemId, userId)
+                ?: favoriteFallback?.let {
+                    FindroidUserDataDto(
+                        userId = userId,
+                        itemId = itemId,
+                        played = false,
+                        favorite = it,
+                        playbackPositionTicks = 0L,
+                    )
+                } ?: return
+        insertUserData(
+            userData.copy(
+                played = played,
+                playbackPositionTicks = playbackPositionTicks,
+                toBeSynced = userData.toBeSynced || toBeSynced,
+            )
+        )
+    }
+
+    @Transaction
     fun getUserDataOrCreateNew(itemId: UUID, userId: UUID): FindroidUserDataDto {
         var userData = getUserData(itemId, userId)
 
@@ -238,6 +278,9 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM userdata WHERE userId = :userId AND itemId = :itemId AND toBeSynced = 1")
     fun getUserDataToBeSynced(userId: UUID, itemId: UUID): FindroidUserDataDto?
 
+    @Query("SELECT * FROM userdata WHERE userId = :userId AND toBeSynced = 1")
+    fun getUserDataToBeSynced(userId: UUID): List<FindroidUserDataDto>
+
     @Query(
         "UPDATE userdata SET toBeSynced = :toBeSynced WHERE itemId = :itemId AND userId = :userId"
     )
@@ -257,4 +300,166 @@ interface ServerDatabaseDao {
 
     @Query("SELECT * FROM trickplayInfos WHERE sourceId = :sourceId")
     fun getTrickplayInfo(sourceId: String): FindroidTrickplayInfoDto?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertOfflinePackage(offlinePackage: OfflinePackageDto)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertOfflineAssets(assets: List<OfflineAssetDto>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertOfflineItemSnapshot(snapshot: OfflineItemSnapshotDto)
+
+    @Transaction
+    fun insertOfflinePackageWithAssets(
+        offlinePackage: OfflinePackageDto,
+        assets: List<OfflineAssetDto>,
+        snapshot: OfflineItemSnapshotDto?,
+    ) {
+        insertOfflinePackage(offlinePackage)
+        insertOfflineAssets(assets)
+        if (snapshot != null) {
+            insertOfflineItemSnapshot(snapshot)
+        }
+    }
+
+    @Query("SELECT * FROM offlinePackages WHERE packageId = :packageId")
+    fun getOfflinePackage(packageId: String): OfflinePackageDto?
+
+    @Query("SELECT * FROM offlinePackages WHERE packageId = :packageId")
+    fun observeOfflinePackage(packageId: String): Flow<OfflinePackageDto?>
+
+    @Query("SELECT * FROM offlineAssets WHERE packageId = :packageId")
+    fun getOfflineAssets(packageId: String): List<OfflineAssetDto>
+
+    @Query(
+        "SELECT * FROM offlineAssets WHERE packageId = :packageId AND kind = 'VIDEO' AND storageScope = 'PUBLIC_MEDIA' AND status = 'READY' LIMIT 1"
+    )
+    fun getReadyOfflineVideoAsset(packageId: String): OfflineAssetDto?
+
+    @Query(
+        "SELECT * FROM offlineAssets WHERE ownerItemId = :itemId AND kind = 'VIDEO' AND storageScope = 'PUBLIC_MEDIA' AND status = 'READY' ORDER BY updatedAtMillis DESC LIMIT 1"
+    )
+    fun getReadyOfflineVideoAssetByItemId(itemId: String): OfflineAssetDto?
+
+    @Query("SELECT * FROM offlineAssets WHERE packageId = :packageId")
+    fun observeOfflineAssets(packageId: String): Flow<List<OfflineAssetDto>>
+
+    @Query("SELECT * FROM offlinePackages WHERE itemId = :itemId")
+    fun getOfflinePackagesByItemId(itemId: String): List<OfflinePackageDto>
+
+    @Query("SELECT * FROM offlinePackages WHERE serverId = :serverId")
+    fun getOfflinePackagesByServerId(serverId: String): List<OfflinePackageDto>
+
+    @Query("SELECT * FROM offlinePackages")
+    fun getOfflinePackages(): List<OfflinePackageDto>
+
+    @Query(
+        """
+        SELECT DISTINCT packageId FROM offlineAssets
+        WHERE kind = 'VIDEO'
+            AND storageScope = 'PUBLIC_MEDIA'
+            AND status IN ('QUEUED', 'DOWNLOADING', 'VERIFYING')
+        """
+    )
+    fun getInterruptedActivePublicVideoPackageIds(): List<String>
+
+    @Query(
+        """
+        SELECT DISTINCT packageId FROM offlineAssets
+        WHERE kind = 'VIDEO'
+            AND storageScope = 'PUBLIC_MEDIA'
+            AND status = 'FAILED_REQUIRED'
+            AND failureKind = 'Canceled'
+            AND tempPath IS NOT NULL
+        """
+    )
+    fun getCanceledPublicVideoPackageIdsWithTempPath(): List<String>
+
+    @Query(
+        """
+        SELECT snapshots.* FROM offlineItemSnapshots AS snapshots
+        INNER JOIN offlineAssets AS videoAssets ON videoAssets.packageId = snapshots.packageId
+        WHERE snapshots.serverId = :serverId
+            AND videoAssets.kind = 'VIDEO'
+            AND videoAssets.storageScope = 'PUBLIC_MEDIA'
+            AND videoAssets.status = 'READY'
+        ORDER BY snapshots.updatedAtMillis DESC
+        """
+    )
+    fun getReadyOfflineItemSnapshotsByServerId(serverId: String): List<OfflineItemSnapshotDto>
+
+    @Query(
+        """
+        SELECT snapshots.* FROM offlineItemSnapshots AS snapshots
+        INNER JOIN offlineAssets AS videoAssets ON videoAssets.packageId = snapshots.packageId
+        WHERE snapshots.serverId = :serverId
+            AND snapshots.itemId = :itemId
+            AND videoAssets.kind = 'VIDEO'
+            AND videoAssets.storageScope = 'PUBLIC_MEDIA'
+            AND videoAssets.status = 'READY'
+        ORDER BY snapshots.updatedAtMillis DESC
+        LIMIT 1
+        """
+    )
+    fun getReadyOfflineItemSnapshotByItemId(
+        serverId: String,
+        itemId: String,
+    ): OfflineItemSnapshotDto?
+
+    @Query("UPDATE offlinePackages SET readiness = :readiness, updatedAtMillis = :updatedAtMillis WHERE packageId = :packageId")
+    fun setOfflinePackageReadiness(
+        packageId: String,
+        readiness: OfflinePackageReadiness,
+        updatedAtMillis: Long,
+    )
+
+    @Query(
+        "UPDATE offlineAssets SET status = :status, failureKind = :failureKind, failureMessage = :failureMessage, retryCount = :retryCount, bytes = :bytes, tempPath = :tempPath, finalPath = :finalPath, updatedAtMillis = :updatedAtMillis WHERE assetId = :assetId"
+    )
+    fun setOfflineAssetState(
+        assetId: String,
+        status: OfflineAssetStatus,
+        failureKind: OfflineDownloadFailureKind?,
+        failureMessage: String?,
+        retryCount: Int,
+        bytes: Long?,
+        tempPath: String?,
+        finalPath: String?,
+        updatedAtMillis: Long,
+    )
+
+    @Query(
+        """
+        UPDATE offlineAssets
+        SET status = 'RETRY_WAIT',
+            failureKind = 'AppInterrupted',
+            failureMessage = NULL,
+            retryCount = retryCount + 1,
+            finalPath = NULL,
+            updatedAtMillis = :updatedAtMillis
+        WHERE kind = 'VIDEO'
+            AND storageScope = 'PUBLIC_MEDIA'
+            AND status IN ('QUEUED', 'DOWNLOADING', 'VERIFYING')
+        """
+    )
+    fun markInterruptedActivePublicVideoAssets(updatedAtMillis: Long): Int
+
+    @Query(
+        """
+        UPDATE offlineAssets
+        SET tempPath = NULL,
+            bytes = NULL,
+            updatedAtMillis = :updatedAtMillis
+        WHERE kind = 'VIDEO'
+            AND storageScope = 'PUBLIC_MEDIA'
+            AND status = 'FAILED_REQUIRED'
+            AND failureKind = 'Canceled'
+            AND tempPath IS NOT NULL
+        """
+    )
+    fun clearCanceledPublicVideoTempPaths(updatedAtMillis: Long): Int
+
+    @Query("DELETE FROM offlinePackages WHERE packageId = :packageId")
+    fun deleteOfflinePackage(packageId: String)
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="car_media_label" translatable="false">Findroid Media</string>
+    <string name="car_navigation_label" translatable="false">Findroid Navigator</string>
+</resources>

@@ -78,6 +78,10 @@ fun EpisodeScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+    val launchStoragePermission =
+        rememberStoragePermissionRequestLauncher {
+            downloaderViewModel.onStoragePermissionResult()
+        }
 
     LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 
@@ -97,6 +101,10 @@ fun EpisodeScreen(
                     viewModel.loadEpisode(episodeId = episodeId)
                 }
             }
+            is DownloaderEvent.StoragePermissionRequired -> {
+                launchStoragePermission(event)
+            }
+            is DownloaderEvent.BatchQueued -> Unit
         }
     }
 
@@ -238,8 +246,8 @@ private fun EpisodeScreenLayout(
                             }
                         },
                         onTrailerClick = {},
-                        onDownloadClick = { storageIndex ->
-                            onDownloaderAction(DownloaderAction.Download(episode, storageIndex))
+                        onDownloadClick = { profile ->
+                            onDownloaderAction(DownloaderAction.Download(episode, profile))
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(DownloaderAction.CancelDownload(episode))
