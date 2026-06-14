@@ -102,5 +102,6 @@
     <string name="none">None</string>
     <string name="pref_player_backend">Player backend</string>
     <string name="mpv_options">mpv options</string>
-    <string name="mpv_conf_file">mpv.conf</string>
+    <string name="mpv_edit_conf_file">Edit mpv.conf</string>
+    <string name="advanced">Advanced</string>
 </resources>

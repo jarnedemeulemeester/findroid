@@ -13,5 +13,5 @@ data class PreferenceFileEdit(
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
     override val supportedDeviceTypes: List<DeviceType> = listOf(DeviceType.PHONE, DeviceType.TV),
     val filePath: String,
-    val onClick: (Preference) -> Unit = {},
+    val onClick: (PreferenceFileEdit) -> Unit = {},
 ) : Preference

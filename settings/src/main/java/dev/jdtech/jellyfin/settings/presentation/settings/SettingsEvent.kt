@@ -11,7 +11,7 @@ sealed interface SettingsEvent {
 
     data class NavigateToSettings(val indexes: IntArray) : SettingsEvent
 
-    data class NavigateToSettingsFileEdit(val name: String) : SettingsEvent
+    data class NavigateToSettingsFileEdit(val filePath: String) : SettingsEvent
 
     data class UpdateTheme(val theme: String) : SettingsEvent
 

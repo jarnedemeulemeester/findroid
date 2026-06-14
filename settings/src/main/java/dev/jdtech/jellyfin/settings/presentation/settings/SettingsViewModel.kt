@@ -251,6 +251,12 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     options = R.array.player_backends,
                                                     optionValues = R.array.player_backends
                                                 ),
+
+                                            )
+                                    ),
+                                    PreferenceGroup(
+                                        preferences =
+                                            listOf(
                                                 PreferenceCategory(
                                                     nameStringResource = R.string.mpv_options,
                                                     onClick = {
@@ -292,15 +298,16 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                                     ),
                                                             ),
                                                             PreferenceGroup(
+                                                                nameStringResource = R.string.advanced,
                                                                 preferences =
                                                                     listOf(
                                                                         PreferenceFileEdit(
-                                                                            nameStringResource = R.string.mpv_conf_file,
-                                                                            filePath = "",
+                                                                            nameStringResource = R.string.mpv_edit_conf_file,
+                                                                            filePath = "mpv/mpv.conf",
                                                                             onClick = {
                                                                                 viewModelScope.launch {
                                                                                     eventsChannel.send(
-                                                                                        SettingsEvent.NavigateToSettingsFileEdit("")
+                                                                                        SettingsEvent.NavigateToSettingsFileEdit(it.filePath)
                                                                                     )
                                                                                 }
                                                                             }
