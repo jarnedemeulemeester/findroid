@@ -4,6 +4,7 @@ android-desugar-jdk-libs = "2.1.5"
 android-plugin = "9.2.1"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
+androidx-car-app = "1.7.0"
 androidx-compose = "1.11.2"
 androidx-compose-material3 = "1.4.0"
 androidx-core = "1.18.0"
@@ -19,6 +20,7 @@ androidx-work = "2.11.2"
 coil = "3.4.0"
 hilt = "2.59.2"
 jellyfin = "1.8.11"
+junit = "4.13.2"
 kotlin = "2.3.21"
 kotlinx-serialization = "1.11.0"
 ksp = "2.3.8"
@@ -38,6 +40,7 @@ android-desugar-jdk = { group = "com.android.tools", name = "desugar_jdk_libs", 
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+androidx-car-app = { group = "androidx.car.app", name = "app", version.ref = "androidx-car-app" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "androidx-compose" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
 androidx-compose-material3-adaptive-navigation-suite = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite", version.ref = "androidx-compose-material3" }
@@ -71,6 +74,7 @@ coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil"
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 jellyfin-core = { group = "org.jellyfin.sdk", name = "jellyfin-core", version.ref = "jellyfin" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 libmpv = { group = "dev.jdtech.mpv", name = "libmpv", version.ref = "libmpv" }
@@ -88,6 +92,7 @@ android-application = { id = "com.android.application", version.ref = "android-p
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

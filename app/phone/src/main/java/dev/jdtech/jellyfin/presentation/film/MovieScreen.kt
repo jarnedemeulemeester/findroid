@@ -76,6 +76,10 @@ fun MovieScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+    val launchStoragePermission =
+        rememberStoragePermissionRequestLauncher {
+            downloaderViewModel.onStoragePermissionResult()
+        }
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -93,6 +97,10 @@ fun MovieScreen(
                     viewModel.loadMovie(movieId = movieId)
                 }
             }
+            is DownloaderEvent.StoragePermissionRequired -> {
+                launchStoragePermission(event)
+            }
+            is DownloaderEvent.BatchQueued -> Unit
         }
     }
 
@@ -235,8 +243,8 @@ private fun MovieScreenLayout(
                             }
                         },
                         onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
-                        onDownloadClick = { storageIndex ->
-                            onDownloaderAction(DownloaderAction.Download(movie, storageIndex))
+                        onDownloadClick = { profile ->
+                            onDownloaderAction(DownloaderAction.Download(movie, profile))
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(DownloaderAction.CancelDownload(movie))

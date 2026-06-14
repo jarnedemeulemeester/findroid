@@ -15,6 +15,7 @@ import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
+import dev.jdtech.jellyfin.models.FindroidUserDataDto
 import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.SortOrder
 import dev.jdtech.jellyfin.models.toFindroidCollection
@@ -26,6 +27,7 @@ import dev.jdtech.jellyfin.models.toFindroidSeason
 import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
+import dev.jdtech.jellyfin.models.toOfflineFindroidSource
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.io.File
 import java.util.UUID
@@ -71,18 +73,26 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
+            try {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId!!)
+                    .content
+                    .toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
+            } catch (e: Exception) {
+                getReadyOfflineSnapshotItem(itemId) as? FindroidEpisode ?: throw e
+            }
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            try {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId!!)
+                    .content
+                    .toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            } catch (e: Exception) {
+                getReadyOfflineSnapshotItem(itemId) as? FindroidMovie ?: throw e
+            }
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
@@ -110,10 +120,14 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getItem(itemId: UUID): FindroidItem? =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId = itemId, userId = jellyfinApi.userId!!)
-                .content
-                .toFindroidItem(this@JellyfinRepositoryImpl)
+            try {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId = itemId, userId = jellyfinApi.userId!!)
+                    .content
+                    .toFindroidItem(this@JellyfinRepositoryImpl, database)
+            } catch (e: Exception) {
+                getReadyOfflineSnapshotItem(itemId) ?: throw e
+            }
         }
 
     override suspend fun getItems(
@@ -305,38 +319,71 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
         withContext(Dispatchers.IO) {
-            val sources = mutableListOf<FindroidSource>()
-            sources.addAll(
-                jellyfinApi.mediaInfoApi
-                    .getPostedPlaybackInfo(
-                        itemId,
-                        PlaybackInfoDto(
-                            userId = jellyfinApi.userId!!,
-                            deviceProfile =
-                                DeviceProfile(
-                                    name = "Direct play all",
-                                    maxStaticBitrate = 1_000_000_000,
-                                    maxStreamingBitrate = 1_000_000_000,
-                                    codecProfiles = emptyList(),
-                                    containerProfiles = emptyList(),
-                                    directPlayProfiles = emptyList(),
-                                    transcodingProfiles = emptyList(),
-                                    subtitleProfiles =
-                                        listOf(
-                                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
-                                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
-                                        ),
-                                ),
-                            maxStreamingBitrate = 1_000_000_000,
-                        ),
-                    )
-                    .content
-                    .mediaSources
-                    .map { it.toFindroidSource(this@JellyfinRepositoryImpl, itemId, includePath) }
+            val readyOfflineSource =
+                database.getReadyOfflineVideoAssetByItemId(itemId.toString())?.toOfflineFindroidSource()
+            var remoteSources = emptyList<FindroidSource>()
+            try {
+                remoteSources =
+                    jellyfinApi.mediaInfoApi
+                        .getPostedPlaybackInfo(
+                            itemId,
+                            PlaybackInfoDto(
+                                userId = jellyfinApi.userId!!,
+                                deviceProfile =
+                                    DeviceProfile(
+                                        name = "Direct play all",
+                                        maxStaticBitrate = 1_000_000_000,
+                                        maxStreamingBitrate = 1_000_000_000,
+                                        codecProfiles = emptyList(),
+                                        containerProfiles = emptyList(),
+                                        directPlayProfiles = emptyList(),
+                                        transcodingProfiles = emptyList(),
+                                        subtitleProfiles =
+                                            listOf(
+                                                SubtitleProfile(
+                                                    "srt",
+                                                    SubtitleDeliveryMethod.EXTERNAL,
+                                                ),
+                                                SubtitleProfile(
+                                                    "ass",
+                                                    SubtitleDeliveryMethod.EXTERNAL,
+                                                ),
+                                            ),
+                                    ),
+                                maxStreamingBitrate = 1_000_000_000,
+                            ),
+                        )
+                        .content
+                        .mediaSources
+                        .map {
+                            it.toFindroidSource(
+                                this@JellyfinRepositoryImpl,
+                                itemId,
+                                includePath,
+                            )
+                        }
+            } catch (e: Exception) {
+                if (readyOfflineSource == null) throw e
+            }
+            mergeOfflineFirstMediaSources(
+                readyOfflineSource = readyOfflineSource,
+                remoteSources = remoteSources,
+                legacyLocalSources = database.getSources(itemId).map { it.toFindroidSource(database) },
             )
-            sources.addAll(database.getSources(itemId).map { it.toFindroidSource(database) })
-            sources
         }
+
+    private fun getReadyOfflineSnapshotItem(itemId: UUID): FindroidItem? {
+        val serverId = appPreferences.getValue(appPreferences.currentServer) ?: return null
+        val snapshot =
+            database.getReadyOfflineItemSnapshotByItemId(
+                serverId = serverId,
+                itemId = itemId.toString(),
+            ) ?: return null
+        val source =
+            database.getReadyOfflineVideoAsset(snapshot.packageId)?.toOfflineFindroidSource()
+                ?: return null
+        return snapshot.toFindroidItem(database, jellyfinApi.userId!!, source)
+    }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =
         withContext(Dispatchers.IO) {
@@ -438,23 +485,19 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         playedPercentage: Int,
+        favorite: Boolean?,
     ) {
         Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
-            when {
-                playedPercentage < 10 -> {
-                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
-                    database.setPlayed(jellyfinApi.userId!!, itemId, false)
-                }
-                playedPercentage > 90 -> {
-                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
-                    database.setPlayed(jellyfinApi.userId!!, itemId, true)
-                }
-                else -> {
-                    database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
-                    database.setPlayed(jellyfinApi.userId!!, itemId, false)
-                }
-            }
+            val playbackState = playbackStopState(positionTicks, playedPercentage)
+            database.setPlaybackState(
+                userId = jellyfinApi.userId!!,
+                itemId = itemId,
+                played = playbackState.played,
+                playbackPositionTicks = playbackState.playbackPositionTicks,
+                toBeSynced = false,
+                favoriteFallback = favorite,
+            )
             try {
                 jellyfinApi.playStateApi.reportPlaybackStopped(
                     PlaybackStopInfo(itemId = itemId, positionTicks = positionTicks, failed = false)
@@ -469,10 +512,19 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
+        favorite: Boolean?,
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
-            database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
+            val playbackState = playbackProgressState(positionTicks)
+            database.setPlaybackState(
+                userId = jellyfinApi.userId!!,
+                itemId = itemId,
+                played = playbackState.played,
+                playbackPositionTicks = playbackState.playbackPositionTicks,
+                toBeSynced = false,
+                favoriteFallback = favorite,
+            )
             try {
                 jellyfinApi.playStateApi.reportPlaybackProgress(
                     PlaybackProgressInfo(
@@ -554,19 +606,17 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getDownloads(): List<FindroidItem> =
         withContext(Dispatchers.IO) {
-            val items = mutableListOf<FindroidItem>()
-            items.addAll(
-                database
-                    .getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
-            )
-            items.addAll(
-                database
-                    .getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
-            )
-            items
+            val serverId = appPreferences.getValue(appPreferences.currentServer)!!
+            database.getReadyOfflineItemSnapshotsByServerId(serverId).mapNotNull { snapshot ->
+                val source =
+                    database.getReadyOfflineVideoAsset(snapshot.packageId)?.toOfflineFindroidSource()
+                        ?: return@mapNotNull null
+                snapshot.toFindroidItem(database, jellyfinApi.userId!!, source)
+            }
         }
+
+    override suspend fun getUserData(itemId: UUID): FindroidUserDataDto? =
+        withContext(Dispatchers.IO) { database.getUserData(itemId, jellyfinApi.userId!!) }
 
     override fun getUserId(): UUID {
         return jellyfinApi.userId!!

@@ -8,10 +8,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidUserDataDto
 import dev.jdtech.jellyfin.models.User
-import dev.jdtech.jellyfin.models.toFindroidEpisode
-import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -51,17 +49,7 @@ constructor(
                         api.update(baseUrl = serverAddress.address, accessToken = user.accessToken)
                         userId = user.id
                     }
-                    val movies =
-                        database.getMoviesByServerId(server.id).map {
-                            it.toFindroidMovie(database, user.id)
-                        }
-                    val episodes =
-                        database.getEpisodesByServerId(server.id).map {
-                            it.toFindroidEpisode(database, user.id)
-                        }
-
-                    syncUserData(jellyfinApi, user, movies)
-                    syncUserData(jellyfinApi, user, episodes)
+                    syncUserData(jellyfinApi, user, database.getUserDataToBeSynced(user.id))
                 }
             }
 
@@ -72,14 +60,12 @@ constructor(
     private suspend fun syncUserData(
         jellyfinApi: JellyfinApi,
         user: User,
-        items: List<FindroidItem>,
+        userDataItems: List<FindroidUserDataDto>,
     ) {
-        for (item in items) {
-            val userData = database.getUserDataToBeSynced(user.id, item.id) ?: continue
-
+        for (userData in userDataItems) {
             try {
                 jellyfinApi.itemsApi.updateItemUserData(
-                    itemId = item.id,
+                    itemId = userData.itemId,
                     userId = user.id,
                     data =
                         UpdateUserItemDataDto(
@@ -89,7 +75,7 @@ constructor(
                         ),
                 )
 
-                database.setUserDataToBeSynced(user.id, item.id, false)
+                database.setUserDataToBeSynced(user.id, userData.itemId, false)
             } catch (_: Exception) {}
         }
     }
