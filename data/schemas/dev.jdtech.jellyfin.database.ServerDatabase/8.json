@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 8,
-    "identityHash": "f1ed84252636dc15646ccd31755d5175",
+    "identityHash": "bd2f1c2eddf2c4172a7075ac29bf7efc",
     "entities": [
       {
         "tableName": "servers",
@@ -153,7 +153,7 @@
       },
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, `chapters` TEXT, `primaryBlurHash` TEXT, `backdropBlurHash` TEXT, `logoBlurHash` TEXT, `showPrimaryBlurHash` TEXT, `showBackdropBlurHash` TEXT, `showLogoBlurHash` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, `chapters` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -224,36 +224,6 @@
             "fieldPath": "chapters",
             "columnName": "chapters",
             "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "primaryBlurHash",
-            "columnName": "primaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "backdropBlurHash",
-            "columnName": "backdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "logoBlurHash",
-            "columnName": "logoBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showPrimaryBlurHash",
-            "columnName": "showPrimaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showBackdropBlurHash",
-            "columnName": "showBackdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showLogoBlurHash",
-            "columnName": "showLogoBlurHash",
-            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -265,7 +235,7 @@
       },
       {
         "tableName": "shows",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, `primaryBlurHash` TEXT, `backdropBlurHash` TEXT, `logoBlurHash` TEXT, `showPrimaryBlurHash` TEXT, `showBackdropBlurHash` TEXT, `showLogoBlurHash` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `name` TEXT NOT NULL, `originalTitle` TEXT, `overview` TEXT NOT NULL, `runtimeTicks` INTEGER NOT NULL, `communityRating` REAL, `officialRating` TEXT, `status` TEXT NOT NULL, `productionYear` INTEGER, `endDate` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -326,36 +296,6 @@
             "fieldPath": "endDate",
             "columnName": "endDate",
             "affinity": "INTEGER"
-          },
-          {
-            "fieldPath": "primaryBlurHash",
-            "columnName": "primaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "backdropBlurHash",
-            "columnName": "backdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "logoBlurHash",
-            "columnName": "logoBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showPrimaryBlurHash",
-            "columnName": "showPrimaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showBackdropBlurHash",
-            "columnName": "showBackdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showLogoBlurHash",
-            "columnName": "showLogoBlurHash",
-            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -367,7 +307,7 @@
       },
       {
         "tableName": "seasons",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `seriesId` TEXT NOT NULL, `name` TEXT NOT NULL, `seriesName` TEXT NOT NULL, `overview` TEXT NOT NULL, `indexNumber` INTEGER NOT NULL, `primaryBlurHash` TEXT, `backdropBlurHash` TEXT, `logoBlurHash` TEXT, `showPrimaryBlurHash` TEXT, `showBackdropBlurHash` TEXT, `showLogoBlurHash` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`seriesId`) REFERENCES `shows`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `seriesId` TEXT NOT NULL, `name` TEXT NOT NULL, `seriesName` TEXT NOT NULL, `overview` TEXT NOT NULL, `indexNumber` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`seriesId`) REFERENCES `shows`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -404,36 +344,6 @@
             "columnName": "indexNumber",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "primaryBlurHash",
-            "columnName": "primaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "backdropBlurHash",
-            "columnName": "backdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "logoBlurHash",
-            "columnName": "logoBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showPrimaryBlurHash",
-            "columnName": "showPrimaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showBackdropBlurHash",
-            "columnName": "showBackdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showLogoBlurHash",
-            "columnName": "showLogoBlurHash",
-            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -469,7 +379,7 @@
       },
       {
         "tableName": "episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `seasonId` TEXT NOT NULL, `seriesId` TEXT NOT NULL, `name` TEXT NOT NULL, `seriesName` TEXT NOT NULL, `overview` TEXT NOT NULL, `indexNumber` INTEGER NOT NULL, `indexNumberEnd` INTEGER, `parentIndexNumber` INTEGER NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `chapters` TEXT, `primaryBlurHash` TEXT, `backdropBlurHash` TEXT, `logoBlurHash` TEXT, `showPrimaryBlurHash` TEXT, `showBackdropBlurHash` TEXT, `showLogoBlurHash` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`seasonId`) REFERENCES `seasons`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`seriesId`) REFERENCES `shows`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `serverId` TEXT, `seasonId` TEXT NOT NULL, `seriesId` TEXT NOT NULL, `name` TEXT NOT NULL, `seriesName` TEXT NOT NULL, `overview` TEXT NOT NULL, `indexNumber` INTEGER NOT NULL, `indexNumberEnd` INTEGER, `parentIndexNumber` INTEGER NOT NULL, `runtimeTicks` INTEGER NOT NULL, `premiereDate` INTEGER, `communityRating` REAL, `chapters` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`seasonId`) REFERENCES `seasons`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`seriesId`) REFERENCES `shows`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -548,36 +458,6 @@
           {
             "fieldPath": "chapters",
             "columnName": "chapters",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "primaryBlurHash",
-            "columnName": "primaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "backdropBlurHash",
-            "columnName": "backdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "logoBlurHash",
-            "columnName": "logoBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showPrimaryBlurHash",
-            "columnName": "showPrimaryBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showBackdropBlurHash",
-            "columnName": "showBackdropBlurHash",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "showLogoBlurHash",
-            "columnName": "showLogoBlurHash",
             "affinity": "TEXT"
           }
         ],
