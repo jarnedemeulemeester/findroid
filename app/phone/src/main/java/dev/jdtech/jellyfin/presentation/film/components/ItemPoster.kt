@@ -9,13 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.presentation.utils.toBlurHash
-import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
-import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 enum class Direction {
     HORIZONTAL,
@@ -28,8 +26,6 @@ fun ItemPoster(
     direction: Direction,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-
     val image = when (direction) {
         Direction.HORIZONTAL -> {
             item.images.backdrop ?: item.images.primary
@@ -46,13 +42,10 @@ fun ItemPoster(
                 .aspectRatio(if (direction == Direction.HORIZONTAL) 16f / 9f else 2f / 3f)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
     ) {
-        val imageUri =
-            image?.uri
-                .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
-                .toLocalFilesUri(context)
+        val imageUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
 
         val blurPlaceholder = remember(image?.blurHash) {
-            image?.blurHash.toBlurHash()
+            image?.blurHash.toBlurHashPainter()
         }
 
         AsyncImage(

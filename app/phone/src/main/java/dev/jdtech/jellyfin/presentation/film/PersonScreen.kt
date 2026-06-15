@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -41,9 +40,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.R
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovies
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyPersonDetail
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.film.presentation.person.PersonAction
 import dev.jdtech.jellyfin.film.presentation.person.PersonState
 import dev.jdtech.jellyfin.film.presentation.person.PersonViewModel
@@ -56,10 +56,8 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
-import dev.jdtech.jellyfin.presentation.utils.toBlurHash
-import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
-import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 import java.util.UUID
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun PersonScreen(
@@ -211,8 +209,6 @@ private fun PersonScreenLayout(state: PersonState, onAction: (PersonAction) -> U
 
 @Composable
 private fun PersonImage(person: FindroidPerson, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-
     BoxWithConstraints(
         modifier =
             modifier
@@ -224,13 +220,10 @@ private fun PersonImage(person: FindroidPerson, modifier: Modifier = Modifier) {
     ) {
         val image = person.images.primary
 
-        val imageUri =
-            image?.uri
-                .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
-                .toLocalFilesUri(context)
+        val imageUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
 
         val blurPlaceholder = remember(image?.blurHash) {
-            image?.blurHash.toBlurHash()
+            image?.blurHash.toBlurHashPainter()
         }
 
         Icon(

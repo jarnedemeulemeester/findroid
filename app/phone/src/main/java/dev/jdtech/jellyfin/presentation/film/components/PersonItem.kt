@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,17 +26,14 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.R
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyPerson
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.presentation.utils.toBlurHash
-import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
-import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun PersonItem(person: FindroidItemPerson, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-
     Column(
         modifier =
             modifier
@@ -56,13 +52,10 @@ fun PersonItem(person: FindroidItemPerson, onClick: () -> Unit, modifier: Modifi
         ) {
             val image = person.image
 
-            val imageUri =
-                image.uri
-                    .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
-                    .toLocalFilesUri(context)
+            val imageUri = image.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
 
             val blurPlaceholder = remember(image.blurHash) {
-                image.blurHash.toBlurHash()
+                image.blurHash.toBlurHashPainter()
             }
 
             Icon(

@@ -3,13 +3,13 @@ package dev.jdtech.jellyfin.presentation.film.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +27,8 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -53,13 +55,21 @@ fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
             ),
         scale = ClickableSurfaceScale.None,
     ) {
-        Box {
+        BoxWithConstraints {
+            val image = item.images.backdrop
+            val imageUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
+
+            val blurPlaceholder = remember(image?.blurHash) {
+                image?.blurHash.toBlurHashPainter()
+            }
+
             AsyncImage(
-                model = item.images.backdrop,
-                placeholder = ColorPainter(MaterialTheme.colorScheme.surface),
+                model = imageUri,
+                placeholder = blurPlaceholder ?: ColorPainter(MaterialTheme.colorScheme.surface),
+                error = blurPlaceholder,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
             )
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawRect(brush = Brush.verticalGradient(colorStops = colorStops))

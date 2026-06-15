@@ -21,24 +21,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.film.presentation.home.HomeAction
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.presentation.utils.toBlurHash
-import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
-import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
-    val context = LocalContext.current
     val colorStops =
         arrayOf(
             0.0f to Color.Black.copy(alpha = 0.1f),
@@ -56,12 +53,10 @@ fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
     ) {
         val image = item.images.backdrop
 
-        val imageUri = image?.uri
-            .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
-            .toLocalFilesUri(context)
+        val imageUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
 
         val blurPlaceholder = remember(image?.blurHash) {
-            image?.blurHash.toBlurHash()
+            image?.blurHash.toBlurHashPainter()
         }
 
         AsyncImage(

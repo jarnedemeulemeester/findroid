@@ -20,17 +20,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
-import dev.jdtech.jellyfin.presentation.utils.toBlurHash
-import dev.jdtech.jellyfin.presentation.utils.toLocalFilesUri
-import dev.jdtech.jellyfin.presentation.utils.withJellyfinResize
 
 @Composable
 fun ItemHeader(
@@ -43,18 +41,15 @@ fun ItemHeader(
         item = item,
         showLogo = showLogo,
         backdropImage = {
-            val context = LocalContext.current
             val image = when (item) {
                 is FindroidEpisode -> item.images.primary
                 else -> item.images.backdrop
             }
 
-            val backdropUri = image?.uri
-                .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
-                .toLocalFilesUri(context)
+            val backdropUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
 
             val blurPlaceholder = remember(image?.blurHash) {
-                image?.blurHash.toBlurHash()
+                image?.blurHash.toBlurHashPainter()
             }
 
             AsyncImage(
@@ -83,19 +78,16 @@ fun ItemHeader(
         item = item,
         showLogo = showLogo,
         backdropImage = {
-            val context = LocalContext.current
             val image = when (item) {
                 is FindroidEpisode -> item.images.primary
                 is FindroidSeason -> item.images.showBackdrop
                 else -> item.images.backdrop
             }
 
-            val backdropUri = image?.uri
-                .withJellyfinResize(widthDp = maxWidth, heightDp = maxHeight)
-                .toLocalFilesUri(context)
+            val backdropUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
 
             val blurPlaceholder = remember(image?.blurHash) {
-                image?.blurHash.toBlurHash()
+                image?.blurHash.toBlurHashPainter()
             }
 
             AsyncImage(
