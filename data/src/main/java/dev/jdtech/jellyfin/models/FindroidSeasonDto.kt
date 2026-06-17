@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.models
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -36,5 +37,7 @@ fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
         seriesName = seriesName,
         overview = overview,
         indexNumber = indexNumber,
-    )
+    ).also {
+        Log.d("JONAS", "Returning season DTO from database")
+    }
 }

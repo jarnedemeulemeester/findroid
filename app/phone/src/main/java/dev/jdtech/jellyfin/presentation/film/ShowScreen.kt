@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -265,6 +266,7 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     ) {
                         items(items = state.seasons, key = { item -> item.id }) { season ->
+                            Log.d("JONAS", "Episode count ${season.episodes.size}, anyCanDownload: ${season.episodes.any { it.canDownload }}")
                             ItemCard(
                                 item = season,
                                 direction = Direction.VERTICAL,

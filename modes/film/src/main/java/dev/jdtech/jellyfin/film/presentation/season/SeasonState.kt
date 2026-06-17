@@ -6,5 +6,6 @@ import dev.jdtech.jellyfin.models.FindroidSeason
 data class SeasonState(
     val season: FindroidSeason? = null,
     val episodes: List<FindroidEpisode> = emptyList(),
+    val canDownload: Boolean = false,
     val error: Exception? = null,
 )

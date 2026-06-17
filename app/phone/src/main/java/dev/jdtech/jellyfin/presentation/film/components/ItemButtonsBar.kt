@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.presentation.film.components
 import android.app.DownloadManager
 import android.os.Environment
 import android.os.StatFs
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,8 @@ fun ItemButtonsBar(
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
     downloaderState: DownloaderState? = null,
+    isItemDownloaded: Boolean? = null,
+    canDownload: Boolean? = null,
     canPlay: Boolean = true,
 ) {
     val context = LocalContext.current
@@ -73,6 +76,8 @@ fun ItemButtonsBar(
 
     var selectedStorageIndex by remember { mutableIntStateOf(0) }
     var storageLocations = remember { context.getExternalFilesDirs(null) }
+
+    Log.d("JONAS", "downloaderState !null? : ${downloaderState != null}, candownload: ${canDownload}")
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         Column(
@@ -153,15 +158,20 @@ fun ItemButtonsBar(
                         }
                     }
                 }
+                val downloaded = isItemDownloaded ?: item.isDownloaded()
+                Log.d("JONAS", "downloaded ${downloaded} isDownloading: ${downloaderState?.isDownloading}")
                 if (downloaderState != null && !downloaderState.isDownloading) {
-                    if (item.isDownloaded()) {
+                    if (downloaded) {
                         FilledTonalIconButton(onClick = { deleteDownloadDialogOpen = true }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_trash),
                                 contentDescription = null,
                             )
                         }
-                    } else if (item.canDownload) {
+                    }
+                    // TODO JONAS what does this do to episodes?
+                    if ((canDownload ?: false) || item.canDownload) {
+                        Log.d("JONAS", "Should show download button")
                         FilledTonalIconButton(
                             onClick = {
                                 storageLocations = context.getExternalFilesDirs(null)
@@ -245,6 +255,7 @@ private fun ItemButtonsBarPreview() {
         ItemButtonsBar(
             item = dummyEpisode,
             onPlayClick = {},
+            canDownload = true,
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},
             onDownloadClick = {},
@@ -263,6 +274,7 @@ private fun ItemButtonsBarDownloadingPreview() {
             item = dummyEpisode,
             downloaderState =
                 DownloaderState(status = DownloadManager.STATUS_RUNNING, progress = 0.3f),
+            canDownload = true,
             onPlayClick = {},
             onMarkAsPlayedClick = {},
             onMarkAsFavoriteClick = {},

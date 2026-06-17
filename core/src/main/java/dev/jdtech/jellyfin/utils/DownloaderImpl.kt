@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Environment
 import android.os.StatFs
 import android.text.format.Formatter
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -114,6 +115,7 @@ class DownloaderImpl(
                     )
                 }
                 is FindroidEpisode -> {
+                    Log.d("JONAS", "Downloading ${item.id}")
                     val show = jellyfinRepository.getShow(item.seriesId)
                     database.insertShow(
                         show.toFindroidShowDto(
