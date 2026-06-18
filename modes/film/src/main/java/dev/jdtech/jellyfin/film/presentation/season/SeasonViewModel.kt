@@ -28,17 +28,10 @@ class SeasonViewModel @Inject constructor(private val repository: JellyfinReposi
                     repository.getEpisodes(
                         seriesId = season.seriesId,
                         seasonId = seasonId,
-                        // JONAS adding can download to desired fields here is the key. do we also need a URL?
-                        // Testing media sources. Yes media sources was needed. Download succeeded!
+                        // MediaSources and CanDownload are necessary for season download logic
                         fields = listOf(ItemFields.OVERVIEW, ItemFields.CAN_DOWNLOAD, ItemFields.MEDIA_SOURCES),
                     )
-                _state.emit(
-                    _state.value.copy(
-                        season = season,
-                        episodes = episodes,
-                        canDownload = episodes.any { it.canDownload },
-                    )
-                )
+                _state.emit(_state.value.copy(season = season, episodes = episodes))
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }

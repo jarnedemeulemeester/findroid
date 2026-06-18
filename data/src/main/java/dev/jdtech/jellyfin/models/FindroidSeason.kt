@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.models
 
-import android.util.Log
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
@@ -45,9 +44,7 @@ fun BaseItemDto.toFindroidSeason(jellyfinRepository: JellyfinRepository): Findro
         seriesId = seriesId!!,
         seriesName = seriesName.orEmpty(),
         images = toFindroidImages(jellyfinRepository),
-    ).also {
-        Log.d("JONAS", "BaseItemDto.toFindroidSeason")
-    }
+    )
 }
 
 fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID): FindroidSeason {
@@ -68,7 +65,5 @@ fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID
         seriesId = seriesId,
         seriesName = seriesName,
         images = toLocalFindroidImages(itemId = id),
-    ).also {
-        Log.d("JONAS", "FindroidSeasonDto.toFindroidSeason")
-    }
+    )
 }

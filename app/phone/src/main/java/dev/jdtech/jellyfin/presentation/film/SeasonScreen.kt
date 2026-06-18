@@ -164,11 +164,14 @@ private fun SeasonScreenLayout(
                     // Using any because we want the delete button to be visible if ANY episode
                     // in the season has been downloaded
                     val isSeasonDownloaded = state.episodes.any { it.isDownloaded() }
+                    // Only want to show the download button if any episodes still haven't
+                    // been downloaded
+                    val canSeasonBeDownloaded = state.episodes.any { it.canDownload } && !state.episodes.all { it.isDownloaded() }
                     ItemButtonsBar(
                         item = season,
                         downloaderState = downloaderState,
                         isItemDownloaded = isSeasonDownloaded,
-                        canDownload = state.canDownload,
+                        canDownload = canSeasonBeDownloaded,
                         onPlayClick = { startFromBeginning ->
                             onAction(SeasonAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -187,17 +190,17 @@ private fun SeasonScreenLayout(
                         onTrailerClick = {},
                         onDownloadClick = { storageIndex ->
                             onDownloaderAction(
-                                DownloaderAction.DownloadSeason(state.episodes, storageIndex)
+                                DownloaderAction.DownloadMany(state.episodes, storageIndex)
                             )
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(
-                                DownloaderAction.CancelDownloadSeason
+                                DownloaderAction.CancelDownloadMany
                             )
                         },
                         onDownloadDeleteClick = {
                             onDownloaderAction(
-                                DownloaderAction.DeleteDownloadedSeason(state.episodes)
+                                DownloaderAction.DeleteDownloadMany(state.episodes)
                             )
                         },
                         modifier =

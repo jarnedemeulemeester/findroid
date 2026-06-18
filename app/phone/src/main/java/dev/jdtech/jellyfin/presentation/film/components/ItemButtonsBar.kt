@@ -3,7 +3,6 @@ package dev.jdtech.jellyfin.presentation.film.components
 import android.app.DownloadManager
 import android.os.Environment
 import android.os.StatFs
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,8 +51,12 @@ fun ItemButtonsBar(
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
     downloaderState: DownloaderState? = null,
-    isItemDownloaded: Boolean? = null,
-    canDownload: Boolean? = null,
+    // Used by seasons, episodes are loaded in the state and are used to
+    // determine this. Combined with item
+    isItemDownloaded: Boolean = false,
+    // Used by seasons, episodes are loaded in the state and are used to
+    // determine this. Combined with item.
+    canDownload: Boolean = false,
     canPlay: Boolean = true,
 ) {
     val context = LocalContext.current
@@ -76,8 +79,6 @@ fun ItemButtonsBar(
 
     var selectedStorageIndex by remember { mutableIntStateOf(0) }
     var storageLocations = remember { context.getExternalFilesDirs(null) }
-
-    Log.d("JONAS", "downloaderState !null? : ${downloaderState != null}, candownload: ${canDownload}")
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         Column(
@@ -158,10 +159,10 @@ fun ItemButtonsBar(
                         }
                     }
                 }
-                val downloaded = isItemDownloaded ?: item.isDownloaded()
-                Log.d("JONAS", "downloaded ${downloaded} isDownloading: ${downloaderState?.isDownloading}")
                 if (downloaderState != null && !downloaderState.isDownloading) {
-                    if (downloaded) {
+                    // Render both Delete and Download buttons for seasons, which may have
+                    // some episodes downloaded and some not.
+                    if (isItemDownloaded || item.isDownloaded()) {
                         FilledTonalIconButton(onClick = { deleteDownloadDialogOpen = true }) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_trash),
@@ -169,9 +170,9 @@ fun ItemButtonsBar(
                             )
                         }
                     }
-                    // TODO JONAS what does this do to episodes?
-                    if ((canDownload ?: false) || item.canDownload) {
-                        Log.d("JONAS", "Should show download button")
+                    // canDownload is for seasons. Else, an item should only render the download
+                    // button if item is not downloaded.
+                    if (canDownload || (item.canDownload && !item.isDownloaded())) {
                         FilledTonalIconButton(
                             onClick = {
                                 storageLocations = context.getExternalFilesDirs(null)
