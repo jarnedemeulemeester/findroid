@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,11 +36,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
-import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
-import dev.jdtech.jellyfin.core.presentation.downloader.SeasonDownloaderAction
-import dev.jdtech.jellyfin.core.presentation.downloader.SeasonDownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
@@ -56,7 +52,6 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
 import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import java.util.UUID
@@ -71,36 +66,16 @@ fun SeasonScreen(
     navigateToSeries: (seriesId: UUID) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
-    seasonDownloaderViewModel: SeasonDownloaderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val isOfflineMode = LocalOfflineMode.current
-
     val state by viewModel.state.collectAsStateWithLifecycle()
-//    val downloaderState by seasonDownloaderViewModel.state.collectAsStateWithLifecycle()
-
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
-    // TODO JONAS Update for episodes
-
-    LaunchedEffect(state.episodes) {
-//        downloaderViewModel.update(state.episodes)
-        seasonDownloaderViewModel.update(state.episodes)
-    }
-
-    ObserveAsEvents(seasonDownloaderViewModel.events) { event ->
-        when (event) {
-            is DownloaderEvent.Successful -> viewModel.loadSeason(seasonId = seasonId)
-            is DownloaderEvent.Deleted -> {
-                if (isOfflineMode) navigateBack()
-                else viewModel.loadSeason(seasonId = seasonId)
-            }
-        }
-    }
-
     ObserveAsEvents(downloaderViewModel.events) {
+        // As episodes are downloaded, reload season to render
+        // the download badges
         viewModel.loadSeason(seasonId = seasonId)
     }
 
@@ -124,7 +99,6 @@ fun SeasonScreen(
             viewModel.onAction(action)
         },
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
-        onSeasonDownloaderAction = { action -> seasonDownloaderViewModel.onAction(action) },
     )
 }
 
@@ -134,7 +108,6 @@ private fun SeasonScreenLayout(
     downloaderState: DownloaderState,
     onAction: (SeasonAction) -> Unit,
     onDownloaderAction: (DownloaderAction) -> Unit,
-    onSeasonDownloaderAction: (SeasonDownloaderAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
 
@@ -188,10 +161,9 @@ private fun SeasonScreenLayout(
                         },
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.default.div(2)))
+                    // Using any because we want the delete button to be visible if ANY episode
+                    // in the season has been downloaded
                     val isSeasonDownloaded = state.episodes.any { it.isDownloaded() }
-                    // And OR to trigger re-rendering because item is an interface which does not trigger that
-//                    val canSeasonDownload = state.canDownload || season.canDownload
-                    Log.d("JONAS", "Can download: ${state.canDownload}, stateepisodes: ${state.episodes.size}, seasonepisodes ${season.episodes.size}")
                     ItemButtonsBar(
                         item = season,
                         downloaderState = downloaderState,
@@ -217,23 +189,16 @@ private fun SeasonScreenLayout(
                             onDownloaderAction(
                                 DownloaderAction.DownloadSeason(state.episodes, storageIndex)
                             )
-//                            onSeasonDownloaderAction(
-//                                SeasonDownloaderAction.Download(state.episodes, storageIndex)
-//                            )
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(
                                 DownloaderAction.CancelDownloadSeason
                             )
-//                            onSeasonDownloaderAction(SeasonDownloaderAction.CancelDownload)
                         },
                         onDownloadDeleteClick = {
                             onDownloaderAction(
                                 DownloaderAction.DeleteDownloadedSeason(state.episodes)
                             )
-//                            onSeasonDownloaderAction(
-//                                SeasonDownloaderAction.DeleteDownload(state.episodes)
-//                            )
                         },
                         modifier =
                             Modifier.padding(start = paddingStart, end = paddingEnd).fillMaxWidth(),
@@ -283,7 +248,6 @@ private fun SeasonScreenLayoutPreview() {
             downloaderState = DownloaderState(),
             onAction = {},
             onDownloaderAction = {},
-            onSeasonDownloaderAction = {},
         )
     }
 }
