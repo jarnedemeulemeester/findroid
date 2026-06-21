@@ -59,6 +59,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 import dev.jdtech.jellyfin.utils.format
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -159,18 +160,20 @@ private fun EpisodeScreenLayout(
                                             episode.parentIndexNumber,
                                         )
                                     }
+                            val episodeNumberText = stringResource(
+                                id = CoreR.string.episode_number,
+                                episode.indexNumber,
+                            )
+                            val prefixText = "$seasonName - $episodeNumberText"
                             Text(
-                                text =
-                                    "$seasonName - " +
-                                        stringResource(
-                                            id = CoreR.string.episode_number,
-                                            episode.indexNumber,
-                                        ),
+                                text = prefixText,
+                                modifier = Modifier.copyOnLongClick(prefixText),
                                 maxLines = 1,
                                 style = MaterialTheme.typography.labelLarge,
                             )
                             Text(
                                 text = episode.name,
+                                modifier = Modifier.copyOnLongClick(episode.name),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 3,
                                 style = MaterialTheme.typography.headlineMedium,
@@ -186,21 +189,28 @@ private fun EpisodeScreenLayout(
                         verticalAlignment = Alignment.Bottom,
                     ) {
                         episode.premiereDate?.let { premiereDate ->
+                            val dateText = premiereDate.format()
                             Text(
-                                text = premiereDate.format(),
+                                text = dateText,
+                                modifier = Modifier.copyOnLongClick(dateText),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
+                        val runtimeText = stringResource(
+                            CoreR.string.runtime_minutes,
+                            episode.runtimeTicks.div(600000000),
+                        )
                         Text(
-                            text =
-                                stringResource(
-                                    CoreR.string.runtime_minutes,
-                                    episode.runtimeTicks.div(600000000),
-                                ),
+                            text = runtimeText,
+                            modifier = Modifier.copyOnLongClick(runtimeText),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         episode.communityRating?.let { communityRating ->
-                            Row(verticalAlignment = Alignment.Bottom) {
+                            val ratingText = "%.1f".format(communityRating)
+                            Row(
+                                modifier = Modifier.copyOnLongClick(ratingText),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),
                                     contentDescription = null,

@@ -59,6 +59,7 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 import dev.jdtech.jellyfin.utils.getShowDateString
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -131,6 +132,7 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                         ) {
                             Text(
                                 text = show.name,
+                                modifier = Modifier.copyOnLongClick(show.name),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 3,
                                 style = MaterialTheme.typography.headlineMedium,
@@ -139,6 +141,7 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                                 if (originalTitle != show.name) {
                                     Text(
                                         text = originalTitle,
+                                        modifier = Modifier.copyOnLongClick(originalTitle),
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
                                         style = MaterialTheme.typography.bodyMedium,
@@ -155,23 +158,34 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                         verticalAlignment = Alignment.Bottom,
                     ) {
+                        val dateText = getShowDateString(show)
                         Text(
-                            text = getShowDateString(show),
+                            text = dateText,
+                            modifier = Modifier.copyOnLongClick(dateText),
                             style = MaterialTheme.typography.bodyMedium,
                         )
+                        val runtimeText = stringResource(
+                            CoreR.string.runtime_minutes,
+                            show.runtimeTicks.div(600000000),
+                        )
                         Text(
-                            text =
-                                stringResource(
-                                    CoreR.string.runtime_minutes,
-                                    show.runtimeTicks.div(600000000),
-                                ),
+                            text = runtimeText,
+                            modifier = Modifier.copyOnLongClick(runtimeText),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         show.officialRating?.let { officialRating ->
-                            Text(text = officialRating, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                text = officialRating,
+                                modifier = Modifier.copyOnLongClick(officialRating),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                         show.communityRating?.let { communityRating ->
-                            Row(verticalAlignment = Alignment.Bottom) {
+                            val ratingText = "%.1f".format(communityRating)
+                            Row(
+                                modifier = Modifier.copyOnLongClick(ratingText),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),
                                     contentDescription = null,
