@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.presentation.cast.CastPlaybackViewModel
+import dev.jdtech.jellyfin.player.cast.CastConnectionState
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
@@ -77,6 +80,9 @@ fun MovieScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
+    val castPlaybackViewModel: CastPlaybackViewModel = hiltViewModel()
+    val castConnectionState by castPlaybackViewModel.castManager.connectionState.collectAsState()
+
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
     LaunchedEffect(state.movie) { state.movie?.let { movie -> downloaderViewModel.update(movie) } }
@@ -102,11 +108,15 @@ fun MovieScreen(
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", movieId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
-                    intent.putExtra("startFromBeginning", action.startFromBeginning)
-                    context.startActivity(intent)
+                    if (castConnectionState == CastConnectionState.CONNECTED) {
+                        castPlaybackViewModel.playItem(movieId, BaseItemKind.MOVIE.serialName, action.startFromBeginning)
+                    } else {
+                        val intent = Intent(context, PlayerActivity::class.java)
+                        intent.putExtra("itemId", movieId.toString())
+                        intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
+                        intent.putExtra("startFromBeginning", action.startFromBeginning)
+                        context.startActivity(intent)
+                    }
                 }
                 is MovieAction.PlayTrailer -> {
                     try {

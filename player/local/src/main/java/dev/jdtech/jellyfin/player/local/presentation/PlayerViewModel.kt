@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class PlayerViewModel
@@ -246,7 +247,7 @@ constructor(
         val position = player.currentPosition
         val duration = player.duration
         GlobalScope.launch {
-            delay(200L)
+            delay(200L.milliseconds)
             try {
                 if (mediaId != null && duration != C.TIME_UNSET) {
                     Timber.d("Sending playback stop")

@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.presentation.cast.CastPlaybackViewModel
+import dev.jdtech.jellyfin.player.cast.CastConnectionState
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
@@ -77,6 +80,9 @@ fun ShowScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val castPlaybackViewModel: CastPlaybackViewModel = hiltViewModel()
+    val castConnectionState by castPlaybackViewModel.castManager.connectionState.collectAsState()
+
     LaunchedEffect(true) { viewModel.loadShow(showId = showId) }
 
     ShowScreenLayout(
@@ -84,10 +90,15 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", showId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
-                    context.startActivity(intent)
+                    if (castConnectionState == CastConnectionState.CONNECTED) {
+                        castPlaybackViewModel.playItem(showId, BaseItemKind.SERIES.serialName, action.startFromBeginning)
+                    } else {
+                        val intent = Intent(context, PlayerActivity::class.java)
+                        intent.putExtra("itemId", showId.toString())
+                        intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
+                        intent.putExtra("startFromBeginning", action.startFromBeginning)
+                        context.startActivity(intent)
+                    }
                 }
                 is ShowAction.PlayTrailer -> {
                     try {

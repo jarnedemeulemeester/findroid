@@ -1,0 +1,213 @@
+package dev.jdtech.jellyfin.presentation.cast.components
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.player.cast.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.CastDevice
+import dev.jdtech.jellyfin.player.cast.CastManager
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.core.R as CoreR
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CastBottomSheet(
+    castManager: CastManager,
+    onDismissRequest: () -> Unit,
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+) {
+    val devices by castManager.availableDevices.collectAsState()
+    val connectedDevice by castManager.connectedDevice.collectAsState()
+    val connectionState by castManager.connectionState.collectAsState()
+
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        dragHandle = null,
+        contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
+    ) {
+        CastBottomSheetLayout(
+            devices = devices,
+            connectedDevice = connectedDevice,
+            connectionState = connectionState,
+            onDeviceSelected = {
+                castManager.connect(it)
+            },
+            onDisconnect = {
+                castManager.disconnect()
+            }
+        )
+    }
+}
+
+@Composable
+fun CastBottomSheetLayout(
+    devices: List<CastDevice>,
+    connectedDevice: CastDevice?,
+    connectionState: CastConnectionState,
+    onDeviceSelected: (CastDevice) -> Unit,
+    onDisconnect: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.spacings.large),
+    ) {
+        Text(
+            text = if (devices.isEmpty()) {
+                stringResource(CoreR.string.cast_searching)
+            } else {
+                stringResource(CoreR.string.cast_select_device)
+            },
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(
+                horizontal = 24.dp,
+                vertical = MaterialTheme.spacings.medium
+            )
+        )
+
+        LinearProgressIndicator(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+
+        Spacer(Modifier.height(MaterialTheme.spacings.medium))
+
+        if (devices.isNotEmpty()) {
+            Text(
+                text = stringResource(CoreR.string.cast_available_devices).uppercase(),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.padding(horizontal = 24.dp),
+            )
+
+            Spacer(Modifier.height(MaterialTheme.spacings.medium))
+
+            LazyColumn(
+                modifier = Modifier.weight(1f, fill = false),
+                contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.medium),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
+            ) {
+                items(items = devices, key = { it.id }) { device ->
+                    CastDeviceItem(
+                        device = device,
+                        connected = connectedDevice == device,
+                        connectionState = connectionState,
+                        onClick = {
+                            if (connectedDevice == device) {
+                                onDisconnect()
+                            } else {
+                                onDeviceSelected(device)
+                            }
+                        }
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(MaterialTheme.spacings.medium))
+        }
+
+        Text(
+            text = stringResource(CoreR.string.cast_wifi_instruction),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun CastBottomSheetSearchingPreview() {
+    FindroidTheme {
+        CastBottomSheetLayout(
+            devices = emptyList(),
+            connectedDevice = null,
+            connectionState = CastConnectionState.DISCONNECTED,
+            onDeviceSelected = {},
+            onDisconnect = {}
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun CastBottomSheetPreview() {
+    val devices = listOf(
+        CastDevice("1", "Living Room TV"),
+        CastDevice("2", "Bedroom")
+    )
+    FindroidTheme {
+        CastBottomSheetLayout(
+            devices = devices,
+            connectedDevice = null,
+            connectionState = CastConnectionState.DISCONNECTED,
+            onDeviceSelected = {},
+            onDisconnect = {}
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun CastBottomSheetConnectingPreview() {
+    val devices = listOf(
+        CastDevice("1", "Living Room TV"),
+        CastDevice("2", "Bedroom")
+    )
+    FindroidTheme {
+        CastBottomSheetLayout(
+            devices = devices,
+            connectedDevice = devices[0],
+            connectionState = CastConnectionState.CONNECTING,
+            onDeviceSelected = {},
+            onDisconnect = {}
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun CastBottomSheetConnectedPreview() {
+    val devices = listOf(
+        CastDevice("1", "Living Room TV"),
+        CastDevice("2", "Bedroom")
+    )
+    FindroidTheme {
+        CastBottomSheetLayout(
+            devices = devices,
+            connectedDevice = devices[0],
+            connectionState = CastConnectionState.CONNECTED,
+            onDeviceSelected = {},
+            onDisconnect = {}
+        )
+    }
+}

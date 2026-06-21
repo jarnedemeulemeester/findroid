@@ -11,16 +11,19 @@ import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerMediaType
 import dev.jdtech.jellyfin.player.core.domain.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 
-class PlaylistManager @Inject internal constructor(private val repository: JellyfinRepository) {
+@Singleton
+class PlaylistManager @Inject constructor(private val repository: JellyfinRepository) {
     private var startItem: FindroidItem? = null
     private var items: List<FindroidItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
@@ -253,6 +256,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         return PlayerItem(
             name = name,
             itemId = id,
+            mediaType = if (this is FindroidEpisode) PlayerMediaType.EPISODE else PlayerMediaType.MOVIE,
             mediaSourceId = mediaSource.id,
             mediaSourceUri = mediaSource.path,
             playbackPosition = playbackPosition,
@@ -262,6 +266,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
+            posterUrl = images.primary?.toString() ?: images.backdrop?.toString(),
         )
     }
 

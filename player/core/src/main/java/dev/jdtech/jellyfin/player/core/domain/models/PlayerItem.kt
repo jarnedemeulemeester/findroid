@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class PlayerItem(
     val name: String,
     val itemId: UUID,
+    val mediaType: PlayerMediaType = PlayerMediaType.UNKNOWN,
     val mediaSourceId: String,
     val playbackPosition: Long,
     val mediaSourceUri: String = "",
@@ -17,4 +18,11 @@ data class PlayerItem(
     val externalSubtitles: List<ExternalSubtitle> = emptyList(),
     val chapters: List<PlayerChapter> = emptyList(),
     val trickplayInfo: TrickplayInfo? = null,
+    val posterUrl: String? = null,
 ) : Parcelable
+
+enum class PlayerMediaType {
+    MOVIE,
+    EPISODE,
+    UNKNOWN
+}

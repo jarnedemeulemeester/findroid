@@ -47,6 +47,10 @@ android {
             dimension = "variant"
             isDefault = true
         }
+        register("gms") {
+            dimension = "variant"
+            matchingFallbacks += listOf("libre")
+        }
     }
 
     splits {
@@ -93,6 +97,7 @@ dependencies {
     implementation(projects.setup)
     implementation(projects.modes.film)
     implementation(projects.settings)
+    implementation(projects.player.cast)
 
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose.m3)
