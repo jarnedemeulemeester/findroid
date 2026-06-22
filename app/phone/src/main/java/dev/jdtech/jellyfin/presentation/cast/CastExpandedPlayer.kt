@@ -233,7 +233,6 @@ private fun CastExpandedPlayerContent(
         CastVolumeControls(
             volume = volume,
             onVolumeChange = { castManager.setVolume(it) },
-            onToggleMute = { if (volume > 0f) castManager.setVolume(0f) else castManager.setVolume(0.5f) }
         )
         
         Spacer(modifier = Modifier.height(48.dp))
