@@ -90,6 +90,9 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     val socketTimeout =
         Preference("pref_network_socket_timeout", Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT)
 
+    // Library filter
+    val filterWatched = Preference("pref_filter_watched", false)
+
     // Cache
     val imageCache = Preference("pref_image_cache", true)
     val imageCacheSize = Preference("pref_image_cache_size", 20)

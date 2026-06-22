@@ -86,6 +86,7 @@ fun LibraryScreen(
                             navigateToLibrary(action.item.id, action.item.name, libraryType)
                     }
                 }
+
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -114,14 +115,23 @@ private fun LibraryScreenLayout(
                 horizontal = MaterialTheme.spacings.default * 2,
                 vertical = MaterialTheme.spacings.large,
             ),
-        modifier = Modifier.fillMaxSize().focusRequester(focusRequester),
+        modifier = Modifier .fillMaxSize() .focusRequester(focusRequester),
     ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = libraryName, style = MaterialTheme.typography.displayMedium)
+                Text( text = libraryName, style = MaterialTheme.typography.displayMedium, modifier = Modifier.weight(1f))
+                Button(onClick = { onAction(LibraryAction.ToggleWatchedFilter(!state.filterWatched)) }) {
+                    Icon(
+                        painter = painterResource(if (state.filterWatched) CoreR.drawable.ic_eye_off else CoreR.drawable.ic_eye),
+                        contentDescription = stringResource(CoreR.string.toggle_watched),
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                    )
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(text = stringResource(CoreR.string.toggle_watched))
+                }
                 Button(onClick = { showSortByDialog = true }) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_arrow_down_up),
