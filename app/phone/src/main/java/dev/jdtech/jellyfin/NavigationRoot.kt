@@ -55,7 +55,7 @@ import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.player.cast.CastConnectionState
 import dev.jdtech.jellyfin.player.cast.CastManager
-import dev.jdtech.jellyfin.presentation.cast.components.CastExpandedPlayer
+import dev.jdtech.jellyfin.presentation.cast.CastExpandedPlayer
 import dev.jdtech.jellyfin.presentation.cast.components.CastBottomSheet
 import dev.jdtech.jellyfin.presentation.cast.components.CastButton
 import dev.jdtech.jellyfin.presentation.film.CollectionScreen
@@ -82,7 +82,7 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 import androidx.navigation.NavDestination.Companion.hasRoute
-import dev.jdtech.jellyfin.presentation.cast.components.CastMiniPlayer
+import dev.jdtech.jellyfin.presentation.cast.CastMiniPlayer
 
 @Serializable
 data object WelcomeRoute
@@ -233,9 +233,16 @@ fun NavigationRoot(
     )
 
     val connectionState by castManager.connectionState.collectAsStateWithLifecycle()
-    val showCastButton = castRoutes.any { currentDestination?.hasRoute(it) == true } && !searchExpanded
+    val showCastButton = castRoutes.any { currentDestination?.hasRoute(it) == true } && !searchExpanded && castManager.isSupported
     var showCastSheet by remember { mutableStateOf(false) }
     var showCastExpandedPlayer by remember { mutableStateOf(false) }
+
+    LaunchedEffect(connectionState) {
+        if (connectionState != CastConnectionState.CONNECTED) {
+            showCastExpandedPlayer = false
+        }
+    }
+
     val showCastMiniPlayer = showCastButton && !showCastExpandedPlayer && connectionState == CastConnectionState.CONNECTED
 
     val currentItem by castManager.currentItem.collectAsState()
@@ -575,9 +582,6 @@ fun NavigationRoot(
                 CastExpandedPlayer(
                     castManager = castManager,
                     isExpandedScreen = true,
-                    posterUrl = currentItem?.posterUrl,
-                    trickplay = null,
-                    skippableSegment = null,
                     onDeviceClick = { showCastSheet = true },
                     onClose = { showCastExpandedPlayer = false }
                 )
@@ -597,9 +601,6 @@ fun NavigationRoot(
         CastExpandedPlayer(
             castManager = castManager,
             isExpandedScreen = false,
-            posterUrl = currentItem?.posterUrl,
-            trickplay = null,
-            skippableSegment = null,
             onDeviceClick = { showCastSheet = true },
             onClose = { showCastExpandedPlayer = false }
         )

@@ -18,19 +18,18 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidSegment
-import dev.jdtech.jellyfin.models.FindroidSegmentType
+import dev.jdtech.jellyfin.player.core.R
+import dev.jdtech.jellyfin.player.core.domain.PlaylistManager
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
-import dev.jdtech.jellyfin.player.local.R
-import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
+import dev.jdtech.jellyfin.player.core.domain.utils.ChapterUtils
+import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils
+import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils.getSkipButtonTextStringId
 import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.Constants
-import java.util.UUID
-import javax.inject.Inject
-import kotlin.math.ceil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -44,6 +43,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
+import java.util.UUID
+import javax.inject.Inject
+import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
@@ -328,7 +330,7 @@ constructor(
                 _uiState.update {
                     it.copy(
                         currentSegment = currentSegment,
-                        currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment),
+                        currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment, shouldSkipToNextEpisode(currentSegment)),
                     )
                 }
             } else {
@@ -548,32 +550,12 @@ constructor(
 
     // Check if the outro segment's end time is within n milliseconds of the player's total duration
     private fun shouldSkipToNextEpisode(segment: FindroidSegment): Boolean {
-        return if (segment.type == FindroidSegmentType.OUTRO && player.hasNextMediaItem()) {
-            val segmentEndTimeMillis = segment.endTicks
-            val playerDurationMillis = player.duration
-            val thresholdMillis =
-                playerDurationMillis -
-                    appPreferences.getValue(appPreferences.playerMediaSegmentsNextEpisodeThreshold)
-
-            segmentEndTimeMillis > thresholdMillis
-        } else {
-            false
-        }
-    }
-
-    private fun getSkipButtonTextStringId(segment: FindroidSegment): Int {
-        return when (shouldSkipToNextEpisode(segment)) {
-            true -> R.string.player_controls_next_episode
-            false ->
-                when (segment.type) {
-                    FindroidSegmentType.INTRO -> R.string.player_controls_skip_intro
-                    FindroidSegmentType.OUTRO -> R.string.player_controls_skip_outro
-                    FindroidSegmentType.RECAP -> R.string.player_controls_skip_recap
-                    FindroidSegmentType.COMMERCIAL -> R.string.player_controls_skip_commercial
-                    FindroidSegmentType.PREVIEW -> R.string.player_controls_skip_preview
-                    else -> R.string.player_controls_skip_unknown
-                }
-        }
+        return SegmentUtils.shouldSkipToNextEpisode(
+            segment = segment,
+            hasNextMediaItem = player.hasNextMediaItem(),
+            playerDurationMillis = player.duration,
+            nextEpisodeThreshold = appPreferences.getValue(appPreferences.playerMediaSegmentsNextEpisodeThreshold)
+        )
     }
 
     /**
@@ -591,15 +573,7 @@ constructor(
      * @return the index of the current chapter
      */
     private fun getCurrentChapterIndex(): Int? {
-        val chapters = getChapters()
-
-        for (i in chapters.indices.reversed()) {
-            if (chapters[i].startPosition < player.currentPosition) {
-                return i
-            }
-        }
-
-        return null
+        return ChapterUtils.getCurrentChapterIndex(getChapters(), player.currentPosition)
     }
 
     /**
@@ -608,10 +582,7 @@ constructor(
      * @return the index of the next chapter
      */
     private fun getNextChapterIndex(): Int? {
-        val chapters = getChapters()
-        val currentChapterIndex = getCurrentChapterIndex() ?: return null
-
-        return minOf(chapters.size - 1, currentChapterIndex + 1)
+        return ChapterUtils.getNextChapterIndex(getChapters(), player.currentPosition)
     }
 
     /**
@@ -621,19 +592,11 @@ constructor(
      * @return the index of the previous chapter
      */
     private fun getPreviousChapterIndex(): Int? {
-        val chapters = getChapters()
-        val currentChapterIndex = getCurrentChapterIndex() ?: return null
-
-        // Return current chapter when more than 5 seconds past chapter start
-        if (player.currentPosition > chapters[currentChapterIndex].startPosition + 5000L) {
-            return currentChapterIndex
-        }
-
-        return maxOf(0, currentChapterIndex - 1)
+        return ChapterUtils.getPreviousChapterIndex(getChapters(), player.currentPosition)
     }
 
     fun isLastChapter(): Boolean =
-        getChapters().let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
+        ChapterUtils.isLastChapter(getChapters(), player.currentPosition)
 
     /**
      * Seek to chapter

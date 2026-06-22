@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.presentation.cast.components
+package dev.jdtech.jellyfin.presentation.cast
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

@@ -37,6 +37,8 @@ class CastManagerImpl @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) : CastManager {
 
+    override val isSupported = true
+
     private val _connectionState = MutableStateFlow(CastConnectionState.DISCONNECTED)
     override val connectionState: StateFlow<CastConnectionState> = _connectionState.asStateFlow()
 

@@ -32,11 +32,14 @@ dependencies {
     implementation(projects.core)
     implementation(projects.data)
     implementation(projects.player.core)
-    implementation(libs.androidx.core)
+    implementation(projects.settings)
+    implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.mediarouter)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.jellyfin.core)
+    implementation(libs.timber)
 
     "gmsImplementation"(libs.play.services.cast.framework)
 }

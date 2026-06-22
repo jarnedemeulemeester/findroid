@@ -20,6 +20,7 @@ data class CastPlaybackState(
 data class CastDevice(val id: String, val name: String)
 
 interface CastManager {
+    val isSupported: Boolean
     val connectionState: StateFlow<CastConnectionState>
     val availableDevices: StateFlow<List<CastDevice>>
     val connectedDevice: StateFlow<CastDevice?>

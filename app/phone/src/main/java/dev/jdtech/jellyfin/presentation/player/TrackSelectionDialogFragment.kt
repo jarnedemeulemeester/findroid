@@ -8,7 +8,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.media3.common.C
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dev.jdtech.jellyfin.player.local.R
+import dev.jdtech.jellyfin.player.core.R
 import dev.jdtech.jellyfin.player.local.domain.getTrackNames
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import java.lang.IllegalStateException

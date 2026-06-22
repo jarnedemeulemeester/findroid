@@ -93,6 +93,7 @@ dependencies {
     implementation(projects.core)
     implementation(projects.data)
     implementation(projects.player.core)
+    implementation(projects.player.cast)
     implementation(projects.player.local)
     implementation(projects.setup)
     implementation(projects.modes.film)

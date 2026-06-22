@@ -42,7 +42,6 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.presentation.cast.CastPlaybackViewModel
 import dev.jdtech.jellyfin.player.cast.CastConnectionState
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
@@ -50,6 +49,7 @@ import dev.jdtech.jellyfin.film.presentation.show.ShowAction
 import dev.jdtech.jellyfin.film.presentation.show.ShowState
 import dev.jdtech.jellyfin.film.presentation.show.ShowViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
@@ -80,8 +80,8 @@ fun ShowScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val castPlaybackViewModel: CastPlaybackViewModel = hiltViewModel()
-    val castConnectionState by castPlaybackViewModel.castManager.connectionState.collectAsState()
+    val castPlayerViewModel: CastPlayerViewModel = hiltViewModel()
+    val castConnectionState by castPlayerViewModel.castManager.connectionState.collectAsState()
 
     LaunchedEffect(true) { viewModel.loadShow(showId = showId) }
 
@@ -91,7 +91,7 @@ fun ShowScreen(
             when (action) {
                 is ShowAction.Play -> {
                     if (castConnectionState == CastConnectionState.CONNECTED) {
-                        castPlaybackViewModel.playItem(showId, BaseItemKind.SERIES.serialName, action.startFromBeginning)
+                        castPlayerViewModel.playItem(showId, BaseItemKind.SERIES.serialName, action.startFromBeginning)
                     } else {
                         val intent = Intent(context, PlayerActivity::class.java)
                         intent.putExtra("itemId", showId.toString())

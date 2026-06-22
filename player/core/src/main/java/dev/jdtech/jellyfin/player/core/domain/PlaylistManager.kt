@@ -1,7 +1,6 @@
-package dev.jdtech.jellyfin.player.local.domain
+package dev.jdtech.jellyfin.player.core.domain
 
 import androidx.core.net.toUri
-import androidx.media3.common.MimeTypes
 import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -229,10 +228,10 @@ class PlaylistManager @Inject constructor(private val repository: JellyfinReposi
                         mediaStream.language,
                         mediaStream.path!!.toUri(),
                         when (mediaStream.codec) {
-                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                            "webvtt" -> MimeTypes.APPLICATION_SUBRIP
-                            "ass" -> MimeTypes.TEXT_SSA
-                            else -> MimeTypes.TEXT_UNKNOWN
+                            "subrip" -> "application/x-subrip"
+                            "webvtt" -> "application/x-subrip"
+                            "ass" -> "text/x-ssa"
+                            else -> "text/unknown"
                         },
                     )
                 }
@@ -263,6 +262,7 @@ class PlaylistManager @Inject constructor(private val repository: JellyfinReposi
             parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
             indexNumber = if (this is FindroidEpisode) indexNumber else null,
             indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+            seriesName = if (this is FindroidEpisode) seriesName else null,
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,

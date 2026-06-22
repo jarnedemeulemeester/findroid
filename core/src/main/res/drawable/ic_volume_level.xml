@@ -5,11 +5,11 @@
         android:maxLevel="0"
         android:minLevel="0" />
     <item
-        android:drawable="@drawable/ic_volume_50"
+        android:drawable="@drawable/ic_volume_66"
         android:maxLevel="50"
         android:minLevel="1" />
     <item
-        android:drawable="@drawable/ic_volume"
+        android:drawable="@drawable/ic_volume_100"
         android:maxLevel="100"
         android:minLevel="51" />
 </level-list>

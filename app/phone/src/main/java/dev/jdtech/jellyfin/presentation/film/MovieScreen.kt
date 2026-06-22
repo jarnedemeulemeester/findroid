@@ -36,7 +36,6 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.presentation.cast.CastPlaybackViewModel
 import dev.jdtech.jellyfin.player.cast.CastConnectionState
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
@@ -48,6 +47,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
@@ -80,8 +80,8 @@ fun MovieScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
-    val castPlaybackViewModel: CastPlaybackViewModel = hiltViewModel()
-    val castConnectionState by castPlaybackViewModel.castManager.connectionState.collectAsState()
+    val castPlayerViewModel: CastPlayerViewModel = hiltViewModel()
+    val castConnectionState by castPlayerViewModel.castManager.connectionState.collectAsState()
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -109,7 +109,7 @@ fun MovieScreen(
             when (action) {
                 is MovieAction.Play -> {
                     if (castConnectionState == CastConnectionState.CONNECTED) {
-                        castPlaybackViewModel.playItem(movieId, BaseItemKind.MOVIE.serialName, action.startFromBeginning)
+                        castPlayerViewModel.playItem(movieId, BaseItemKind.MOVIE.serialName, action.startFromBeginning)
                     } else {
                         val intent = Intent(context, PlayerActivity::class.java)
                         intent.putExtra("itemId", movieId.toString())

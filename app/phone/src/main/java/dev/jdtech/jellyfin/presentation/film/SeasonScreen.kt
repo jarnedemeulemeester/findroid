@@ -36,13 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.presentation.cast.CastPlaybackViewModel
-import dev.jdtech.jellyfin.player.cast.CastConnectionState
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.player.cast.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
@@ -52,8 +52,8 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
+import java.util.UUID
 
 @Composable
 fun SeasonScreen(
@@ -67,8 +67,8 @@ fun SeasonScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val castPlaybackViewModel: CastPlaybackViewModel = hiltViewModel()
-    val castConnectionState by castPlaybackViewModel.castManager.connectionState.collectAsState()
+    val castPlayerViewModel: CastPlayerViewModel = hiltViewModel()
+    val castConnectionState by castPlayerViewModel.castManager.connectionState.collectAsState()
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
@@ -78,7 +78,7 @@ fun SeasonScreen(
             when (action) {
                 is SeasonAction.Play -> {
                     if (castConnectionState == CastConnectionState.CONNECTED) {
-                        castPlaybackViewModel.playItem(seasonId, BaseItemKind.SEASON.serialName, action.startFromBeginning)
+                        castPlayerViewModel.playItem(seasonId, BaseItemKind.SEASON.serialName, action.startFromBeginning)
                     } else {
                         val intent = Intent(context, PlayerActivity::class.java)
                         intent.putExtra("itemId", seasonId.toString())
