@@ -49,11 +49,19 @@ class CastManagerImpl @Inject constructor(
 
     override fun loadItem(item: PlayerItem, startPosition: Long) {}
 
+    override fun queueNextItem(item: PlayerItem) {}
+
+    override fun queuePreviousItem(item: PlayerItem) {}
+
     override fun play() {}
 
     override fun pause() {}
 
     override fun seekTo(position: Long) {}
+
+    override fun seekToNext() {}
+
+    override fun seekToPrevious() {}
 
     override fun setVolume(volume: Float) {
         _volume.value = volume
