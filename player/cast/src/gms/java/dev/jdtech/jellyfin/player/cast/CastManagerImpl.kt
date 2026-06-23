@@ -8,7 +8,10 @@ import com.google.android.gms.cast.CastMediaControlIntent
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.MediaSeekOptions
+import com.google.android.gms.cast.MediaStatus
+import com.google.android.gms.cast.MediaTrack
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManagerListener
@@ -27,6 +30,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.milliseconds
@@ -66,9 +71,11 @@ class CastManagerImpl @Inject constructor(
     private val castContext: CastContext by lazy { CastContext.getSharedInstance(context) }
     private var castSession: CastSession? = null
     private var remoteMediaClient: RemoteMediaClient? = null
-    
+
     private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var progressJob: Job? = null
+
+    private val itemCache = mutableMapOf<String, PlayerItem>()
 
     private val mediaRouter by lazy { MediaRouter.getInstance(context) }
     private val routeSelector by lazy {
@@ -78,14 +85,27 @@ class CastManagerImpl @Inject constructor(
     }
 
     private val routeCallback = object : MediaRouter.Callback() {
-        override fun onRouteAdded(router: MediaRouter, route: MediaRouter.RouteInfo) { updateRoutes() }
-        override fun onRouteRemoved(router: MediaRouter, route: MediaRouter.RouteInfo) { updateRoutes() }
-        override fun onRouteChanged(router: MediaRouter, route: MediaRouter.RouteInfo) { updateRoutes() }
+        override fun onRouteAdded(router: MediaRouter, route: MediaRouter.RouteInfo) {
+            updateRoutes()
+        }
+
+        override fun onRouteRemoved(router: MediaRouter, route: MediaRouter.RouteInfo) {
+            updateRoutes()
+        }
+
+        override fun onRouteChanged(router: MediaRouter, route: MediaRouter.RouteInfo) {
+            updateRoutes()
+        }
     }
 
     private val remoteMediaClientCallback = object : RemoteMediaClient.Callback() {
-        override fun onStatusUpdated() { updatePlaybackState() }
-        override fun onMetadataUpdated() { updatePlaybackState() }
+        override fun onStatusUpdated() {
+            updatePlaybackState()
+        }
+
+        override fun onMetadataUpdated() {
+            updatePlaybackState()
+        }
     }
 
     private fun updateRoutes() {
@@ -101,7 +121,8 @@ class CastManagerImpl @Inject constructor(
         }
 
         if (castSession == null) {
-            _connectionState.value = if (routes.isNotEmpty()) CastConnectionState.AVAILABLE else CastConnectionState.DISCONNECTED
+            _connectionState.value =
+                if (routes.isNotEmpty()) CastConnectionState.AVAILABLE else CastConnectionState.DISCONNECTED
         }
     }
 
@@ -111,30 +132,34 @@ class CastManagerImpl @Inject constructor(
             clearSession()
             updateRoutes()
         }
+
         override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) {
-            _connectionState.value = CastConnectionState.CONNECTED
             setupSession(session)
         }
+
         override fun onSessionResumeFailed(session: CastSession, error: Int) {
             _connectionState.value = CastConnectionState.DISCONNECTED
             clearSession()
             updateRoutes()
         }
+
         override fun onSessionStarted(session: CastSession, sessionId: String) {
-            _connectionState.value = CastConnectionState.CONNECTED
             setupSession(session)
         }
+
         override fun onSessionStartFailed(session: CastSession, error: Int) {
             _connectionState.value = CastConnectionState.DISCONNECTED
             clearSession()
             updateRoutes()
         }
+
         override fun onSessionStarting(session: CastSession) {
             _connectionState.value = CastConnectionState.CONNECTING
             session.castDevice?.let {
                 _connectedDevice.value = CastDevice(it.deviceId, it.friendlyName)
             }
         }
+
         override fun onSessionEnding(session: CastSession) {}
         override fun onSessionResuming(session: CastSession, sessionId: String) {
             _connectionState.value = CastConnectionState.CONNECTING
@@ -142,16 +167,23 @@ class CastManagerImpl @Inject constructor(
                 _connectedDevice.value = CastDevice(it.deviceId, it.friendlyName)
             }
         }
+
         override fun onSessionSuspended(session: CastSession, reason: Int) {}
     }
 
     override fun init() {
-        castContext.sessionManager.addSessionManagerListener(sessionManagerListener, CastSession::class.java)
-        mediaRouter.addCallback(routeSelector, routeCallback, MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY)
+        castContext.sessionManager.addSessionManagerListener(
+            sessionManagerListener,
+            CastSession::class.java
+        )
+        mediaRouter.addCallback(
+            routeSelector,
+            routeCallback,
+            MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
+        )
         updateRoutes()
-        
+
         castContext.sessionManager.currentCastSession?.let {
-            _connectionState.value = CastConnectionState.CONNECTED
             setupSession(it)
         }
     }
@@ -179,7 +211,10 @@ class CastManagerImpl @Inject constructor(
             _connectedDevice.value = CastDevice(it.deviceId, it.friendlyName)
         }
         remoteMediaClient?.registerCallback(remoteMediaClientCallback)
+
         startProgressUpdate()
+
+        _connectionState.value = CastConnectionState.CONNECTED
     }
 
     private fun clearSession() {
@@ -189,6 +224,7 @@ class CastManagerImpl @Inject constructor(
         remoteMediaClient = null
         _currentItem.value = null
         _connectedDevice.value = null
+        itemCache.clear()
     }
 
     private fun startProgressUpdate() {
@@ -206,6 +242,24 @@ class CastManagerImpl @Inject constructor(
         val isPlaying = client.isPlaying
         val position = client.approximateStreamPosition
         val duration = client.streamDuration
+
+        val isPlaybackFinished = client.playerState == MediaStatus.PLAYER_STATE_IDLE &&
+                client.idleReason == MediaStatus.IDLE_REASON_FINISHED
+
+        if (isPlaybackFinished) {
+            _currentItem.value = null
+        } else {
+            client.mediaInfo?.customData?.optString("itemId")?.takeIf { it.isNotEmpty() }
+                ?.let { playingId ->
+                    if (playingId != _currentItem.value?.itemId?.toString()) {
+                        itemCache[playingId]?.let { fullItem ->
+                            Timber.d("Cast track automatically changed! Updating UI to: ${fullItem.name}")
+                            _currentItem.value = fullItem
+                        }
+                    }
+                }
+        }
+
         _playbackState.value = CastPlaybackState(
             isPlaying = isPlaying,
             currentPosition = position,
@@ -232,9 +286,9 @@ class CastManagerImpl @Inject constructor(
                 selected = activeTrackIds.contains(castTrack.id),
                 supported = true
             )
-            if (castTrack.type == com.google.android.gms.cast.MediaTrack.TYPE_AUDIO) {
+            if (castTrack.type == MediaTrack.TYPE_AUDIO) {
                 audio.add(track)
-            } else if (castTrack.type == com.google.android.gms.cast.MediaTrack.TYPE_TEXT) {
+            } else if (castTrack.type == MediaTrack.TYPE_TEXT) {
                 subs.add(track)
             }
         }
@@ -243,26 +297,59 @@ class CastManagerImpl @Inject constructor(
     }
 
     override fun loadItem(item: PlayerItem, startPosition: Long) {
+        itemCache.clear()
+        itemCache[item.itemId.toString()] = item
+
         _currentItem.value = item
         val client = remoteMediaClient ?: return
-        val mediaType = if (item.mediaType == PlayerMediaType.EPISODE) MediaMetadata.MEDIA_TYPE_TV_SHOW else MediaMetadata.MEDIA_TYPE_MOVIE
+
+        val mediaInfoBuilder = buildMediaInfo(item)
+
+        val loadRequest = MediaLoadRequestData.Builder()
+            .setMediaInfo(mediaInfoBuilder)
+            .setAutoplay(true)
+            .setCurrentTime(startPosition)
+            .build()
+
+        client.load(loadRequest)
+    }
+
+    private fun buildMediaInfo(item: PlayerItem): MediaInfo {
+        val mediaType =
+            if (item.mediaType == PlayerMediaType.EPISODE) MediaMetadata.MEDIA_TYPE_TV_SHOW else MediaMetadata.MEDIA_TYPE_MOVIE
         val mediaMetadata = MediaMetadata(mediaType).apply {
             putString(MediaMetadata.KEY_TITLE, item.name)
-            item.posterUrl?.let {
-                addImage(WebImage(it.toUri()))
-            }
+
+            item.seriesName?.let { putString(MediaMetadata.KEY_SERIES_TITLE, it) }
+
+            item.indexNumber?.let { putInt(MediaMetadata.KEY_EPISODE_NUMBER, it) }
+            item.parentIndexNumber?.let { putInt(MediaMetadata.KEY_SEASON_NUMBER, it) }
+
+            item.seriesPosterUrl?.let { addImage(WebImage(it.toUri())) }
+            item.posterUrl?.let { addImage(WebImage(it.toUri())) }
+        }
+
+        val customData = JSONObject().apply {
+            put("itemId", item.itemId.toString())
+        }
+
+        val contentType = when {
+            item.mediaSourceUri.contains(".m3u8") -> "application/x-mpegurl"
+            item.mediaSourceUri.contains(".mpd") -> "application/dash+xml"
+            else -> "video/mp4"
         }
 
         val mediaInfoBuilder = MediaInfo.Builder(item.mediaSourceUri)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-            .setContentType("video/mp4")
+            .setContentType(contentType)
             .setMetadata(mediaMetadata)
+            .setCustomData(customData)
 
         if (item.externalSubtitles.isNotEmpty()) {
             val castTracks = item.externalSubtitles.mapIndexed { index, subtitle ->
-                com.google.android.gms.cast.MediaTrack.Builder((index + 1).toLong(), com.google.android.gms.cast.MediaTrack.TYPE_TEXT)
+                MediaTrack.Builder((index + 1).toLong(), MediaTrack.TYPE_TEXT)
                     .setName(subtitle.title)
-                    .setSubtype(com.google.android.gms.cast.MediaTrack.SUBTYPE_SUBTITLES)
+                    .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
                     .setContentId(subtitle.uri.toString())
                     .setContentType(subtitle.mimeType)
                     .setLanguage(subtitle.language)
@@ -271,13 +358,64 @@ class CastManagerImpl @Inject constructor(
             mediaInfoBuilder.setMediaTracks(castTracks)
         }
 
-        val loadRequest = MediaLoadRequestData.Builder()
-            .setMediaInfo(mediaInfoBuilder.build())
+        return mediaInfoBuilder.build()
+    }
+
+    override fun queueNextItem(item: PlayerItem) {
+        Timber.d("Queue next: $item")
+
+        itemCache[item.itemId.toString()] = item
+
+        val client = remoteMediaClient ?: return
+
+        val status = client.mediaStatus
+        if (status?.queueItems?.lastOrNull()?.media?.contentId == item.mediaSourceUri) return
+
+        val mediaInfo = buildMediaInfo(item)
+        val queueItem = MediaQueueItem.Builder(mediaInfo)
             .setAutoplay(true)
-            .setCurrentTime(startPosition)
+            .setPreloadTime(20.0)
             .build()
 
-        client.load(loadRequest)
+        val currentItemId = status?.currentItemId ?: MediaQueueItem.INVALID_ITEM_ID
+        val queueItems = status?.queueItems ?: emptyList()
+        val currentIndex = queueItems.indexOfFirst { it.itemId == currentItemId }
+
+        val nextItemId = if (currentIndex != -1 && currentIndex < queueItems.size - 1) {
+            queueItems[currentIndex + 1].itemId
+        } else {
+            MediaQueueItem.INVALID_ITEM_ID
+        }
+
+        client.queueInsertItems(
+            arrayOf(queueItem),
+            nextItemId,
+            null
+        )
+    }
+
+    override fun queuePreviousItem(item: PlayerItem) {
+        Timber.d("Queue previous: $item")
+
+        itemCache[item.itemId.toString()] = item
+
+        val client = remoteMediaClient ?: return
+
+        val status = client.mediaStatus
+        if (status?.queueItems?.firstOrNull()?.media?.contentId == item.mediaSourceUri) return
+
+        val mediaInfo = buildMediaInfo(item)
+        val queueItem = MediaQueueItem.Builder(mediaInfo)
+            .setAutoplay(true)
+            .setPreloadTime(20.0)
+            .build()
+
+        val currentItemId = client.mediaStatus?.currentItemId ?: MediaQueueItem.INVALID_ITEM_ID
+        client.queueInsertItems(
+            arrayOf(queueItem),
+            currentItemId,
+            null
+        )
     }
 
     override fun play() {
@@ -295,6 +433,14 @@ class CastManagerImpl @Inject constructor(
             .build()
 
         remoteMediaClient?.seek(options)
+    }
+
+    override fun seekToNext() {
+        remoteMediaClient?.queueNext(null)
+    }
+
+    override fun seekToPrevious() {
+        remoteMediaClient?.queuePrev(null)
     }
 
     override fun setVolume(volume: Float) {

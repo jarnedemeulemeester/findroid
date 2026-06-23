@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,32 +33,32 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.player.cast.CastDevice
 import dev.jdtech.jellyfin.player.cast.CastManager
 import dev.jdtech.jellyfin.player.cast.CastPlaybackState
-import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
-import dev.jdtech.jellyfin.player.core.domain.models.PlayerMediaType
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun CastMiniPlayer(
     castManager: CastManager,
-    currentItem: PlayerItem?,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CastPlayerViewModel = hiltViewModel()
 ) {
     val connectedDevice by castManager.connectedDevice.collectAsState()
     val playbackState by castManager.playbackState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     if (connectedDevice != null) {
         CastMiniPlayerLayout(
             connectedDevice = connectedDevice!!,
-            currentItem = currentItem,
+            uiState = uiState,
             playbackState = playbackState,
             onTogglePlayback = {
                 if (playbackState.isPlaying) castManager.pause() else castManager.play()
@@ -71,7 +72,7 @@ fun CastMiniPlayer(
 @Composable
 fun CastMiniPlayerLayout(
     connectedDevice: CastDevice,
-    currentItem: PlayerItem?,
+    uiState: CastPlayerViewModel.UiState,
     playbackState: CastPlaybackState,
     onTogglePlayback: () -> Unit,
     onClick: () -> Unit,
@@ -95,7 +96,7 @@ fun CastMiniPlayerLayout(
                     if (isExpandedScreen) {
                         Modifier
                             .widthIn(max = 1000.dp)
-                            .fillMaxWidth(0.4f)
+                            .fillMaxWidth(0.5f)
                     } else {
                         Modifier.fillMaxWidth()
                     }
@@ -110,26 +111,45 @@ fun CastMiniPlayerLayout(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium)
                 ) {
-                    if (currentItem != null) {
+                    if (uiState.fileLoaded) {
                         AsyncImage(
-                            model = currentItem.posterUrl,
+                            model = uiState.currentItemPosterUrl,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .height(64.dp)
-                                .aspectRatio(if (currentItem.mediaType == PlayerMediaType.EPISODE) 16f / 9f else 2f / 3f)
+                                .height(if (isExpandedScreen) 80.dp else 64.dp)
+                                .aspectRatio(uiState.defaultAspectRatio)
                                 .clip(MaterialTheme.shapes.medium),
                         )
 
                         Column(
                             modifier = Modifier.weight(1f),
                         ) {
-                            Text(
-                                text = currentItem.name,
-                                style = MaterialTheme.typography.titleMedium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            val titleInfo = uiState.currentItemTitle
+                            if (titleInfo.seriesName != null) {
+                                // Episode layout
+                                Text(
+                                    text = titleInfo.seriesName!!,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = titleInfo.episodeInfo + " - " + titleInfo.title,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            } else {
+                                // Film layout
+                                Text(
+                                    text = titleInfo.title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = connectedDevice.name,
                                 style = MaterialTheme.typography.bodySmall,
@@ -192,7 +212,7 @@ fun CastMiniPlayerLayout(
                     }
                 }
 
-                if (currentItem != null) {
+                if (uiState.fileLoaded) {
                     LinearProgressIndicator(
                         progress = {
                             if (playbackState.duration > 0) {
@@ -216,7 +236,7 @@ private fun CastMiniPlayerPhonePreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
             connectedDevice = CastDevice("1", "Living Room TV"),
-            currentItem = null,
+            uiState = previewUiState(posterUrl = null),
             playbackState = CastPlaybackState(),
             onTogglePlayback = {},
             onClick = {}
@@ -230,13 +250,11 @@ private fun CastMiniPlayerPlayingPhonePreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
             connectedDevice = CastDevice("1", "Living Room TV"),
-            currentItem = PlayerItem(
-                name = "Interstellar",
-                itemId = UUID.randomUUID(),
-                mediaSourceId = "1",
-                playbackPosition = 0L,
-                posterUrl = null,
-                mediaType = PlayerMediaType.MOVIE
+            uiState = previewUiState(
+                title = "Interstellar",
+                isMovie = true,
+                aspectRatio = 2f / 3f,
+                fileLoaded = true,
             ),
             playbackState = CastPlaybackState(
                 isPlaying = true,
@@ -255,13 +273,13 @@ private fun CastMiniPlayerPlayingEpisodePhonePreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
             connectedDevice = CastDevice("1", "Living Room TV"),
-            currentItem = PlayerItem(
-                name = "The Hansboro Incident",
-                itemId = UUID.randomUUID(),
-                mediaSourceId = "1",
-                playbackPosition = 0L,
-                posterUrl = null,
-                mediaType = PlayerMediaType.EPISODE
+            uiState = previewUiState(
+                title = "The Hansboro Incident",
+                seriesName = "The Expanse",
+                episodeInfo = "S01:E01",
+                isMovie = false,
+                aspectRatio = 16f / 9f,
+                fileLoaded = true,
             ),
             playbackState = CastPlaybackState(
                 isPlaying = true,
@@ -280,13 +298,11 @@ private fun CastMiniPlayerTabletPreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
             connectedDevice = CastDevice("1", "Living Room TV"),
-            currentItem = PlayerItem(
-                name = "Interstellar",
-                itemId = UUID.randomUUID(),
-                mediaSourceId = "1",
-                playbackPosition = 0L,
-                posterUrl = null,
-                mediaType = PlayerMediaType.MOVIE
+            uiState = previewUiState(
+                title = "Interstellar",
+                isMovie = true,
+                aspectRatio = 2f / 3f,
+                fileLoaded = true,
             ),
             playbackState = CastPlaybackState(
                 isPlaying = false,
@@ -305,13 +321,13 @@ private fun CastMiniPlayerEpisodeTabletPreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
             connectedDevice = CastDevice("1", "Living Room TV"),
-            currentItem = PlayerItem(
-                name = "The Hansboro Incident",
-                itemId = UUID.randomUUID(),
-                mediaSourceId = "1",
-                playbackPosition = 0L,
-                posterUrl = null,
-                mediaType = PlayerMediaType.EPISODE
+            uiState = previewUiState(
+                title = "The Hansboro Incident",
+                seriesName = "The Expanse",
+                episodeInfo = "S01:E01",
+                isMovie = false,
+                aspectRatio = 16f / 9f,
+                fileLoaded = true,
             ),
             playbackState = CastPlaybackState(
                 isPlaying = false,
@@ -323,3 +339,28 @@ private fun CastMiniPlayerEpisodeTabletPreview() {
         )
     }
 }
+
+private fun previewUiState(
+    title: String = "Title",
+    seriesName: String? = null,
+    episodeInfo: String? = null,
+    posterUrl: String? = "url",
+    isMovie: Boolean = true,
+    aspectRatio: Float = 16f / 9f,
+    fileLoaded: Boolean = false
+) = CastPlayerViewModel.UiState(
+    currentItemTitle = CastPlayerViewModel.CurrentItemTitle(
+        seriesName = seriesName,
+        episodeInfo = episodeInfo,
+        title = title
+    ),
+    currentItemPosterUrl = posterUrl,
+    isMovie = isMovie,
+    defaultAspectRatio = aspectRatio,
+    trickplayAspectRatio = null,
+    currentSegment = null,
+    currentSkipButtonStringRes = 0,
+    currentTrickplay = null,
+    currentChapters = emptyList(),
+    fileLoaded = fileLoaded
+)

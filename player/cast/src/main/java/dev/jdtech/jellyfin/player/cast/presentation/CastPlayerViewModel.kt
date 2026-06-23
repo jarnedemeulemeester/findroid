@@ -13,7 +13,6 @@ import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerMediaType
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
-import dev.jdtech.jellyfin.player.core.domain.utils.ChapterUtils
 import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils
 import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils.getSkipButtonTextStringId
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -30,8 +29,6 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
-import kotlin.Boolean
-import kotlin.Float
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -60,6 +57,7 @@ class CastPlayerViewModel
         val currentSkipButtonStringRes: Int,
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>,
+        val fileLoaded: Boolean,
     )
 
     private val _uiState =
@@ -74,19 +72,26 @@ class CastPlayerViewModel
                 currentSkipButtonStringRes = R.string.player_controls_skip_intro,
                 currentTrickplay = null,
                 currentChapters = emptyList(),
+                fileLoaded = false
             )
         )
     val uiState = _uiState.asStateFlow()
 
     private var currentMediaItemSegments: List<FindroidSegment> = emptyList()
-    private var hasNextMediaItem = false
+    var currentItemId: UUID? = null
+    var hasPreviousMediaItem = false
+    var hasNextMediaItem = false
 
     init {
         viewModelScope.launch {
             castManager.currentItem.collect { item ->
                 if (item != null) {
                     onMediaItemTransition(item)
+                } else {
+                    onMediaItemCleared()
                 }
+
+                Timber.d("CurrentItem: $item")
             }
         }
 
@@ -120,6 +125,8 @@ class CastPlayerViewModel
                 mediaSourceIndex = null,
                 startFromBeginning = startFromBeginning
             )
+            currentItemId = itemId
+            _uiState.update { it.copy(fileLoaded = false) }
             if (initialItem != null) {
                 castManager.loadItem(initialItem, if (startFromBeginning) 0L else initialItem.playbackPosition)
             }
@@ -128,6 +135,7 @@ class CastPlayerViewModel
 
     private suspend fun onMediaItemTransition(item: PlayerItem) {
         Timber.d("Cast MediaItem transition: ${item.itemId}")
+        currentItemId = item.itemId
         val isMovie = item.mediaType == PlayerMediaType.MOVIE
 
         val defaultRatio = when (item.mediaType) {
@@ -144,10 +152,10 @@ class CastPlayerViewModel
             val parentIndex = item.parentIndexNumber.toString().padStart(2, '0')
             val index = item.indexNumber.toString().padStart(2, '0')
             val episodeInfo = if (item.indexNumberEnd == null) {
-                "S$parentIndex:E$index"
+                "S$parentIndex - E$index"
             } else {
                 val indexEnd = item.indexNumberEnd.toString().padStart(2, '0')
-                "S$parentIndex:E$index-$indexEnd"
+                "S$parentIndex - E$index:$indexEnd"
             }
 
             CurrentItemTitle(
@@ -168,6 +176,7 @@ class CastPlayerViewModel
                 trickplayAspectRatio = trickplayRatio,
                 currentSegment = null,
                 currentChapters = item.chapters,
+                fileLoaded = true,
             )
         }
 
@@ -184,6 +193,18 @@ class CastPlayerViewModel
         }
 
         playlistManager.setCurrentMediaItemIndex(item.itemId)
+
+        val previousItem = playlistManager.getPreviousPlayerItem()
+        if (previousItem != null) {
+            castManager.queuePreviousItem(previousItem)
+        }
+
+        val nextItem = playlistManager.getNextPlayerItem()
+        if (nextItem != null) {
+            castManager.queueNextItem(nextItem)
+        }
+
+        hasPreviousMediaItem = playlistManager.getPreviousPlayerItem() != null
         hasNextMediaItem = playlistManager.getNextPlayerItem() != null
     }
 
@@ -243,11 +264,41 @@ class CastPlayerViewModel
 
     fun skipSegment(segment: FindroidSegment) {
         if (shouldSkipToNextEpisode(segment)) {
-            // Handle next episode logic if needed
+            playNextItem()
         } else {
             castManager.seekTo(segment.endTicks)
         }
         _uiState.update { it.copy(currentSegment = null) }
+    }
+
+    fun playNextItem() {
+        _uiState.update { it.copy(fileLoaded = false) }
+        castManager.seekToNext()
+    }
+
+    fun playPreviousItem() {
+        _uiState.update { it.copy(fileLoaded = false) }
+        castManager.seekToPrevious()
+    }
+
+    private fun onMediaItemCleared() {
+        currentMediaItemSegments = emptyList()
+        hasPreviousMediaItem = false
+        hasNextMediaItem = false
+        _uiState.update {
+            it.copy(
+                currentItemTitle = CurrentItemTitle(title = ""),
+                currentItemPosterUrl = null,
+                isMovie = false,
+                defaultAspectRatio = 16f / 10f,
+                trickplayAspectRatio = null,
+                currentSegment = null,
+                currentSkipButtonStringRes = R.string.player_controls_skip_intro,
+                currentTrickplay = null,
+                currentChapters = emptyList(),
+                fileLoaded = false,
+            )
+        }
     }
 
     private fun shouldSkipToNextEpisode(segment: FindroidSegment): Boolean {
@@ -295,21 +346,5 @@ class CastPlayerViewModel
                 Timber.e(e)
             }
         }
-    }
-
-    fun getCurrentChapterIndex(chapters: List<PlayerChapter>, currentPosition: Long): Int? {
-        return ChapterUtils.getCurrentChapterIndex(chapters, currentPosition)
-    }
-
-    fun getNextChapterIndex(chapters: List<PlayerChapter>, currentPosition: Long): Int? {
-        return ChapterUtils.getNextChapterIndex(chapters, currentPosition)
-    }
-
-    fun getPreviousChapterIndex(chapters: List<PlayerChapter>, currentPosition: Long): Int? {
-        return ChapterUtils.getPreviousChapterIndex(chapters, currentPosition)
-    }
-
-    fun isLastChapter(chapters: List<PlayerChapter>, currentPosition: Long): Boolean {
-        return ChapterUtils.isLastChapter(chapters, currentPosition)
     }
 }

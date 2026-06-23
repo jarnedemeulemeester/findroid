@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.player.core.domain
 
 import androidx.core.net.toUri
+import androidx.media3.common.MimeTypes
 import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -15,14 +16,12 @@ import dev.jdtech.jellyfin.player.core.domain.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
-import javax.inject.Singleton
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
 
-@Singleton
-class PlaylistManager @Inject constructor(private val repository: JellyfinRepository) {
+class PlaylistManager @Inject internal constructor(private val repository: JellyfinRepository) {
     private var startItem: FindroidItem? = null
     private var items: List<FindroidItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
@@ -228,10 +227,10 @@ class PlaylistManager @Inject constructor(private val repository: JellyfinReposi
                         mediaStream.language,
                         mediaStream.path!!.toUri(),
                         when (mediaStream.codec) {
-                            "subrip" -> "application/x-subrip"
-                            "webvtt" -> "application/x-subrip"
-                            "ass" -> "text/x-ssa"
-                            else -> "text/unknown"
+                            "subrip" -> MimeTypes.APPLICATION_SUBRIP
+                            "webvtt" -> MimeTypes.APPLICATION_SUBRIP
+                            "ass" -> MimeTypes.TEXT_SSA
+                            else -> MimeTypes.TEXT_UNKNOWN
                         },
                     )
                 }
@@ -267,6 +266,7 @@ class PlaylistManager @Inject constructor(private val repository: JellyfinReposi
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
             posterUrl = images.primary?.toString() ?: images.backdrop?.toString(),
+            seriesPosterUrl = if (this is FindroidEpisode) images.showPrimary?.toString() else null
         )
     }
 

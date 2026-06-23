@@ -565,7 +565,6 @@ fun NavigationRoot(
                 if (showCastMiniPlayer) {
                     CastMiniPlayer(
                         castManager = castManager,
-                        currentItem = currentItem,
                         onClick = {
                             if (currentItem != null) {
                                 showCastExpandedPlayer = true
