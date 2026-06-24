@@ -1,9 +1,11 @@
 package dev.jdtech.jellyfin.presentation.cast.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -29,26 +31,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.C
+import androidx.media3.common.MimeTypes
+import dev.jdtech.jellyfin.player.core.R
 import dev.jdtech.jellyfin.player.core.domain.models.Track
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
 fun CastTrackSelectionSheet(
-    audioTracks: List<Track>,
-    subtitleTracks: List<Track>,
-    onSetAudioTrack: (Track?) -> Unit,
-    onSetSubtitleTrack: (Track?) -> Unit,
+    type: @C.TrackType Int,
+    tracks: List<Track>,
+    onSetTrack: (Track?) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var offsetY by remember { mutableFloatStateOf(0f) }
     val animatedOffset by animateFloatAsState(targetValue = offsetY, label = "offset")
+
+    val titleResource =
+        when (type) {
+            C.TRACK_TYPE_AUDIO -> R.string.select_audio_track
+            C.TRACK_TYPE_TEXT -> R.string.select_subtitle_track
+            else -> throw IllegalStateException("TrackType must be AUDIO or TEXT")
+        }
 
     Surface(
         modifier = modifier
@@ -68,7 +83,8 @@ fun CastTrackSelectionSheet(
                     }
                 )
             },
-        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+        shape = MaterialTheme.shapes.large,
         tonalElevation = 8.dp
     ) {
         Column(
@@ -87,61 +103,36 @@ fun CastTrackSelectionSheet(
                     )
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
 
             Text(
-                text = "Select Tracks",
+                text = stringResource(titleResource),
                 style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(8.dp)
             )
 
             LazyColumn(
                 modifier = Modifier.weight(1f, fill = false)
             ) {
-                item {
-                    Text(
-                        text = "Audio",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
-                    )
-                }
-                item {
-                    TrackRow(
-                        trackName = "None (Audio)",
-                        isSelected = audioTracks.none { it.selected }) {
-                        onSetAudioTrack(null)
+                if (type == C.TRACK_TYPE_TEXT) {
+                    item {
+                        TrackRow(
+                            trackName = stringResource(R.string.none),
+                            trackLanguage = null,
+                            isSelected = tracks.none { it.selected }
+                        ) {
+                            onSetTrack(null)
+                        }
                     }
                 }
-                items(audioTracks) { track ->
+                items(tracks, key = { it.id }) { track ->
                     TrackRow(
-                        trackName = track.label ?: track.language ?: "Unknown",
+                        trackName = track.label,
+                        trackLanguage = track.language,
+                        trackCodec = track.codec,
                         isSelected = track.selected
                     ) {
-                        onSetAudioTrack(track)
-                    }
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Subtitles",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
-                    )
-                }
-                item {
-                    TrackRow(
-                        trackName = "None (Subtitle)",
-                        isSelected = subtitleTracks.none { it.selected }) {
-                        onSetSubtitleTrack(null)
-                    }
-                }
-                items(subtitleTracks) { track ->
-                    TrackRow(
-                        trackName = track.label ?: track.language ?: "Unknown",
-                        isSelected = track.selected
-                    ) {
-                        onSetSubtitleTrack(track)
+                        onSetTrack(track)
                     }
                 }
             }
@@ -149,28 +140,46 @@ fun CastTrackSelectionSheet(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun CastTrackSelectionSheetPreview() {
-    FindroidTheme {
-        CastTrackSelectionSheet(
-            audioTracks = listOf(
-                Track(1, "English", "English", "ac3", true, true),
-                Track(2, "Italian", "Italian", "aac", false, true)
-            ),
-            subtitleTracks = listOf(
-                Track(3, "English", "English", "srt", false, true),
-                Track(4, "Italian", "Italian", "srt", true, true)
-            ),
-            onSetAudioTrack = {},
-            onSetSubtitleTrack = {},
-            onDismiss = {}
-        )
-    }
-}
+private fun TrackRow(
+    trackName: String?,
+    trackLanguage: String?,
+    isSelected: Boolean,
+    trackCodec: String? = null,
+    onClick: () -> Unit
+) {
+    val noneString = stringResource(R.string.none)
+    val (displayTrackName, filteredLabel) = remember(trackName, trackLanguage, trackCodec) {
+        val locale = trackLanguage?.takeIf { it.isNotBlank() && it != "und" }?.let { lang ->
+            Locale.forLanguageTag(lang.replace("_", "-"))
+        }
 
-@Composable
-private fun TrackRow(trackName: String, isSelected: Boolean, onClick: () -> Unit) {
+        val localizedLanguage = locale?.displayLanguage?.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+        }
+
+        val englishLanguage = locale?.getDisplayLanguage(Locale.ENGLISH)
+
+        val filteredLabel = trackName?.takeIf {
+            it.isNotBlank() &&
+                    !it.equals(noneString, ignoreCase = true) &&
+                    !it.equals(localizedLanguage, ignoreCase = true) &&
+                    !it.equals(englishLanguage, ignoreCase = true) &&
+                    !it.equals(trackLanguage, ignoreCase = true)
+        }
+
+        val displayName = localizedLanguage ?: trackName ?: ""
+
+        displayName to filteredLabel
+    }
+
+    val trackCodecText = when (trackCodec) {
+        MimeTypes.APPLICATION_SUBRIP -> "subrip"
+        MimeTypes.TEXT_VTT -> "webvtt"
+        MimeTypes.TEXT_SSA -> "ass"
+        else -> null
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -179,7 +188,57 @@ private fun TrackRow(trackName: String, isSelected: Boolean, onClick: () -> Unit
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(selected = isSelected, onClick = onClick)
+
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = trackName, style = MaterialTheme.typography.bodyMedium)
+
+        Text(text = displayTrackName, style = MaterialTheme.typography.bodyMedium)
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
+            if (filteredLabel != null) {
+                TrackMetadataBarItem(filteredLabel)
+            }
+            if (trackCodecText != null) {
+                TrackMetadataBarItem(trackCodecText)
+            }
+        }
+    }
+}
+
+@Composable
+fun TrackMetadataBarItem(trackSpec: String, @DrawableRes icon: Int? = null) {
+    Row(
+        modifier =
+            Modifier
+                .clip(MaterialTheme.shapes.small)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .padding(
+                    horizontal = MaterialTheme.spacings.small,
+                    vertical = MaterialTheme.spacings.extraSmall,
+                ),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.extraSmall),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (icon != null) {
+            Icon(painter = painterResource(icon), contentDescription = null)
+        }
+        Text(text = trackSpec, style = MaterialTheme.typography.labelMedium)
+    }
+}
+
+@Preview
+@Composable
+private fun CastTrackSelectionSheetPreview() {
+    FindroidTheme {
+        CastTrackSelectionSheet(
+            type = C.TRACK_TYPE_AUDIO,
+            tracks = listOf(
+                Track(3, "English", "eng", "aac", selected = false, supported = true),
+                Track(4, "Spanish", "spa", "aac", selected = true, supported = true)
+            ),
+            onSetTrack = {},
+            onDismiss = {}
+        )
     }
 }

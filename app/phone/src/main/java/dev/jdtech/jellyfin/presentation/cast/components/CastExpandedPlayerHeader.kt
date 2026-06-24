@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.presentation.cast.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,23 +29,23 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun CastExpandedPlayerHeader(
     deviceName: String?,
     onClose: () -> Unit,
-    onDeviceClick: () -> Unit,
-    onOptionsClick: () -> Unit
+    onDeviceClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Box(
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
         IconButton(
             onClick = onClose,
-            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
         ) {
             Icon(painterResource(CoreR.drawable.ic_x), contentDescription = "Close")
         }
         
         // Device Pill
         Surface(
+            modifier = Modifier.align(Alignment.Center),
             shape = RoundedCornerShape(24.dp),
             color = Color(0xFF81C784),
             onClick = onDeviceClick
@@ -59,13 +59,6 @@ fun CastExpandedPlayerHeader(
                 Text(deviceName ?: "No Device", style = MaterialTheme.typography.labelLarge, color = Color.Black)
             }
         }
-
-        IconButton(
-            onClick = onOptionsClick,
-            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
-        ) {
-            Icon(painterResource(CoreR.drawable.ic_settings), contentDescription = "Settings")
-        }
     }
 }
 
@@ -76,8 +69,7 @@ private fun CastExpandedPlayerHeaderPreview() {
         CastExpandedPlayerHeader(
             deviceName = "Test Device",
             onClose = {},
-            onDeviceClick = {},
-            onOptionsClick = {}
+            onDeviceClick = {}
         )
     }
 }

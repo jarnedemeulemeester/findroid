@@ -18,6 +18,7 @@ import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerMediaType
 import dev.jdtech.jellyfin.player.core.domain.models.Track
@@ -39,7 +40,8 @@ import com.google.android.gms.cast.CastDevice as GmsCastDevice
 
 @Singleton
 class CastManagerImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
+    private val jellyfinApi: JellyfinApi
 ) : CastManager {
 
     override val isSupported = true
@@ -274,15 +276,18 @@ class CastManagerImpl @Inject constructor(
         val mediaTracks = mediaInfo.mediaTracks ?: emptyList()
         val activeTrackIds = client.mediaStatus?.activeTrackIds?.toList() ?: emptyList()
 
+        Timber.d("Tracks: $mediaTracks")
+        Timber.d("Active tracks: $activeTrackIds")
+
         val audio = mutableListOf<Track>()
         val subs = mutableListOf<Track>()
 
         mediaTracks.forEach { castTrack ->
             val track = Track(
                 id = castTrack.id.toInt(),
-                label = castTrack.name ?: "",
+                label = castTrack.name ?: "external",
                 language = castTrack.language ?: "",
-                codec = castTrack.subtype.toString(),
+                codec = castTrack.customData?.getString("mimeType"),
                 selected = activeTrackIds.contains(castTrack.id),
                 supported = true
             )
@@ -294,6 +299,9 @@ class CastManagerImpl @Inject constructor(
         }
         _audioTracks.value = audio
         _subtitleTracks.value = subs
+
+        Timber.d("Audio tracks: $audio")
+        Timber.d("Subtitle tracks: $subs")
     }
 
     override fun loadItem(item: PlayerItem, startPosition: Long) {
@@ -314,17 +322,13 @@ class CastManagerImpl @Inject constructor(
         client.load(loadRequest)
     }
 
-    private fun buildMediaInfo(item: PlayerItem): MediaInfo {
-        val mediaType =
-            if (item.mediaType == PlayerMediaType.EPISODE) MediaMetadata.MEDIA_TYPE_TV_SHOW else MediaMetadata.MEDIA_TYPE_MOVIE
+    private fun buildMediaInfo(item: PlayerItem, selectedAudioIndex: Int = -1): MediaInfo {
+        val mediaType = if (item.mediaType == PlayerMediaType.EPISODE) MediaMetadata.MEDIA_TYPE_TV_SHOW else MediaMetadata.MEDIA_TYPE_MOVIE
         val mediaMetadata = MediaMetadata(mediaType).apply {
             putString(MediaMetadata.KEY_TITLE, item.name)
-
             item.seriesName?.let { putString(MediaMetadata.KEY_SERIES_TITLE, it) }
-
             item.indexNumber?.let { putInt(MediaMetadata.KEY_EPISODE_NUMBER, it) }
             item.parentIndexNumber?.let { putInt(MediaMetadata.KEY_SEASON_NUMBER, it) }
-
             item.seriesPosterUrl?.let { addImage(WebImage(it.toUri())) }
             item.posterUrl?.let { addImage(WebImage(it.toUri())) }
         }
@@ -333,28 +337,83 @@ class CastManagerImpl @Inject constructor(
             put("itemId", item.itemId.toString())
         }
 
-        val contentType = when {
-            item.mediaSourceUri.contains(".m3u8") -> "application/x-mpegurl"
-            item.mediaSourceUri.contains(".mpd") -> "application/dash+xml"
-            else -> "video/mp4"
-        }
+        val baseUrl = jellyfinApi.api.baseUrl
+        val accessToken = jellyfinApi.accessToken
 
-        val mediaInfoBuilder = MediaInfo.Builder(item.mediaSourceUri)
+        val hlsUrl = "$baseUrl/Videos/${item.itemId}/master.m3u8?" +
+                "MediaSourceId=${item.mediaSourceId}&" +
+                "VideoCodec=h264&" +
+                "AudioCodec=aac,mp3&" +
+                "AudioStreamIndex=$selectedAudioIndex&" +
+                "SubtitleStreamIndex=-1&" +
+                "VideoBitrate=140000000&" +
+                "AudioBitrate=192000&" +
+                "MaxAudioChannels=6&" +
+                "TranscodingMaxAudioChannels=6&" +
+                "SegmentContainer=ts&" +
+                "MinSegments=1&" +
+                "BreakOnNonKeyFrames=True&" +
+                "ManifestName=master.m3u8&" +
+                "api_key=$accessToken"
+
+        val mediaInfoBuilder = MediaInfo.Builder(hlsUrl)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-            .setContentType(contentType)
+            .setContentType("application/x-mpegurl")
             .setMetadata(mediaMetadata)
             .setCustomData(customData)
 
-        if (item.externalSubtitles.isNotEmpty()) {
-            val castTracks = item.externalSubtitles.mapIndexed { index, subtitle ->
-                MediaTrack.Builder((index + 1).toLong(), MediaTrack.TYPE_TEXT)
-                    .setName(subtitle.title)
-                    .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
-                    .setContentId(subtitle.uri.toString())
-                    .setContentType(subtitle.mimeType)
-                    .setLanguage(subtitle.language)
-                    .build()
+        val castTracks = mutableListOf<MediaTrack>()
+        var trackIdCounter = 100L
+
+        // EXTERNAL SUBTITLES
+        item.externalSubtitles.forEach { subtitle ->
+            var subtitleUrl = subtitle.uri.toString()
+
+            if (!subtitleUrl.contains("api_key=")) {
+                subtitleUrl += if (subtitleUrl.contains("?")) "&" else "?"
+                subtitleUrl += "api_key=$accessToken"
             }
+
+            var mimeType = subtitle.mimeType
+            val data = JSONObject().apply { put("mimeType", subtitle.mimeType) }
+
+            if (subtitleUrl.contains("/Stream.", ignoreCase = true)) {
+                subtitleUrl = subtitleUrl.replace(Regex("/Stream\\.[a-z0-9]+", RegexOption.IGNORE_CASE), "/Stream.vtt")
+                mimeType = "text/vtt"
+            }
+
+            castTracks.add(
+                MediaTrack.Builder(trackIdCounter++, MediaTrack.TYPE_TEXT)
+                    .setName(subtitle.title + "External")
+                    .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
+                    .setContentId(subtitleUrl)
+                    .setContentType(mimeType)
+                    .setLanguage(subtitle.language)
+                    .setCustomData(data)
+                    .build()
+            )
+        }
+
+        // 2. INTERNAL SUBTITLES
+        // NOTE: This assumes PlayerItem exposes `mediaStreams`.
+        // If your property is named differently (like `internalSubtitles`), adjust it below.
+        /*
+        item.mediaStreams?.filter { it.type == "Subtitle" && !it.isExternal }?.forEach { subStream ->
+            val subUrl = "$baseUrl/Videos/${item.itemId}/${item.mediaSourceId}/Subtitles/${subStream.index}/Stream.vtt?api_key=$accessToken"
+
+            castTracks.add(
+                MediaTrack.Builder(trackIdCounter++, MediaTrack.TYPE_TEXT)
+                    .setName(subStream.title ?: subStream.language ?: "Subtitle ${subStream.index}")
+                    .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
+                    .setContentId(subUrl)
+                    .setContentType("text/vtt")
+                    .setLanguage(subStream.language ?: "en")
+                    .build()
+            )
+        }
+        */
+
+        if (castTracks.isNotEmpty()) {
             mediaInfoBuilder.setMediaTracks(castTracks)
         }
 
@@ -368,10 +427,10 @@ class CastManagerImpl @Inject constructor(
 
         val client = remoteMediaClient ?: return
 
-        val status = client.mediaStatus
-        if (status?.queueItems?.lastOrNull()?.media?.contentId == item.mediaSourceUri) return
-
         val mediaInfo = buildMediaInfo(item)
+        val status = client.mediaStatus
+        if (status?.queueItems?.lastOrNull()?.media?.contentId == mediaInfo.contentId) return
+
         val queueItem = MediaQueueItem.Builder(mediaInfo)
             .setAutoplay(true)
             .setPreloadTime(20.0)
@@ -401,10 +460,10 @@ class CastManagerImpl @Inject constructor(
 
         val client = remoteMediaClient ?: return
 
-        val status = client.mediaStatus
-        if (status?.queueItems?.firstOrNull()?.media?.contentId == item.mediaSourceUri) return
-
         val mediaInfo = buildMediaInfo(item)
+        val status = client.mediaStatus
+        if (status?.queueItems?.firstOrNull()?.media?.contentId == mediaInfo.contentId) return
+
         val queueItem = MediaQueueItem.Builder(mediaInfo)
             .setAutoplay(true)
             .setPreloadTime(20.0)
@@ -447,17 +506,6 @@ class CastManagerImpl @Inject constructor(
         castSession?.volume = volume.toDouble()
     }
 
-    override fun setAudioTrack(track: Track?) {
-        val client = remoteMediaClient ?: return
-        val activeIds = client.mediaStatus?.activeTrackIds?.toMutableList() ?: mutableListOf()
-        val audioTrackIds = _audioTracks.value.map { it.id.toLong() }
-        activeIds.removeAll(audioTrackIds)
-        if (track != null) {
-            activeIds.add(track.id.toLong())
-        }
-        client.setActiveMediaTracks(activeIds.toLongArray())
-    }
-
     override fun setSubtitleTrack(track: Track?) {
         val client = remoteMediaClient ?: return
         val activeIds = client.mediaStatus?.activeTrackIds?.toMutableList() ?: mutableListOf()
@@ -466,7 +514,71 @@ class CastManagerImpl @Inject constructor(
         if (track != null) {
             activeIds.add(track.id.toLong())
         }
+        Timber.d("Active tracks: $activeIds")
+
         client.setActiveMediaTracks(activeIds.toLongArray())
+        updateTracks(client)
+    }
+
+    override fun setAudioTrack(track: Track?) {
+        val client = remoteMediaClient ?: return
+        val item = _currentItem.value ?: return
+
+        val newAudioIndex = track?.id ?: -1
+
+        val status = client.mediaStatus
+        val currentPosition = client.approximateStreamPosition
+        val activeTrackIds = status?.activeTrackIds ?: longArrayOf()
+
+        val newMediaInfo = buildMediaInfo(item, selectedAudioIndex = newAudioIndex)
+
+        val queueItems = status?.queueItems ?: emptyList()
+        val currentIndex = queueItems.indexOfFirst { it.itemId == status?.currentItemId }
+
+        if (queueItems.isEmpty() || currentIndex == -1) {
+            val loadRequest = MediaLoadRequestData.Builder()
+                .setMediaInfo(newMediaInfo)
+                .setAutoplay(true)
+                .setCurrentTime(currentPosition)
+                .setActiveTrackIds(activeTrackIds)
+                .build()
+
+            client.load(loadRequest).setResultCallback { result ->
+                if (result.status.isSuccess) {
+                    Timber.d("Audio track switched successfully via standard load.")
+                } else {
+                    Timber.e("Failed to switch audio track: ${result.status.statusCode}")
+                }
+            }
+        } else {
+            val newQueue = queueItems.mapIndexed { index, queueItem ->
+                if (index == currentIndex) {
+                    MediaQueueItem.Builder(newMediaInfo)
+                        .setAutoplay(true)
+                        .setActiveTrackIds(activeTrackIds)
+                        .setPreloadTime(20.0)
+                        .build()
+                } else {
+                    queueItem
+                }
+            }.toTypedArray()
+
+            val repeatMode = status!!.queueRepeatMode
+
+            client.queueLoad(
+                newQueue,
+                currentIndex,
+                repeatMode,
+                currentPosition,
+                null
+            ).setResultCallback { result ->
+                if (result.status.isSuccess) {
+                    Timber.d("Audio track switched successfully. Queue preserved.")
+                } else {
+                    Timber.e("Failed to switch audio track in queue: ${result.status.statusCode}")
+                }
+            }
+        }
     }
 
     override fun stop() {

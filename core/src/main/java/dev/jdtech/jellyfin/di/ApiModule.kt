@@ -39,6 +39,7 @@ object ApiModule {
         jellyfinApi.apply {
             api.update(baseUrl = serverAddress.address, accessToken = user?.accessToken)
             userId = user?.id
+            accessToken = user?.accessToken
         }
 
         return jellyfinApi

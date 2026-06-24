@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,13 +51,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.media3.common.C
 import coil3.compose.AsyncImage
 import dev.jdtech.jellyfin.player.cast.CastManager
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
+import dev.jdtech.jellyfin.presentation.cast.components.CastBottomControls
 import dev.jdtech.jellyfin.presentation.cast.components.CastExpandedPlayerHeader
 import dev.jdtech.jellyfin.presentation.cast.components.CastScrubbingTimeline
 import dev.jdtech.jellyfin.presentation.cast.components.CastTrackSelectionSheet
-import dev.jdtech.jellyfin.presentation.cast.components.CastVolumeControls
 import dev.jdtech.jellyfin.presentation.cast.components.PlaybackControls
 import dev.jdtech.jellyfin.presentation.cast.components.TrickplayThumbnail
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -120,6 +122,7 @@ private fun CastExpandedPlayerContent(
     var isScrubbing by remember { mutableStateOf(false) }
     var scrubPosition by remember { mutableFloatStateOf(0f) }
     var showTrackSelection by remember { mutableStateOf(false) }
+    var trackType by remember { mutableIntStateOf(C.TRACK_TYPE_AUDIO) }
 
     val titleInfo = uiState.currentItemTitle
     val posterUrl = uiState.currentItemPosterUrl
@@ -139,8 +142,7 @@ private fun CastExpandedPlayerContent(
             CastExpandedPlayerHeader(
                 deviceName = connectedDevice?.name,
                 onClose = onClose,
-                onDeviceClick = onDeviceClick,
-                onOptionsClick = { showTrackSelection = true }
+                onDeviceClick = onDeviceClick
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -260,10 +262,18 @@ private fun CastExpandedPlayerContent(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Volume Controls
-            CastVolumeControls(
+            // Bottom Controls
+            CastBottomControls(
                 volume = volume,
                 onVolumeChange = { castManager.setVolume(it) },
+                onClickAudio = {
+                    showTrackSelection = true
+                    trackType = C.TRACK_TYPE_AUDIO
+                },
+                onClickSubtitle = {
+                    showTrackSelection = true
+                    trackType = C.TRACK_TYPE_TEXT
+                }
             )
 
             Spacer(modifier = Modifier.height(48.dp))
@@ -291,10 +301,9 @@ private fun CastExpandedPlayerContent(
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             CastTrackSelectionSheet(
-                audioTracks = audioTracks,
-                subtitleTracks = subtitleTracks,
-                onSetAudioTrack = { castManager.setAudioTrack(it) },
-                onSetSubtitleTrack = { castManager.setSubtitleTrack(it) },
+                type = trackType,
+                tracks = if (trackType == C.TRACK_TYPE_AUDIO) audioTracks else subtitleTracks,
+                onSetTrack = { if (trackType == C.TRACK_TYPE_AUDIO) castManager.setAudioTrack(it) else castManager.setSubtitleTrack(it) },
                 onDismiss = { showTrackSelection = false },
                 modifier = Modifier
                     .padding(16.dp)

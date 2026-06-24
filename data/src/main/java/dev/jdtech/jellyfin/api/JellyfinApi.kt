@@ -60,6 +60,7 @@ class JellyfinApi(
                 )
         )
     var userId: UUID? = null
+    var accessToken: String? = null
 
     val brandingApi = api.brandingApi
     val devicesApi = api.devicesApi

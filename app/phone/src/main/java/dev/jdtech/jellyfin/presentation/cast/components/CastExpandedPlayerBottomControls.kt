@@ -1,10 +1,18 @@
 package dev.jdtech.jellyfin.presentation.cast.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -23,25 +31,81 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun CastVolumeControls(
+fun CastBottomControls(
     volume: Float,
     onVolumeChange: (Float) -> Unit,
+    onClickAudio: () -> Unit,
+    onClickSubtitle: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.spacings.extraLarge),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = MaterialTheme.spacings.large),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            FilledIconButton(
+                onClick = onClickAudio,
+                shape = RoundedCornerShape(
+                    topStart = 50.dp,
+                    bottomStart = 50.dp,
+                    topEnd = 3.dp,
+                    bottomEnd = 3.dp,
+                ),
+                colors =
+                    IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                modifier = Modifier.size(42.dp),
+            ) {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_speaker),
+                    contentDescription = "Audio",
+                    modifier = Modifier.size(24.dp),
+                )
+            }
+            FilledIconButton(
+                onClick = onClickSubtitle,
+                shape = RoundedCornerShape(
+                    topStart = 3.dp,
+                    bottomStart = 3.dp,
+                    topEnd = 50.dp,
+                    bottomEnd = 50.dp,
+                ),
+                colors =
+                    IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                modifier = Modifier.size(42.dp),
+            ) {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_closed_caption),
+                    contentDescription = "Subtitle",
+                    modifier = Modifier.size(24.dp),
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
+
         VolumeSlider(
             volume = volume,
             onValueChange = onVolumeChange,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1.5f)
         )
     }
 }
@@ -95,7 +159,8 @@ fun VolumeSlider(
         valueRange = 0f..1f,
         colors = colors,
         track = { sliderState ->
-            val iconSize = DpSize(VolumeSliderDefaults.InsetIconSize, VolumeSliderDefaults.InsetIconSize)
+            val iconSize =
+                DpSize(VolumeSliderDefaults.InsetIconSize, VolumeSliderDefaults.InsetIconSize)
             val activeIconColor = MaterialTheme.colorScheme.onPrimary
             val inactiveIconColor = MaterialTheme.colorScheme.onSurfaceVariant
 
@@ -160,5 +225,18 @@ private fun DrawScope.drawVolumeIcon(
                 draw(iconSizePx, colorFilter = ColorFilter.tint(inactiveIconColor))
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun CastBottomControlsPreview() {
+    FindroidTheme {
+        CastBottomControls(
+            volume = 0.5f,
+            onVolumeChange = {},
+            onClickAudio = {},
+            onClickSubtitle = {}
+        )
     }
 }
