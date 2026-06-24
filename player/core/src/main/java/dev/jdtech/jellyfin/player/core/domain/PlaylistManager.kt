@@ -137,7 +137,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             when (startItem) {
                 is FindroidMovie -> null
                 is FindroidEpisode -> {
-                    if (currentItemIndex == 0) {
+                    if (currentItemIndex <= 0 || items.isEmpty()) {
                         null
                     } else {
                         val item = items[itemIndex]
@@ -171,7 +171,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             when (startItem) {
                 is FindroidMovie -> null
                 is FindroidEpisode -> {
-                    if (currentItemIndex == items.lastIndex) {
+                    if (currentItemIndex < 0 || currentItemIndex >= items.lastIndex) {
                         null
                     } else {
                         val item = items[itemIndex]

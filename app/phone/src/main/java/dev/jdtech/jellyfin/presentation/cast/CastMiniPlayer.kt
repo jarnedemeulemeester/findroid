@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImage
-import dev.jdtech.jellyfin.player.cast.CastDevice
+import dev.jdtech.jellyfin.player.cast.Device
 import dev.jdtech.jellyfin.player.cast.CastManager
 import dev.jdtech.jellyfin.player.cast.CastPlaybackState
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
@@ -71,7 +71,7 @@ fun CastMiniPlayer(
 
 @Composable
 fun CastMiniPlayerLayout(
-    connectedDevice: CastDevice,
+    connectedDevice: Device,
     uiState: CastPlayerViewModel.UiState,
     playbackState: CastPlaybackState,
     onTogglePlayback: () -> Unit,
@@ -235,7 +235,7 @@ fun CastMiniPlayerLayout(
 private fun CastMiniPlayerPhonePreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
-            connectedDevice = CastDevice("1", "Living Room TV"),
+            connectedDevice = Device("1", "Living Room TV"),
             uiState = previewUiState(posterUrl = null),
             playbackState = CastPlaybackState(),
             onTogglePlayback = {},
@@ -249,7 +249,7 @@ private fun CastMiniPlayerPhonePreview() {
 private fun CastMiniPlayerPlayingPhonePreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
-            connectedDevice = CastDevice("1", "Living Room TV"),
+            connectedDevice = Device("1", "Living Room TV"),
             uiState = previewUiState(
                 title = "Interstellar",
                 isMovie = true,
@@ -272,7 +272,7 @@ private fun CastMiniPlayerPlayingPhonePreview() {
 private fun CastMiniPlayerPlayingEpisodePhonePreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
-            connectedDevice = CastDevice("1", "Living Room TV"),
+            connectedDevice = Device("1", "Living Room TV"),
             uiState = previewUiState(
                 title = "The Hansboro Incident",
                 seriesName = "The Expanse",
@@ -297,7 +297,7 @@ private fun CastMiniPlayerPlayingEpisodePhonePreview() {
 private fun CastMiniPlayerTabletPreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
-            connectedDevice = CastDevice("1", "Living Room TV"),
+            connectedDevice = Device("1", "Living Room TV"),
             uiState = previewUiState(
                 title = "Interstellar",
                 isMovie = true,
@@ -320,7 +320,7 @@ private fun CastMiniPlayerTabletPreview() {
 private fun CastMiniPlayerEpisodeTabletPreview() {
     FindroidTheme {
         CastMiniPlayerLayout(
-            connectedDevice = CastDevice("1", "Living Room TV"),
+            connectedDevice = Device("1", "Living Room TV"),
             uiState = previewUiState(
                 title = "The Hansboro Incident",
                 seriesName = "The Expanse",

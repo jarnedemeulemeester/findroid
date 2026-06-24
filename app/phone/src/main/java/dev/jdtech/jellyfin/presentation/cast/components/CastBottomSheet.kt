@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.player.cast.CastConnectionState
-import dev.jdtech.jellyfin.player.cast.CastDevice
+import dev.jdtech.jellyfin.player.cast.Device
 import dev.jdtech.jellyfin.player.cast.CastManager
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -64,10 +64,10 @@ fun CastBottomSheet(
 
 @Composable
 fun CastBottomSheetLayout(
-    devices: List<CastDevice>,
-    connectedDevice: CastDevice?,
+    devices: List<Device>,
+    connectedDevice: Device?,
     connectionState: CastConnectionState,
-    onDeviceSelected: (CastDevice) -> Unit,
+    onDeviceSelected: (Device) -> Unit,
     onDisconnect: () -> Unit,
 ) {
     Column(
@@ -115,10 +115,10 @@ fun CastBottomSheetLayout(
                 items(items = devices, key = { it.id }) { device ->
                     CastDeviceItem(
                         device = device,
-                        connected = connectedDevice == device,
+                        connected = connectedDevice?.id == device.id,
                         connectionState = connectionState,
                         onClick = {
-                            if (connectedDevice == device) {
+                            if (connectedDevice?.id == device.id) {
                                 onDisconnect()
                             } else {
                                 onDeviceSelected(device)
@@ -160,8 +160,8 @@ private fun CastBottomSheetSearchingPreview() {
 @Composable
 private fun CastBottomSheetPreview() {
     val devices = listOf(
-        CastDevice("1", "Living Room TV"),
-        CastDevice("2", "Bedroom")
+        Device("1", "Living Room TV"),
+        Device("2", "Bedroom")
     )
     FindroidTheme {
         CastBottomSheetLayout(
@@ -179,8 +179,8 @@ private fun CastBottomSheetPreview() {
 @Composable
 private fun CastBottomSheetConnectingPreview() {
     val devices = listOf(
-        CastDevice("1", "Living Room TV"),
-        CastDevice("2", "Bedroom")
+        Device("1", "Living Room TV"),
+        Device("2", "Bedroom")
     )
     FindroidTheme {
         CastBottomSheetLayout(
@@ -198,8 +198,8 @@ private fun CastBottomSheetConnectingPreview() {
 @Composable
 private fun CastBottomSheetConnectedPreview() {
     val devices = listOf(
-        CastDevice("1", "Living Room TV"),
-        CastDevice("2", "Bedroom")
+        Device("1", "Living Room TV"),
+        Device("2", "Bedroom")
     )
     FindroidTheme {
         CastBottomSheetLayout(

@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+/**
+ * Dummy implementation of [CastManager] used in the `libre` build flavor.
+ * This flavor strips out Google Play Services dependencies (for F-Droid compatibility),
+ * so all cast methods are deliberately empty, and [isSupported] is false.
+ */
 @Singleton
 class CastManagerImpl @Inject constructor(
     @param:ApplicationContext private val context: Context
@@ -20,20 +25,23 @@ class CastManagerImpl @Inject constructor(
     private val _connectionState = MutableStateFlow(CastConnectionState.DISCONNECTED)
     override val connectionState: StateFlow<CastConnectionState> = _connectionState.asStateFlow()
 
-    private val _availableDevices = MutableStateFlow<List<CastDevice>>(emptyList())
-    override val availableDevices: StateFlow<List<CastDevice>> = _availableDevices.asStateFlow()
+    private val _availableDevices = MutableStateFlow<List<Device>>(emptyList())
+    override val availableDevices: StateFlow<List<Device>> = _availableDevices.asStateFlow()
 
-    private val _connectedDevice = MutableStateFlow<CastDevice?>(null)
-    override val connectedDevice: StateFlow<CastDevice?> = _connectedDevice.asStateFlow()
+    private val _connectedDevice = MutableStateFlow<Device?>(null)
+    override val connectedDevice: StateFlow<Device?> = _connectedDevice.asStateFlow()
 
     private val _currentItem = MutableStateFlow<PlayerItem?>(null)
     override val currentItem: StateFlow<PlayerItem?> = _currentItem.asStateFlow()
 
+    private val _restoringItemId = MutableStateFlow<String?>(null)
+    override val restoringItemId: StateFlow<String?> = _restoringItemId.asStateFlow()
+
     private val _playbackState = MutableStateFlow(CastPlaybackState())
     override val playbackState: StateFlow<CastPlaybackState> = _playbackState.asStateFlow()
 
-    private val _audioTracks = MutableStateFlow<List<Track>>(emptyList())
-    override val audioTracks: StateFlow<List<Track>> = _audioTracks.asStateFlow()
+    private val _activeTrackIds = MutableStateFlow<List<Long>>(emptyList())
+    override val activeTrackIds: StateFlow<List<Long>> = _activeTrackIds.asStateFlow()
 
     private val _subtitleTracks = MutableStateFlow<List<Track>>(emptyList())
     override val subtitleTracks: StateFlow<List<Track>> = _subtitleTracks.asStateFlow()
@@ -43,11 +51,13 @@ class CastManagerImpl @Inject constructor(
 
     override fun init() {}
 
-    override fun connect(device: CastDevice) {}
+    override fun connect(device: Device) {}
 
     override fun disconnect() {}
 
     override fun loadItem(item: PlayerItem, startPosition: Long) {}
+
+    override fun restoreItem(item: PlayerItem) {}
 
     override fun queueNextItem(item: PlayerItem) {}
 

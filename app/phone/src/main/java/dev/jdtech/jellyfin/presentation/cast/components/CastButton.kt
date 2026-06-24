@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.jdtech.jellyfin.player.cast.CastDevice
+import dev.jdtech.jellyfin.player.cast.Device
 import dev.jdtech.jellyfin.player.cast.CastManager
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -37,7 +37,7 @@ fun CastButton(
 
 @Composable
 fun CastButtonContent(
-    devices: List<CastDevice>,
+    devices: List<Device>,
     expanded: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -82,20 +82,20 @@ private fun CastButtonPreview() {
             )
             // One device
             CastButtonContent(
-                devices = listOf(CastDevice("1", "Living Room TV")),
+                devices = listOf(Device("1", "Living Room TV")),
                 expanded = true,
                 onClick = {}
             )
             // Multiple devices
             CastButtonContent(
-                devices = listOf(CastDevice("1", "TV 1"), CastDevice("2", "TV 2")),
+                devices = listOf(Device("1", "TV 1"), Device("2", "TV 2")),
                 expanded = true,
                 onClick = {}
             )
 
             Text("Collapsed state", modifier = Modifier.padding(top = 16.dp))
             CastButtonContent(
-                devices = listOf(CastDevice("1", "Living Room TV")),
+                devices = listOf(Device("1", "Living Room TV")),
                 expanded = false,
                 onClick = {}
             )

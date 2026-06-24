@@ -30,6 +30,7 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.PlayMethod
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
 
@@ -259,6 +260,7 @@ class JellyfinRepositoryOfflineImpl(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
+        playMethod: PlayMethod,
     ) {
         withContext(Dispatchers.IO) {
             database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)

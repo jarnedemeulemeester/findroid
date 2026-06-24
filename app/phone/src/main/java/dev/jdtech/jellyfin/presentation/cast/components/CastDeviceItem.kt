@@ -31,14 +31,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.player.cast.CastConnectionState
-import dev.jdtech.jellyfin.player.cast.CastDevice
+import dev.jdtech.jellyfin.player.cast.Device
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun CastDeviceItem(
-    device: CastDevice,
+    device: Device,
     connected: Boolean,
     connectionState: CastConnectionState,
     onClick: () -> Unit,
@@ -130,7 +130,7 @@ private fun CastDeviceItemPreview() {
 
     FindroidTheme {
         CastDeviceItem(
-            device = CastDevice("1", "Living Room TV"),
+            device = Device("1", "Living Room TV"),
             connected = isConnected,
             connectionState = if (isConnected) CastConnectionState.CONNECTED else CastConnectionState.DISCONNECTED,
             onClick = { isConnected = !isConnected },
@@ -143,7 +143,7 @@ private fun CastDeviceItemPreview() {
 private fun CastDeviceItemConnectingPreview() {
     FindroidTheme {
         CastDeviceItem(
-            device = CastDevice("1", "Living Room TV"),
+            device = Device("1", "Living Room TV"),
             connected = true,
             connectionState = CastConnectionState.CONNECTING,
             onClick = {},
@@ -156,7 +156,7 @@ private fun CastDeviceItemConnectingPreview() {
 private fun CastDeviceItemConnectedPreview() {
     FindroidTheme {
         CastDeviceItem(
-            device = CastDevice("1", "Living Room TV"),
+            device = Device("1", "Living Room TV"),
             connected = true,
             connectionState = CastConnectionState.CONNECTED,
             onClick = {},

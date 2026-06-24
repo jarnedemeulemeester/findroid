@@ -469,6 +469,7 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
+        playMethod: PlayMethod,
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
@@ -480,7 +481,7 @@ class JellyfinRepositoryImpl(
                         canSeek = true,
                         isPaused = isPaused,
                         isMuted = false,
-                        playMethod = PlayMethod.DIRECT_PLAY,
+                        playMethod = playMethod,
                         repeatMode = RepeatMode.REPEAT_NONE,
                         playbackOrder = PlaybackOrder.DEFAULT,
                         positionTicks = positionTicks,

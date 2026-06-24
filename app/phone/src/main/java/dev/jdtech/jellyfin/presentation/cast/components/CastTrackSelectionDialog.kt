@@ -149,7 +149,7 @@ private fun TrackRow(
     onClick: () -> Unit
 ) {
     val noneString = stringResource(R.string.none)
-    val (displayTrackName, filteredLabel) = remember(trackName, trackLanguage, trackCodec) {
+    val trackDetails = remember(trackName, trackLanguage, trackCodec) {
         val locale = trackLanguage?.takeIf { it.isNotBlank() && it != "und" }?.let { lang ->
             Locale.forLanguageTag(lang.replace("_", "-"))
         }
@@ -160,18 +160,33 @@ private fun TrackRow(
 
         val englishLanguage = locale?.getDisplayLanguage(Locale.ENGLISH)
 
-        val filteredLabel = trackName?.takeIf {
+        val initialFilteredLabel = trackName?.takeIf {
             it.isNotBlank() &&
                     !it.equals(noneString, ignoreCase = true) &&
                     !it.equals(localizedLanguage, ignoreCase = true) &&
                     !it.equals(englishLanguage, ignoreCase = true) &&
                     !it.equals(trackLanguage, ignoreCase = true)
         }
-
+        
         val displayName = localizedLanguage ?: trackName ?: ""
+        
+        val isForced = trackName?.contains("Forced", ignoreCase = true) == true
+        val isSdh = trackName?.contains("SDH", ignoreCase = true) == true
 
-        displayName to filteredLabel
+        // Remove "Forced" and "SDH" from the filtered label if they are the only things there
+        val finalFilteredLabel = initialFilteredLabel?.replace("Forced", "", ignoreCase = true)
+            ?.replace("SDH", "", ignoreCase = true)
+            ?.replace("()", "")
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
+
+        listOf(displayName, finalFilteredLabel, isForced, isSdh)
     }
+
+    val displayTrackName = trackDetails[0] as String
+    val filteredLabel = trackDetails[1] as String?
+    val isForced = trackDetails[2] as Boolean
+    val isSdh = trackDetails[3] as Boolean
 
     val trackCodecText = when (trackCodec) {
         MimeTypes.APPLICATION_SUBRIP -> "subrip"
@@ -198,6 +213,12 @@ private fun TrackRow(
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
             if (filteredLabel != null) {
                 TrackMetadataBarItem(filteredLabel)
+            }
+            if (isForced) {
+                TrackMetadataBarItem("Forced")
+            }
+            if (isSdh) {
+                TrackMetadataBarItem("SDH")
             }
             if (trackCodecText != null) {
                 TrackMetadataBarItem(trackCodecText)
