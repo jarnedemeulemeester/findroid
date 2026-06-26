@@ -36,9 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImage
-import dev.jdtech.jellyfin.player.cast.Device
-import dev.jdtech.jellyfin.player.cast.CastManager
-import dev.jdtech.jellyfin.player.cast.CastPlaybackState
+import dev.jdtech.jellyfin.player.cast.models.Device
+import dev.jdtech.jellyfin.player.cast.models.CastPlaybackState
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -46,22 +45,21 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun CastMiniPlayer(
-    castManager: CastManager,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CastPlayerViewModel = hiltViewModel()
 ) {
-    val connectedDevice by castManager.connectedDevice.collectAsState()
-    val playbackState by castManager.playbackState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val connectedDevice = uiState.connectedDevice
+    val playbackState = uiState.playbackState
 
     if (connectedDevice != null) {
         CastMiniPlayerLayout(
-            connectedDevice = connectedDevice!!,
+            connectedDevice = connectedDevice,
             uiState = uiState,
             playbackState = playbackState,
             onTogglePlayback = {
-                if (playbackState.isPlaying) castManager.pause() else castManager.play()
+                if (playbackState.isPlaying) viewModel.playerController.pause() else viewModel.playerController.play()
             },
             onClick = onClick,
             modifier = modifier
@@ -149,7 +147,7 @@ fun CastMiniPlayerLayout(
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = connectedDevice.name,
                                 style = MaterialTheme.typography.bodySmall,

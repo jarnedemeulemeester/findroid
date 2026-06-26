@@ -33,13 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
-import androidx.media3.common.MimeTypes
 import dev.jdtech.jellyfin.player.core.R
 import dev.jdtech.jellyfin.player.core.domain.models.Track
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -116,24 +116,29 @@ fun CastTrackSelectionSheet(
             ) {
                 if (type == C.TRACK_TYPE_TEXT) {
                     item {
-                        TrackRow(
-                            trackName = stringResource(R.string.none),
-                            trackLanguage = null,
-                            isSelected = tracks.none { it.selected }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(onClick = { onSetTrack(null) })
+                                .padding(vertical = 4.dp, horizontal = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            onSetTrack(null)
+                            RadioButton(
+                                selected = tracks.none { it.selected },
+                                onClick = { onSetTrack(null) })
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.none),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
                 }
                 items(tracks, key = { it.id }) { track ->
                     TrackRow(
-                        trackName = track.label,
-                        trackLanguage = track.language,
-                        trackCodec = track.codec,
-                        isSelected = track.selected
-                    ) {
-                        onSetTrack(track)
-                    }
+                        track = track,
+                        onClick = { onSetTrack(track) },
+                    )
                 }
             }
         }
@@ -142,86 +147,51 @@ fun CastTrackSelectionSheet(
 
 @Composable
 private fun TrackRow(
-    trackName: String?,
-    trackLanguage: String?,
-    isSelected: Boolean,
-    trackCodec: String? = null,
-    onClick: () -> Unit
+    track: Track,
+    onClick: (Track) -> Unit
 ) {
-    val noneString = stringResource(R.string.none)
-    val trackDetails = remember(trackName, trackLanguage, trackCodec) {
-        val locale = trackLanguage?.takeIf { it.isNotBlank() && it != "und" }?.let { lang ->
+    val configuration = LocalConfiguration.current
+    val currentLocale = configuration.locales[0]
+
+    val displayName = remember(track, currentLocale) {
+        val locale = track.language?.takeIf { it.isNotBlank() && it != "und" }?.let { lang ->
             Locale.forLanguageTag(lang.replace("_", "-"))
         }
 
-        val localizedLanguage = locale?.displayLanguage?.replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+        val localizedLanguage = locale?.getDisplayLanguage(currentLocale)?.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(currentLocale) else it.toString()
         }
 
-        val englishLanguage = locale?.getDisplayLanguage(Locale.ENGLISH)
-
-        val initialFilteredLabel = trackName?.takeIf {
-            it.isNotBlank() &&
-                    !it.equals(noneString, ignoreCase = true) &&
-                    !it.equals(localizedLanguage, ignoreCase = true) &&
-                    !it.equals(englishLanguage, ignoreCase = true) &&
-                    !it.equals(trackLanguage, ignoreCase = true)
-        }
-        
-        val displayName = localizedLanguage ?: trackName ?: ""
-        
-        val isForced = trackName?.contains("Forced", ignoreCase = true) == true
-        val isSdh = trackName?.contains("SDH", ignoreCase = true) == true
-
-        // Remove "Forced" and "SDH" from the filtered label if they are the only things there
-        val finalFilteredLabel = initialFilteredLabel?.replace("Forced", "", ignoreCase = true)
-            ?.replace("SDH", "", ignoreCase = true)
-            ?.replace("()", "")
-            ?.trim()
-            ?.takeIf { it.isNotBlank() }
-
-        listOf(displayName, finalFilteredLabel, isForced, isSdh)
-    }
-
-    val displayTrackName = trackDetails[0] as String
-    val filteredLabel = trackDetails[1] as String?
-    val isForced = trackDetails[2] as Boolean
-    val isSdh = trackDetails[3] as Boolean
-
-    val trackCodecText = when (trackCodec) {
-        MimeTypes.APPLICATION_SUBRIP -> "subrip"
-        MimeTypes.TEXT_VTT -> "webvtt"
-        MimeTypes.TEXT_SSA -> "ass"
-        else -> null
+        localizedLanguage ?: track.label ?: "Track ${track.id}"
     }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = { onClick(track) })
             .padding(vertical = 4.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(selected = isSelected, onClick = onClick)
+        RadioButton(selected = track.selected, onClick = { onClick(track) })
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        Text(text = displayTrackName, style = MaterialTheme.typography.bodyMedium)
+        Text(text = displayName, style = MaterialTheme.typography.bodyMedium)
 
         Spacer(modifier = Modifier.width(16.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
-            if (filteredLabel != null) {
-                TrackMetadataBarItem(filteredLabel)
-            }
-            if (isForced) {
+            if (track.isForced == true) {
                 TrackMetadataBarItem("Forced")
             }
-            if (isSdh) {
+            if (track.isHearingImpaired == true) {
                 TrackMetadataBarItem("SDH")
             }
-            if (trackCodecText != null) {
-                TrackMetadataBarItem(trackCodecText)
+            if (track.isExternal == true) {
+                TrackMetadataBarItem(stringResource(R.string.external))
+            }
+            track.codec?.takeIf { it.isNotBlank() }?.let {
+                TrackMetadataBarItem(it)
             }
         }
     }
@@ -257,6 +227,39 @@ private fun CastTrackSelectionSheetPreview() {
             tracks = listOf(
                 Track(3, "English", "eng", "aac", selected = false, supported = true),
                 Track(4, "Spanish", "spa", "aac", selected = true, supported = true)
+            ),
+            onSetTrack = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CastTrackSubsSelectionSheetPreview() {
+    FindroidTheme {
+        CastTrackSelectionSheet(
+            type = C.TRACK_TYPE_TEXT,
+            tracks = listOf(
+                Track(
+                    3,
+                    "English",
+                    "eng",
+                    "subrip",
+                    selected = false,
+                    supported = true,
+                    isForced = true
+                ),
+                Track(
+                    4,
+                    "Spanish",
+                    "spa",
+                    "webvvt",
+                    selected = true,
+                    supported = true,
+                    isHearingImpaired = true,
+                    isExternal = true
+                )
             ),
             onSetTrack = {},
             onDismiss = {}

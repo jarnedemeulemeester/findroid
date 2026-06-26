@@ -4,8 +4,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.jdtech.jellyfin.player.cast.CastManager
-import dev.jdtech.jellyfin.player.cast.CastManagerImpl
+import dev.jdtech.jellyfin.player.cast.CastSessionManager
+import dev.jdtech.jellyfin.player.cast.CastPlayerController
+// The implementations will be provided from the respective source sets
+import dev.jdtech.jellyfin.player.cast.CastSessionManagerImpl
+import dev.jdtech.jellyfin.player.cast.CastPlayerControllerImpl
 import javax.inject.Singleton
 
 @Module
@@ -13,7 +16,13 @@ import javax.inject.Singleton
 abstract class CastModule {
     @Binds
     @Singleton
-    abstract fun bindCastManager(
-        castManagerImpl: CastManagerImpl
-    ): CastManager
+    abstract fun bindCastSessionManager(
+        impl: CastSessionManagerImpl
+    ): CastSessionManager
+
+    @Binds
+    @Singleton
+    abstract fun bindCastPlayerController(
+        impl: CastPlayerControllerImpl
+    ): CastPlayerController
 }

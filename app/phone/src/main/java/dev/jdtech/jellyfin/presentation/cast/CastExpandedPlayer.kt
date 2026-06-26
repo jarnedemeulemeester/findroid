@@ -14,23 +14,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -43,42 +38,37 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.C
 import androidx.window.core.layout.WindowSizeClass
-import coil3.compose.AsyncImage
-import dev.jdtech.jellyfin.player.cast.CastManager
-import dev.jdtech.jellyfin.player.cast.CastPlaybackState
+import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
-import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
-import dev.jdtech.jellyfin.presentation.cast.components.CastBottomControls
-import dev.jdtech.jellyfin.presentation.cast.components.CastExpandedPlayerHeader
-import dev.jdtech.jellyfin.presentation.cast.components.CastScrubbingTimeline
+import dev.jdtech.jellyfin.player.core.domain.models.Track
 import dev.jdtech.jellyfin.presentation.cast.components.CastTrackSelectionSheet
-import dev.jdtech.jellyfin.presentation.cast.components.PlaybackControls
-import dev.jdtech.jellyfin.presentation.cast.components.TrickplayThumbnail
-import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.presentation.cast.components.PlayerBottomSection
+import dev.jdtech.jellyfin.presentation.cast.components.PlayerTopSection
+import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.player.core.R as PlayerCoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CastExpandedPlayer(
-    castManager: CastManager,
-    isExpandedScreen: Boolean, // true for tablets
     onDeviceClick: () -> Unit,
     onClose: () -> Unit,
+    viewModel: CastPlayerViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
+    val isExpandedScreen = windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(
+        WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
+    )
     if (!isExpandedScreen) {
         ModalBottomSheet(
             onDismissRequest = onClose,
@@ -89,10 +79,12 @@ fun CastExpandedPlayer(
             shape = RectangleShape,
             sheetMaxWidth = Dp.Unspecified
         ) {
-            CastExpandedPlayerContent(
-                castManager,
+            CastExpandedPlayerAdaptiveContent(
+                false,
+                uiState,
                 onDeviceClick,
-                onClose
+                onClose,
+                viewModel
             )
         }
     } else {
@@ -103,37 +95,75 @@ fun CastExpandedPlayer(
             shadowElevation = 8.dp,
             color = MaterialTheme.colorScheme.background
         ) {
-            CastExpandedPlayerContent(
-                castManager,
+            CastExpandedPlayerAdaptiveContent(
+                true,
+                uiState,
                 onDeviceClick,
-                onClose
+                onClose,
+                viewModel
             )
         }
     }
 }
 
 @Composable
-private fun CastExpandedPlayerContent(
-    castManager: CastManager,
+private fun CastExpandedPlayerAdaptiveContent(
+    isExpandedScreen: Boolean,
+    uiState: CastPlayerViewModel.UiState,
     onDeviceClick: () -> Unit,
     onClose: () -> Unit,
-    viewModel: CastPlayerViewModel = hiltViewModel()
+    viewModel: CastPlayerViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    CastExpandedPlayerLayout(
+        isExpandedScreen = isExpandedScreen,
+        uiState = uiState,
+        onDeviceClick = onDeviceClick,
+        onClose = onClose,
+        onSeekTo = viewModel.playerController::seekTo,
+        onPlay = viewModel.playerController::play,
+        onPause = viewModel.playerController::pause,
+        onPlayPreviousItem = {
+            if (uiState.playbackState.currentPosition > 5000) {
+                viewModel.playerController.seekTo(0)
+            } else {
+                viewModel.playPreviousItem()
+            }
+        },
+        onPlayNextItem = viewModel::playNextItem,
+        onSkipSegment = viewModel::skipSegment,
+        onVolumeChange = viewModel.playerController::setVolume,
+        onAudioTrackSelected = viewModel::onAudioTrackSelected,
+        onSubtitleTrackSelected = viewModel::onSubtitleTrackSelected
+    )
+}
 
-    val playbackState by castManager.playbackState.collectAsState()
-    val connectedDevice by castManager.connectedDevice.collectAsState()
-    val volume by castManager.volume.collectAsState()
-
+@Composable
+private fun CastExpandedPlayerLayout(
+    isExpandedScreen: Boolean,
+    uiState: CastPlayerViewModel.UiState,
+    onDeviceClick: () -> Unit,
+    onClose: () -> Unit,
+    onSeekTo: (Long) -> Unit,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
+    onPlayPreviousItem: () -> Unit,
+    onPlayNextItem: () -> Unit,
+    onSkipSegment: (FindroidSegment) -> Unit,
+    onVolumeChange: (Float) -> Unit,
+    onAudioTrackSelected: (Track?) -> Unit,
+    onSubtitleTrackSelected: (Track?) -> Unit
+) {
     var isScrubbing by remember { mutableStateOf(false) }
     var scrubPosition by remember { mutableFloatStateOf(0f) }
     var showTrackSelection by remember { mutableStateOf(false) }
     var trackType by remember { mutableIntStateOf(C.TRACK_TYPE_AUDIO) }
 
-    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
-    val isExpandedScreen = windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(
-        WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
-    )
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    val playbackState = uiState.playbackState
+    val connectedDevice = uiState.connectedDevice
+    val volume = uiState.volume
 
     val posterUrl = uiState.currentItemPosterUrl
     val segment = uiState.currentSegment
@@ -144,114 +174,110 @@ private fun CastExpandedPlayerContent(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
+                .displayCutoutPadding()
                 .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Top Bar
-            CastExpandedPlayerHeader(
-                deviceName = connectedDevice?.name,
-                onClose = onClose,
-                onDeviceClick = onDeviceClick
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            val configuration = LocalConfiguration.current
-            val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
             if (isLandscape && !isExpandedScreen) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Left Side: Image
-                    Box(modifier = Modifier.weight(1f)) {
-                        PlayerImage(
-                            uiState = uiState,
-                            isScrubbing = isScrubbing,
-                            scrubPosition = scrubPosition,
-                            posterUrl = posterUrl,
-                            playbackState = playbackState
-                        )
-                    }
+                    PlayerTopSection(
+                        uiState = uiState,
+                        isScrubbing = isScrubbing,
+                        scrubPosition = scrubPosition,
+                        posterUrl = posterUrl,
+                        playbackState = playbackState,
+                        deviceName = connectedDevice?.name,
+                        onClose = onClose,
+                        onDeviceClick = onDeviceClick,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                    )
 
-                    // Right Side: Controls
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        PlayerTitles(uiState = uiState)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        PlayerScrubber(
-                            isScrubbing = isScrubbing,
-                            scrubPosition = scrubPosition,
-                            playbackState = playbackState,
-                            chapters = chapters,
-                            onScrubStart = { isScrubbing = true; scrubPosition = it },
-                            onScrubStop = { isScrubbing = false; castManager.seekTo(scrubPosition.toLong()) }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        PlaybackControls(
-                            isPlaying = playbackState.isPlaying,
-                            onPlay = { castManager.play() },
-                            onPause = { castManager.pause() },
-                            onSeekBack = { viewModel.playPreviousItem() },
-                            onSeekForward = { viewModel.playNextItem() },
-                            onSkipSegment = { if (segment != null) viewModel.skipSegment(segment) },
-                            skippableSegment = segment != null,
-                            skipStringRes = uiState.currentSkipButtonStringRes,
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        CastBottomControls(
-                            volume = volume,
-                            onVolumeChange = { castManager.setVolume(it) },
-                            onClickAudio = { showTrackSelection = true; trackType = C.TRACK_TYPE_AUDIO },
-                            onClickSubtitle = { showTrackSelection = true; trackType = C.TRACK_TYPE_TEXT }
-                        )
-                    }
+                    PlayerBottomSection(
+                        uiState = uiState,
+                        playbackState = playbackState,
+                        chapters = chapters,
+                        segment = segment,
+                        isScrubbing = isScrubbing,
+                        scrubPosition = scrubPosition,
+                        volume = volume,
+                        onScrubStart = {
+                            isScrubbing = true
+                            scrubPosition = it
+                        },
+                        onScrubStop = {
+                            isScrubbing = false
+                            onSeekTo(scrubPosition.toLong())
+                        },
+                        onPlay = onPlay,
+                        onPause = onPause,
+                        onPlayPreviousItem = onPlayPreviousItem,
+                        onPlayNextItem = onPlayNextItem,
+                        onSkipSegment = onSkipSegment,
+                        onVolumeChange = onVolumeChange,
+                        onClickAudio = {
+                            showTrackSelection = true
+                            trackType = C.TRACK_TYPE_AUDIO
+                        },
+                        onClickSubtitle = {
+                            showTrackSelection = true
+                            trackType = C.TRACK_TYPE_TEXT
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             } else {
-                // Portrait Layout
-                PlayerImage(
+                PlayerTopSection(
                     uiState = uiState,
                     isScrubbing = isScrubbing,
                     scrubPosition = scrubPosition,
                     posterUrl = posterUrl,
                     playbackState = playbackState,
+                    deviceName = connectedDevice?.name,
+                    onClose = onClose,
+                    onDeviceClick = onDeviceClick,
                     modifier = Modifier.weight(1f)
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
-                PlayerTitles(uiState = uiState)
-                Spacer(modifier = Modifier.height(24.dp))
-                PlayerScrubber(
-                    isScrubbing = isScrubbing,
-                    scrubPosition = scrubPosition,
+
+                PlayerBottomSection(
+                    uiState = uiState,
                     playbackState = playbackState,
                     chapters = chapters,
-                    onScrubStart = { isScrubbing = true; scrubPosition = it },
-                    onScrubStop = { isScrubbing = false; castManager.seekTo(scrubPosition.toLong()) }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                PlaybackControls(
-                    isPlaying = playbackState.isPlaying,
-                    onPlay = { castManager.play() },
-                    onPause = { castManager.pause() },
-                    onSeekBack = { viewModel.playPreviousItem() },
-                    onSeekForward = { viewModel.playNextItem() },
-                    onSkipSegment = { if (segment != null) viewModel.skipSegment(segment) },
-                    skippableSegment = segment != null,
-                    skipStringRes = uiState.currentSkipButtonStringRes,
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                CastBottomControls(
+                    segment = segment,
+                    isScrubbing = isScrubbing,
+                    scrubPosition = scrubPosition,
                     volume = volume,
-                    onVolumeChange = { castManager.setVolume(it) },
-                    onClickAudio = { showTrackSelection = true; trackType = C.TRACK_TYPE_AUDIO },
-                    onClickSubtitle = { showTrackSelection = true; trackType = C.TRACK_TYPE_TEXT }
+                    onScrubStart = {
+                        isScrubbing = true
+                        scrubPosition = it
+                    },
+                    onScrubStop = {
+                        isScrubbing = false
+                        onSeekTo(scrubPosition.toLong())
+                    },
+                    onPlay = onPlay,
+                    onPause = onPause,
+                    onPlayPreviousItem = onPlayPreviousItem,
+                    onPlayNextItem = onPlayNextItem,
+                    onSkipSegment = onSkipSegment,
+                    onVolumeChange = onVolumeChange,
+                    onClickAudio = {
+                        showTrackSelection = true
+                        trackType = C.TRACK_TYPE_AUDIO
+                    },
+                    onClickSubtitle = {
+                        showTrackSelection = true
+                        trackType = C.TRACK_TYPE_TEXT
+                    }
                 )
                 Spacer(modifier = Modifier.height(48.dp))
             }
@@ -281,7 +307,11 @@ private fun CastExpandedPlayerContent(
             CastTrackSelectionSheet(
                 type = trackType,
                 tracks = if (trackType == C.TRACK_TYPE_AUDIO) uiState.audioTracks else uiState.subtitleTracks,
-                onSetTrack = { if (trackType == C.TRACK_TYPE_AUDIO) viewModel.onAudioTrackSelected(it) else viewModel.onSubtitleTrackSelected(it) },
+                onSetTrack = {
+                    if (trackType == C.TRACK_TYPE_AUDIO) onAudioTrackSelected(
+                        it
+                    ) else onSubtitleTrackSelected(it)
+                },
                 onDismiss = { showTrackSelection = false },
                 modifier = Modifier
                     .padding(16.dp)
@@ -294,108 +324,122 @@ private fun CastExpandedPlayerContent(
     }
 }
 
+@Preview(name = "Vertical", showBackground = true)
 @Composable
-private fun PlayerImage(
-    uiState: CastPlayerViewModel.UiState,
-    isScrubbing: Boolean,
-    scrubPosition: Float,
-    posterUrl: String?,
-    playbackState: CastPlaybackState,
-    modifier: Modifier = Modifier
-) {
-    val aspectRatio =
-        if (isScrubbing && uiState.trickplayAspectRatio != null && uiState.currentTrickplay != null) {
-            uiState.trickplayAspectRatio!!
-        } else {
-            uiState.defaultAspectRatio
-        }
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = if (uiState.isMovie && (!isScrubbing || uiState.currentTrickplay == null)) 88.dp else 24.dp)
-            .aspectRatio(aspectRatio)
-            .clip(RoundedCornerShape(24.dp))
-            .background(Color.DarkGray),
-        contentAlignment = Alignment.Center
-    ) {
-        if (isScrubbing && uiState.currentTrickplay != null && playbackState.duration > 0 && uiState.currentTrickplay!!.images.isNotEmpty()) {
-            TrickplayThumbnail(
-                trickplay = uiState.currentTrickplay!!,
-                scrubPosition = scrubPosition
-            )
-        } else if (posterUrl != null) {
-            AsyncImage(
-                model = posterUrl,
-                contentDescription = "Poster",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            Icon(
-                painterResource(CoreR.drawable.ic_cast),
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = Color.White
-            )
-        }
+private fun CastExpandedPlayerPhoneVerticalPreview() {
+    FindroidTheme {
+        CastExpandedPlayerLayout(
+            isExpandedScreen = false,
+            uiState = mockUiStateEpisode(),
+            onDeviceClick = {},
+            onClose = {},
+            onSeekTo = {},
+            onPlay = {},
+            onPause = {},
+            onPlayPreviousItem = {},
+            onPlayNextItem = {},
+            onSkipSegment = {},
+            onVolumeChange = {},
+            onAudioTrackSelected = {},
+            onSubtitleTrackSelected = {}
+        )
     }
 }
 
+@Preview(name = "Horizontal", showBackground = true, widthDp = 800, heightDp = 400)
 @Composable
-private fun PlayerTitles(uiState: CastPlayerViewModel.UiState) {
-    val titleInfo = uiState.currentItemTitle
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        if (titleInfo.seriesName != null) {
-            Text(
-                text = titleInfo.seriesName!!,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = titleInfo.episodeInfo ?: "",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.secondary,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = titleInfo.title,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        } else {
-            Text(
-                text = titleInfo.title,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        }
+private fun CastExpandedPlayerPhoneHorizontalPreview() {
+    FindroidTheme {
+        CastExpandedPlayerLayout(
+            isExpandedScreen = false,
+            uiState = mockUiStateEpisode(),
+            onDeviceClick = {},
+            onClose = {},
+            onSeekTo = {},
+            onPlay = {},
+            onPause = {},
+            onPlayPreviousItem = {},
+            onPlayNextItem = {},
+            onSkipSegment = {},
+            onVolumeChange = {},
+            onAudioTrackSelected = {},
+            onSubtitleTrackSelected = {}
+        )
     }
 }
 
+@Preview(name = "Vertical Movie", showBackground = true)
 @Composable
-private fun PlayerScrubber(
-    isScrubbing: Boolean,
-    scrubPosition: Float,
-    playbackState: CastPlaybackState,
-    chapters: List<PlayerChapter>,
-    onScrubStart: (Float) -> Unit,
-    onScrubStop: () -> Unit
-) {
-    val currentProgress =
-        if (isScrubbing) scrubPosition else playbackState.currentPosition.toFloat()
-    val duration = playbackState.duration.toFloat()
-
-    CastScrubbingTimeline(
-        currentProgress = currentProgress,
-        duration = duration,
-        chapters = chapters,
-        onScrubStart = onScrubStart,
-        onScrubStop = onScrubStop
-    )
+private fun CastExpandedPlayerMoviePhoneVerticalPreview() {
+    FindroidTheme {
+        CastExpandedPlayerLayout(
+            isExpandedScreen = false,
+            uiState = mockUiStateMovie(),
+            onDeviceClick = {},
+            onClose = {},
+            onSeekTo = {},
+            onPlay = {},
+            onPause = {},
+            onPlayPreviousItem = {},
+            onPlayNextItem = {},
+            onSkipSegment = {},
+            onVolumeChange = {},
+            onAudioTrackSelected = {},
+            onSubtitleTrackSelected = {}
+        )
+    }
 }
+
+@Preview(name = "Horizontal Movie", showBackground = true, widthDp = 800, heightDp = 400)
+@Composable
+private fun CastExpandedPlayerMoviePhoneHorizontalPreview() {
+    FindroidTheme {
+        CastExpandedPlayerLayout(
+            isExpandedScreen = false,
+            uiState = mockUiStateMovie(),
+            onDeviceClick = {},
+            onClose = {},
+            onSeekTo = {},
+            onPlay = {},
+            onPause = {},
+            onPlayPreviousItem = {},
+            onPlayNextItem = {},
+            onSkipSegment = {},
+            onVolumeChange = {},
+            onAudioTrackSelected = {},
+            onSubtitleTrackSelected = {}
+        )
+    }
+}
+
+private fun mockUiStateEpisode() = CastPlayerViewModel.UiState(
+    currentItemTitle = CastPlayerViewModel.CurrentItemTitle(
+        seriesName = "Series Name",
+        episodeInfo = "S01E01",
+        title = "Episode Title"
+    ),
+    currentItemPosterUrl = null,
+    isMovie = false,
+    defaultAspectRatio = 16f / 9f,
+    trickplayAspectRatio = null,
+    currentSegment = null,
+    currentSkipButtonStringRes = PlayerCoreR.string.player_controls_skip_intro,
+    currentTrickplay = null,
+    currentChapters = emptyList(),
+    fileLoaded = true
+)
+
+private fun mockUiStateMovie() = CastPlayerViewModel.UiState(
+    currentItemTitle = CastPlayerViewModel.CurrentItemTitle(
+        title = "Title"
+    ),
+    currentItemPosterUrl = null,
+    isMovie = true,
+    defaultAspectRatio = 2f / 3f,
+    trickplayAspectRatio = null,
+    currentSegment = null,
+    currentSkipButtonStringRes = PlayerCoreR.string.player_controls_skip_intro,
+    currentTrickplay = null,
+    currentChapters = emptyList(),
+    fileLoaded = true
+)

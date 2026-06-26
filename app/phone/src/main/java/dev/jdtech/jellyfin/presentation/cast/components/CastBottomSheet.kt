@@ -24,9 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.jdtech.jellyfin.player.cast.CastConnectionState
-import dev.jdtech.jellyfin.player.cast.Device
-import dev.jdtech.jellyfin.player.cast.CastManager
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.models.Device
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -34,13 +35,14 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CastBottomSheet(
-    castManager: CastManager,
     onDismissRequest: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    viewModel: CastPlayerViewModel = hiltViewModel()
 ) {
-    val devices by castManager.availableDevices.collectAsState()
-    val connectedDevice by castManager.connectedDevice.collectAsState()
-    val connectionState by castManager.connectionState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val devices = uiState.availableDevices
+    val connectedDevice = uiState.connectedDevice
+    val connectionState = uiState.connectionState
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
@@ -53,10 +55,10 @@ fun CastBottomSheet(
             connectedDevice = connectedDevice,
             connectionState = connectionState,
             onDeviceSelected = {
-                castManager.connect(it)
+                viewModel.sessionManager.connect(it)
             },
             onDisconnect = {
-                castManager.disconnect()
+                viewModel.sessionManager.disconnect()
             }
         )
     }
@@ -115,10 +117,10 @@ fun CastBottomSheetLayout(
                 items(items = devices, key = { it.id }) { device ->
                     CastDeviceItem(
                         device = device,
-                        connected = connectedDevice?.id == device.id,
+                        connected = device.id == connectedDevice?.id,
                         connectionState = connectionState,
                         onClick = {
-                            if (connectedDevice?.id == device.id) {
+                            if (device.id == connectedDevice?.id) {
                                 onDisconnect()
                             } else {
                                 onDeviceSelected(device)

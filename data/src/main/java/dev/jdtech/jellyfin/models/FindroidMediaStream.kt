@@ -19,6 +19,9 @@ data class FindroidMediaStream(
     val width: Int?,
     val videoDoViTitle: String?,
     val index: Int? = null,
+    val isDefault: Boolean?,
+    val isForced: Boolean? = false,
+    val isHearingImpaired: Boolean? = false,
 )
 
 fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): FindroidMediaStream {
@@ -36,6 +39,9 @@ fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): F
         width = width,
         videoDoViTitle = videoDoViTitle,
         index = index,
+        isDefault = isDefault,
+        isForced = isForced,
+        isHearingImpaired = isHearingImpaired,
     )
 }
 
@@ -54,5 +60,8 @@ fun FindroidMediaStreamDto.toFindroidMediaStream(): FindroidMediaStream {
         width = width,
         videoDoViTitle = videoDoViTitle,
         index = null,
+        isDefault = isDefault,
+        isForced = isForced,
+        isHearingImpaired = isHearingImpaired,
     )
 }

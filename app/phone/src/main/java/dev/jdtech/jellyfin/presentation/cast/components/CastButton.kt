@@ -13,19 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.jdtech.jellyfin.player.cast.Device
-import dev.jdtech.jellyfin.player.cast.CastManager
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.jdtech.jellyfin.player.cast.models.Device
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.core.R as CoreR
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 
 @Composable
 fun CastButton(
-    castManager: CastManager,
     expanded: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CastPlayerViewModel = hiltViewModel()
 ) {
-    val devices by castManager.availableDevices.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val devices = uiState.availableDevices
 
     CastButtonContent(
         devices = devices,

@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.presentation.cast.components
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -36,7 +36,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 
 @Composable
-fun PlaybackControls(
+fun PlaybackButtons(
     isPlaying: Boolean,
     onPlay: () -> Unit,
     onPause: () -> Unit,
@@ -68,7 +68,10 @@ fun PlaybackControls(
                 else if (isNextPressed && skippableSegment) 0.25f
                 else if (skippableSegment) 0.45f
                 else 1.3f,
-            animationSpec = spring(dampingRatio = 0.6f, stiffness = 500f),
+            animationSpec = spring(
+                dampingRatio = 0.6f,
+                stiffness = 500f
+            ),
             label = "playPauseWeight",
         )
 
@@ -77,7 +80,10 @@ fun PlaybackControls(
                 else if (isPlayPausePressed && !skippableSegment) 0.25f
                 else if (isPlayPausePressed && skippableSegment) 0.35f
                 else 0.45f,
-            animationSpec = spring(dampingRatio = 0.6f, stiffness = 500f),
+            animationSpec = spring(
+                dampingRatio = 0.6f,
+                stiffness = 500f
+            ),
             label = "backButtonWeight",
         )
 
@@ -88,7 +94,10 @@ fun PlaybackControls(
                 else if (isPlayPausePressed && skippableSegment) 1.2f
                 else if (skippableSegment) 1.3f
                 else 0.45f,
-            animationSpec = spring(dampingRatio = 0.6f, stiffness = 500f),
+            animationSpec = spring(
+                dampingRatio = 0.6f,
+                stiffness = 500f
+            ),
             label = "nextButtonWeight",
         )
 
@@ -150,19 +159,21 @@ fun PlaybackControls(
                 containerColor = if (skippableSegment) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceVariant,
                 contentColor = if (skippableSegment) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
             ),
-            modifier = Modifier.height(68.dp).weight(nextButtonWeight).animateContentSize(),
+            modifier = Modifier.height(68.dp).weight(nextButtonWeight),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = if (skippableSegment) Modifier.padding(horizontal = 16.dp) else Modifier
             ) {
-                if (skippableSegment) {
+                AnimatedVisibility(
+                    visible = skippableSegment,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Text(
                         text = stringResource(skipStringRes),
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
                     )
                 }
                 Icon(
@@ -177,10 +188,10 @@ fun PlaybackControls(
 
 @Preview(showBackground = true)
 @Composable
-fun PlaybackControlsPreview() {
+fun PlaybackButtonsPreview() {
     FindroidTheme {
         Column {
-            PlaybackControls(
+            PlaybackButtons(
                 isPlaying = true,
                 onPlay = {},
                 onPause = {},
@@ -193,7 +204,7 @@ fun PlaybackControlsPreview() {
 
             Spacer(Modifier.height(16.dp))
 
-            PlaybackControls(
+            PlaybackButtons(
                 isPlaying = false,
                 onPlay = {},
                 onPause = {},
@@ -206,7 +217,7 @@ fun PlaybackControlsPreview() {
 
             Spacer(Modifier.height(16.dp))
 
-            PlaybackControls(
+            PlaybackButtons(
                 isPlaying = true,
                 onPlay = {},
                 onPause = {},

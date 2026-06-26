@@ -33,8 +33,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
@@ -53,9 +55,10 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
-import dev.jdtech.jellyfin.player.cast.CastConnectionState
-import dev.jdtech.jellyfin.player.cast.CastManager
+import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.cast.CastExpandedPlayer
+import dev.jdtech.jellyfin.presentation.cast.CastMiniPlayer
 import dev.jdtech.jellyfin.presentation.cast.components.CastBottomSheet
 import dev.jdtech.jellyfin.presentation.cast.components.CastButton
 import dev.jdtech.jellyfin.presentation.film.CollectionScreen
@@ -81,8 +84,6 @@ import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import kotlinx.serialization.Serializable
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
-import androidx.navigation.NavDestination.Companion.hasRoute
-import dev.jdtech.jellyfin.presentation.cast.CastMiniPlayer
 
 @Serializable
 data object WelcomeRoute
@@ -171,10 +172,10 @@ val downloadsTab =
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
-    castManager: CastManager,
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
+    castViewModel: CastPlayerViewModel = hiltViewModel()
 ) {
     val isOfflineMode = LocalOfflineMode.current
 
@@ -232,8 +233,9 @@ fun NavigationRoot(
         CollectionRoute::class,
     )
 
-    val connectionState by castManager.connectionState.collectAsStateWithLifecycle()
-    val showCastButton = castRoutes.any { currentDestination?.hasRoute(it) == true } && !searchExpanded && castManager.isSupported
+    val uiState by castViewModel.uiState.collectAsStateWithLifecycle()
+    val connectionState = uiState.connectionState
+    val showCastButton = castRoutes.any { currentDestination?.hasRoute(it) == true } && !searchExpanded && castViewModel.sessionManager.isSupported
     var showCastSheet by remember { mutableStateOf(false) }
     var showCastExpandedPlayer by remember { mutableStateOf(false) }
 
@@ -245,7 +247,7 @@ fun NavigationRoot(
 
     val showCastMiniPlayer = showCastButton && !showCastExpandedPlayer && connectionState == CastConnectionState.CONNECTED
 
-    val currentItem by castManager.currentItem.collectAsState()
+    val currentItem = castViewModel.playerController.currentItem.collectAsState().value
 
     val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
 
@@ -552,7 +554,6 @@ fun NavigationRoot(
 
                 if (showCastButton && connectionState != CastConnectionState.CONNECTED) {
                     CastButton(
-                        castManager = castManager,
                         expanded = castExpanded,
                         onClick = { showCastSheet = true },
                         modifier = Modifier
@@ -564,7 +565,6 @@ fun NavigationRoot(
                 // Cast Mini Player
                 if (showCastMiniPlayer) {
                     CastMiniPlayer(
-                        castManager = castManager,
                         onClick = {
                             if (currentItem != null) {
                                 showCastExpandedPlayer = true
@@ -579,8 +579,6 @@ fun NavigationRoot(
 
             if (showCastExpandedPlayer && isExpandedScreen) {
                 CastExpandedPlayer(
-                    castManager = castManager,
-                    isExpandedScreen = true,
                     onDeviceClick = { showCastSheet = true },
                     onClose = { showCastExpandedPlayer = false }
                 )
@@ -590,7 +588,6 @@ fun NavigationRoot(
 
     if (showCastSheet) {
         CastBottomSheet(
-            castManager = castManager,
             onDismissRequest = { showCastSheet = false }
         )
     }
@@ -598,8 +595,6 @@ fun NavigationRoot(
     // Cast Expanded Player
     if (showCastExpandedPlayer && !isExpandedScreen) {
         CastExpandedPlayer(
-            castManager = castManager,
-            isExpandedScreen = false,
             onDeviceClick = { showCastSheet = true },
             onClose = { showCastExpandedPlayer = false }
         )

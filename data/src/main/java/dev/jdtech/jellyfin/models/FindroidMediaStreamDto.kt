@@ -22,6 +22,9 @@ data class FindroidMediaStreamDto(
     val width: Int?,
     val videoDoViTitle: String?,
     val downloadId: Long? = null,
+    val isDefault: Boolean?,
+    val isForced: Boolean? = false,
+    val isHearingImpaired: Boolean? = false,
 )
 
 fun FindroidMediaStream.toFindroidMediaStreamDto(
@@ -44,5 +47,8 @@ fun FindroidMediaStream.toFindroidMediaStreamDto(
         height = height,
         width = width,
         videoDoViTitle = videoDoViTitle,
+        isDefault = isDefault,
+        isForced = isForced,
+        isHearingImpaired = isHearingImpaired,
     )
 }

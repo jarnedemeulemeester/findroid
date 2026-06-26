@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.PlayMethod
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
@@ -366,7 +367,7 @@ constructor(
                             )
                         }
 
-                        repository.postPlaybackStart(item.itemId)
+                        repository.postPlaybackStart(item.itemId, PlayMethod.DIRECT_PLAY)
 
                         if (segmentsSkipButton || segmentsAutoSkip) {
                             getSegments(item.itemId)

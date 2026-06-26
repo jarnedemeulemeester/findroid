@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.PlayMethod
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
 
@@ -96,11 +97,28 @@ interface JellyfinRepository {
 
     suspend fun postCapabilities()
 
-    suspend fun postPlaybackStart(itemId: UUID)
+    suspend fun postPlaybackStart(
+        itemId: UUID,
+        playMethod: PlayMethod,
+        mediaSourceId: String? = null,
+        playSessionId: String? = null
+    )
 
-    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int)
-
-    suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean, playMethod: org.jellyfin.sdk.model.api.PlayMethod = org.jellyfin.sdk.model.api.PlayMethod.DIRECT_PLAY)
+    suspend fun postPlaybackStop(
+        itemId: UUID,
+        positionTicks: Long,
+        playedPercentage: Int,
+        mediaSourceId: String? = null,
+        playSessionId: String? = null
+    )
+    suspend fun postPlaybackProgress(
+        itemId: UUID,
+        positionTicks: Long,
+        isPaused: Boolean,
+        playMethod: PlayMethod = PlayMethod.DIRECT_PLAY,
+        mediaSourceId: String? = null,
+        playSessionId: String? = null
+    )
 
     suspend fun markAsFavorite(itemId: UUID)
 

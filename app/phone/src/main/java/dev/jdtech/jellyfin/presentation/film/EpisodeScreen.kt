@@ -38,7 +38,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.player.cast.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
@@ -83,7 +83,8 @@ fun EpisodeScreen(
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
     val castPlayerViewModel: CastPlayerViewModel = hiltViewModel()
-    val castConnectionState by castPlayerViewModel.castManager.connectionState.collectAsState()
+    val castUiState by castPlayerViewModel.uiState.collectAsState()
+    val castConnectionState = castUiState.connectionState
 
     LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 

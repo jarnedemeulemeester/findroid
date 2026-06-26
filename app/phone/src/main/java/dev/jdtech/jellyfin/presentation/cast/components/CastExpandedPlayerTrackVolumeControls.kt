@@ -1,5 +1,9 @@
 package dev.jdtech.jellyfin.presentation.cast.components
 
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,12 +44,30 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun CastBottomControls(
+fun CastTrackVolumeControls(
     volume: Float,
     onVolumeChange: (Float) -> Unit,
     onClickAudio: () -> Unit,
     onClickSubtitle: () -> Unit
 ) {
+    val audioInteractionSource = remember { MutableInteractionSource() }
+    val subtitlesInteractionSource = remember { MutableInteractionSource() }
+
+    val isAudioPressed by audioInteractionSource.collectIsPressedAsState()
+    val isSubtitlePressed by subtitlesInteractionSource.collectIsPressedAsState()
+
+    val audioButtonCornerShape by animateIntAsState(
+        targetValue = if (isAudioPressed) 50 else 3,
+        animationSpec = tween(durationMillis = 200),
+        label = "audioShapeAnimation"
+    )
+
+    val subtitleButtonCornerShape by animateIntAsState(
+        targetValue = if (isSubtitlePressed) 50 else 3,
+        animationSpec = tween(durationMillis = 200),
+        label = "subtitleShapeAnimation"
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,9 +83,10 @@ fun CastBottomControls(
                 shape = RoundedCornerShape(
                     topStart = 50.dp,
                     bottomStart = 50.dp,
-                    topEnd = 3.dp,
-                    bottomEnd = 3.dp,
+                    topEnd = audioButtonCornerShape.dp,
+                    bottomEnd = audioButtonCornerShape.dp,
                 ),
+                interactionSource = audioInteractionSource,
                 colors =
                     IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -80,11 +103,12 @@ fun CastBottomControls(
             FilledIconButton(
                 onClick = onClickSubtitle,
                 shape = RoundedCornerShape(
-                    topStart = 3.dp,
-                    bottomStart = 3.dp,
+                    topStart = subtitleButtonCornerShape.dp,
+                    bottomStart = subtitleButtonCornerShape.dp,
                     topEnd = 50.dp,
                     bottomEnd = 50.dp,
                 ),
+                interactionSource = subtitlesInteractionSource,
                 colors =
                     IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -230,9 +254,9 @@ private fun DrawScope.drawVolumeIcon(
 
 @Preview
 @Composable
-private fun CastBottomControlsPreview() {
+private fun CastTrackVolumeControlsPreview() {
     FindroidTheme {
-        CastBottomControls(
+        CastTrackVolumeControls(
             volume = 0.5f,
             onVolumeChange = {},
             onClickAudio = {},

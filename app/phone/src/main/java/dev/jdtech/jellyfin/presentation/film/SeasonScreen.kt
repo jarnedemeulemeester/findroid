@@ -41,7 +41,7 @@ import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.player.cast.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
@@ -68,7 +68,8 @@ fun SeasonScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val castPlayerViewModel: CastPlayerViewModel = hiltViewModel()
-    val castConnectionState by castPlayerViewModel.castManager.connectionState.collectAsState()
+    val castUiState by castPlayerViewModel.uiState.collectAsState()
+    val castConnectionState = castUiState.connectionState
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
