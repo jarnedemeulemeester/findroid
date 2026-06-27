@@ -17,24 +17,26 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.di.ApplicationScope
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.player.core.R
+import dev.jdtech.jellyfin.player.core.domain.PlaybackManager
 import dev.jdtech.jellyfin.player.core.domain.PlaylistManager
+import dev.jdtech.jellyfin.player.core.domain.models.PlaybackStatus
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import dev.jdtech.jellyfin.player.core.domain.utils.ChapterUtils
 import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils
+import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils.getSegments
 import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils.getSkipButtonTextStringId
 import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.Constants
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -47,7 +49,6 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.math.ceil
-import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class PlayerViewModel
@@ -55,9 +56,11 @@ class PlayerViewModel
 constructor(
     private val application: Application,
     private val playlistManager: PlaylistManager,
+    private val playbackManager: PlaybackManager,
     private val repository: JellyfinRepository,
     private val appPreferences: AppPreferences,
     private val savedStateHandle: SavedStateHandle,
+    @param:ApplicationScope private val appScope: CoroutineScope
 ) : ViewModel(), Player.Listener {
     val player: Player
 
@@ -105,6 +108,8 @@ constructor(
     var playbackSpeed: Float = 1f
 
     var isInPictureInPictureMode: Boolean = false
+
+    private var hasReportedStart = false
 
     init {
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
@@ -244,25 +249,19 @@ constructor(
         return mediaItem
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun releasePlayer() {
         val mediaId = player.currentMediaItem?.mediaId
         val position = player.currentPosition
         val duration = player.duration
-        GlobalScope.launch {
-            delay(200L.milliseconds)
-            try {
-                if (mediaId != null && duration != C.TIME_UNSET) {
-                    Timber.d("Sending playback stop")
-                    repository.postPlaybackStop(
-                        UUID.fromString(mediaId),
-                        position.times(10000),
-                        position.div(duration.toFloat()).times(100).toInt(),
-                    )
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
+
+        appScope.launch {
+            playbackManager.reportStop(
+                PlaybackStatus(
+                    itemId = UUID.fromString(mediaId),
+                    positionMs = position,
+                    durationMs = duration
+                )
+            )
         }
 
         _uiState.update { it.copy(currentTrickplay = null) }
@@ -279,15 +278,14 @@ constructor(
             savedStateHandle["position"] = player.currentPosition
             if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
                 val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
-                try {
-                    repository.postPlaybackProgress(
-                        itemId,
-                        player.currentPosition.times(10000),
-                        !player.isPlaying,
+                playbackManager.reportProgress(
+                    PlaybackStatus(
+                        itemId = itemId,
+                        positionMs = player.currentPosition,
+                        durationMs = player.duration,
+                        isPaused = !player.isPlaying
                     )
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
+                )
             }
         }
     }
@@ -319,10 +317,10 @@ constructor(
 
             if (
                 segmentsAutoSkip &&
-                    segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
-                    (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
+                segmentsAutoSkipTypes.contains(currentSegment.type.toString()) &&
+                (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.ALWAYS ||
                         (segmentsAutoSkipMode == Constants.PlayerMediaSegmentsAutoSkip.PIP &&
-                            isInPictureInPictureMode))
+                                isInPictureInPictureMode))
             ) {
                 // Auto Skip segment
                 skipSegment(currentSegment)
@@ -331,7 +329,10 @@ constructor(
                 _uiState.update {
                     it.copy(
                         currentSegment = currentSegment,
-                        currentSkipButtonStringRes = getSkipButtonTextStringId(currentSegment, shouldSkipToNextEpisode(currentSegment)),
+                        currentSkipButtonStringRes = getSkipButtonTextStringId(
+                            currentSegment,
+                            shouldSkipToNextEpisode(currentSegment)
+                        ),
                     )
                 }
             } else {
@@ -367,10 +368,10 @@ constructor(
                             )
                         }
 
-                        repository.postPlaybackStart(item.itemId, PlayMethod.DIRECT_PLAY)
+                        hasReportedStart = false
 
                         if (segmentsSkipButton || segmentsAutoSkip) {
-                            getSegments(item.itemId)
+                            currentMediaItemSegments = getSegments(item.itemId, repository)
                         }
 
                         if (appPreferences.getValue(appPreferences.playerTrickplay)) {
@@ -409,22 +410,20 @@ constructor(
         // Report playback stopped for current item and transition to the next one
         if (
             !playWhenReady &&
-                reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM &&
-                player.playbackState == ExoPlayer.STATE_READY
+            reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM &&
+            player.playbackState == ExoPlayer.STATE_READY
         ) {
             viewModelScope.launch {
                 val mediaId = player.currentMediaItem?.mediaId
                 val position = player.currentPosition
                 val duration = player.duration
-                try {
-                    repository.postPlaybackStop(
-                        UUID.fromString(mediaId),
-                        position.times(10000),
-                        position.div(duration.toFloat()).times(100).toInt(),
+                    playbackManager.reportStop(
+                        PlaybackStatus(
+                            itemId = UUID.fromString(mediaId),
+                            positionMs = position,
+                            durationMs = duration
+                        )
                     )
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
                 player.seekToNextMediaItem()
                 player.play()
             }
@@ -437,13 +436,16 @@ constructor(
             ExoPlayer.STATE_IDLE -> {
                 stateString = "ExoPlayer.STATE_IDLE      -"
             }
+
             ExoPlayer.STATE_BUFFERING -> {
                 stateString = "ExoPlayer.STATE_BUFFERING -"
             }
+
             ExoPlayer.STATE_READY -> {
                 stateString = "ExoPlayer.STATE_READY     -"
                 _uiState.update { it.copy(fileLoaded = true) }
             }
+
             ExoPlayer.STATE_ENDED -> {
                 stateString = "ExoPlayer.STATE_ENDED     -"
                 eventsChannel.trySend(PlayerEvents.NavigateBack)
@@ -489,15 +491,6 @@ constructor(
         playbackSpeed = speed
     }
 
-    private suspend fun getSegments(itemId: UUID) {
-        try {
-            currentMediaItemSegments = repository.getSegments(itemId)
-        } catch (e: Exception) {
-            currentMediaItemSegments = emptyList()
-            Timber.e(e)
-        }
-    }
-
     private suspend fun getTrickplay(item: PlayerItem) {
         val trickplayInfo = item.trickplayInfo ?: return
         Timber.d("Trickplay Resolution: ${trickplayInfo.width}")
@@ -505,10 +498,10 @@ constructor(
         withContext(Dispatchers.Default) {
             val maxIndex =
                 ceil(
-                        trickplayInfo.thumbnailCount
-                            .toDouble()
-                            .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)
-                    )
+                    trickplayInfo.thumbnailCount
+                        .toDouble()
+                        .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)
+                )
                     .toInt()
             val bitmaps = mutableListOf<Bitmap>()
 
@@ -516,10 +509,10 @@ constructor(
                 repository.getTrickplayData(item.itemId, trickplayInfo.width, i)?.let { byteArray ->
                     val fullBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
                     for (offsetY in
-                        0..<trickplayInfo.height * trickplayInfo.tileHeight step
+                    0..<trickplayInfo.height * trickplayInfo.tileHeight step
                             trickplayInfo.height) {
                         for (offsetX in
-                            0..<trickplayInfo.width * trickplayInfo.tileWidth step
+                        0..<trickplayInfo.width * trickplayInfo.tileWidth step
                                 trickplayInfo.width) {
                             val bitmap =
                                 Bitmap.createBitmap(
@@ -549,7 +542,6 @@ constructor(
         _uiState.update { it.copy(currentSegment = null) }
     }
 
-    // Check if the outro segment's end time is within n milliseconds of the player's total duration
     private fun shouldSkipToNextEpisode(segment: FindroidSegment): Boolean {
         return SegmentUtils.shouldSkipToNextEpisode(
             segment = segment,
@@ -633,6 +625,25 @@ constructor(
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
         eventsChannel.trySend(PlayerEvents.IsPlayingChanged(isPlaying))
+
+        if (isPlaying && !hasReportedStart) {
+            val mediaId = player.currentMediaItem?.mediaId
+            if (mediaId != null) {
+                viewModelScope.launch {
+                    playbackManager.reportStart(
+                        PlaybackStatus(
+                            itemId = UUID.fromString(mediaId),
+                            positionMs = player.currentPosition,
+                            durationMs = player.duration,
+                            playMethod = PlayMethod.DIRECT_PLAY
+                        )
+                    )
+                }
+                hasReportedStart = true
+            }
+        } else if (hasReportedStart) {
+            updatePlaybackProgress()
+        }
     }
 }
 

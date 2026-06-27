@@ -12,8 +12,8 @@ object Chromecast {
     val deviceProfile = buildDeviceProfile {
         name = "Chromecast Video Profile (H.264)"
 
-        maxStreamingBitrate = 16000000
-        maxStaticBitrate = 16000000
+        maxStreamingBitrate = 12000000
+        maxStaticBitrate = 12000000
 
         codecProfile {
             type = CodecType.VIDEO

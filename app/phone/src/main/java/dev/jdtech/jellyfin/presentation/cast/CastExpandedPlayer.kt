@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -69,6 +71,29 @@ fun CastExpandedPlayer(
     val isExpandedScreen = windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(
         WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
     )
+
+    val actions = remember(viewModel, uiState.playbackState.currentPosition) {
+        CastPlayerActions(
+            onPlay = { viewModel.playerController.play() },
+            onPause = { viewModel.playerController.pause() },
+            onSeek = { viewModel.playerController.seekTo(it) },
+            onPlayPreviousItem = {
+                if (uiState.playbackState.currentPosition > 5000) {
+                    viewModel.playerController.seekTo(0)
+                } else {
+                    viewModel.playPreviousItem()
+                }
+            },
+            onPlayNextItem = { viewModel.playNextItem() },
+            onSkipSegment = { viewModel.skipSegment(it) },
+            onVolumeChange = { viewModel.playerController.setVolume(it) },
+            onAudioTrackSelected = { viewModel.onAudioTrackSelected(it) },
+            onSubtitleTrackSelected = { viewModel.onSubtitleTrackSelected(it) },
+            onDeviceClick = onDeviceClick,
+            onClose = onClose
+        )
+    }
+
     if (!isExpandedScreen) {
         ModalBottomSheet(
             onDismissRequest = onClose,
@@ -79,12 +104,10 @@ fun CastExpandedPlayer(
             shape = RectangleShape,
             sheetMaxWidth = Dp.Unspecified
         ) {
-            CastExpandedPlayerAdaptiveContent(
-                false,
-                uiState,
-                onDeviceClick,
-                onClose,
-                viewModel
+            CastExpandedPlayerLayout(
+                isExpandedScreen = false,
+                uiState = uiState,
+                actions = actions
             )
         }
     } else {
@@ -95,63 +118,34 @@ fun CastExpandedPlayer(
             shadowElevation = 8.dp,
             color = MaterialTheme.colorScheme.background
         ) {
-            CastExpandedPlayerAdaptiveContent(
-                true,
-                uiState,
-                onDeviceClick,
-                onClose,
-                viewModel
+            CastExpandedPlayerLayout(
+                isExpandedScreen = true,
+                uiState = uiState,
+                actions = actions
             )
         }
     }
 }
 
-@Composable
-private fun CastExpandedPlayerAdaptiveContent(
-    isExpandedScreen: Boolean,
-    uiState: CastPlayerViewModel.UiState,
-    onDeviceClick: () -> Unit,
-    onClose: () -> Unit,
-    viewModel: CastPlayerViewModel
-) {
-    CastExpandedPlayerLayout(
-        isExpandedScreen = isExpandedScreen,
-        uiState = uiState,
-        onDeviceClick = onDeviceClick,
-        onClose = onClose,
-        onSeekTo = viewModel.playerController::seekTo,
-        onPlay = viewModel.playerController::play,
-        onPause = viewModel.playerController::pause,
-        onPlayPreviousItem = {
-            if (uiState.playbackState.currentPosition > 5000) {
-                viewModel.playerController.seekTo(0)
-            } else {
-                viewModel.playPreviousItem()
-            }
-        },
-        onPlayNextItem = viewModel::playNextItem,
-        onSkipSegment = viewModel::skipSegment,
-        onVolumeChange = viewModel.playerController::setVolume,
-        onAudioTrackSelected = viewModel::onAudioTrackSelected,
-        onSubtitleTrackSelected = viewModel::onSubtitleTrackSelected
-    )
-}
+data class CastPlayerActions(
+    val onPlay: () -> Unit,
+    val onPause: () -> Unit,
+    val onSeek: (Long) -> Unit,
+    val onPlayPreviousItem: () -> Unit,
+    val onPlayNextItem: () -> Unit,
+    val onSkipSegment: (FindroidSegment) -> Unit,
+    val onVolumeChange: (Float) -> Unit,
+    val onAudioTrackSelected: (Track) -> Unit,
+    val onSubtitleTrackSelected: (Track?) -> Unit,
+    val onDeviceClick: () -> Unit,
+    val onClose: () -> Unit,
+)
 
 @Composable
 private fun CastExpandedPlayerLayout(
     isExpandedScreen: Boolean,
     uiState: CastPlayerViewModel.UiState,
-    onDeviceClick: () -> Unit,
-    onClose: () -> Unit,
-    onSeekTo: (Long) -> Unit,
-    onPlay: () -> Unit,
-    onPause: () -> Unit,
-    onPlayPreviousItem: () -> Unit,
-    onPlayNextItem: () -> Unit,
-    onSkipSegment: (FindroidSegment) -> Unit,
-    onVolumeChange: (Float) -> Unit,
-    onAudioTrackSelected: (Track?) -> Unit,
-    onSubtitleTrackSelected: (Track?) -> Unit
+    actions: CastPlayerActions,
 ) {
     var isScrubbing by remember { mutableStateOf(false) }
     var scrubPosition by remember { mutableFloatStateOf(0f) }
@@ -175,8 +169,7 @@ private fun CastExpandedPlayerLayout(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .displayCutoutPadding()
-                .navigationBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .navigationBarsPadding(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLandscape && !isExpandedScreen) {
                 Row(
@@ -193,8 +186,8 @@ private fun CastExpandedPlayerLayout(
                         posterUrl = posterUrl,
                         playbackState = playbackState,
                         deviceName = connectedDevice?.name,
-                        onClose = onClose,
-                        onDeviceClick = onDeviceClick,
+                        onClose = actions.onClose,
+                        onDeviceClick = actions.onDeviceClick,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
@@ -214,14 +207,14 @@ private fun CastExpandedPlayerLayout(
                         },
                         onScrubStop = {
                             isScrubbing = false
-                            onSeekTo(scrubPosition.toLong())
+                            actions.onSeek(scrubPosition.toLong())
                         },
-                        onPlay = onPlay,
-                        onPause = onPause,
-                        onPlayPreviousItem = onPlayPreviousItem,
-                        onPlayNextItem = onPlayNextItem,
-                        onSkipSegment = onSkipSegment,
-                        onVolumeChange = onVolumeChange,
+                        onPlay = actions.onPlay,
+                        onPause = actions.onPause,
+                        onPlayPreviousItem = actions.onPlayPreviousItem,
+                        onPlayNextItem = actions.onPlayNextItem,
+                        onSkipSegment = actions.onSkipSegment,
+                        onVolumeChange = actions.onVolumeChange,
                         onClickAudio = {
                             showTrackSelection = true
                             trackType = C.TRACK_TYPE_AUDIO
@@ -241,8 +234,8 @@ private fun CastExpandedPlayerLayout(
                     posterUrl = posterUrl,
                     playbackState = playbackState,
                     deviceName = connectedDevice?.name,
-                    onClose = onClose,
-                    onDeviceClick = onDeviceClick,
+                    onClose = actions.onClose,
+                    onDeviceClick = actions.onDeviceClick,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -262,14 +255,14 @@ private fun CastExpandedPlayerLayout(
                     },
                     onScrubStop = {
                         isScrubbing = false
-                        onSeekTo(scrubPosition.toLong())
+                        actions.onSeek(scrubPosition.toLong())
                     },
-                    onPlay = onPlay,
-                    onPause = onPause,
-                    onPlayPreviousItem = onPlayPreviousItem,
-                    onPlayNextItem = onPlayNextItem,
-                    onSkipSegment = onSkipSegment,
-                    onVolumeChange = onVolumeChange,
+                    onPlay = actions.onPlay,
+                    onPause = actions.onPause,
+                    onPlayPreviousItem = actions.onPlayPreviousItem,
+                    onPlayNextItem = actions.onPlayNextItem,
+                    onSkipSegment = actions.onSkipSegment,
+                    onVolumeChange = actions.onVolumeChange,
                     onClickAudio = {
                         showTrackSelection = true
                         trackType = C.TRACK_TYPE_AUDIO
@@ -277,16 +270,13 @@ private fun CastExpandedPlayerLayout(
                     onClickSubtitle = {
                         showTrackSelection = true
                         trackType = C.TRACK_TYPE_TEXT
-                    }
-                )
+                    })
                 Spacer(modifier = Modifier.height(48.dp))
             }
         }
 
         AnimatedVisibility(
-            visible = showTrackSelection,
-            enter = fadeIn(),
-            exit = fadeOut()
+            visible = showTrackSelection, enter = fadeIn(), exit = fadeOut()
         ) {
             Box(
                 modifier = Modifier
@@ -294,8 +284,11 @@ private fun CastExpandedPlayerLayout(
                     .background(Color.Black.copy(alpha = 0.5f))
                     .pointerInput(Unit) {
                         detectTapGestures { showTrackSelection = false }
-                    }
-            )
+                        detectVerticalDragGestures(
+                            onVerticalDrag = { _, dragAmount ->
+                                if (dragAmount > 10f) showTrackSelection = false
+                            })
+                    })
         }
 
         AnimatedVisibility(
@@ -308,18 +301,21 @@ private fun CastExpandedPlayerLayout(
                 type = trackType,
                 tracks = if (trackType == C.TRACK_TYPE_AUDIO) uiState.audioTracks else uiState.subtitleTracks,
                 onSetTrack = {
-                    if (trackType == C.TRACK_TYPE_AUDIO) onAudioTrackSelected(
-                        it
-                    ) else onSubtitleTrackSelected(it)
+                    if (trackType == C.TRACK_TYPE_AUDIO) {
+                        it?.let { actions.onAudioTrackSelected(it) }
+                    } else {
+                        actions.onSubtitleTrackSelected(it)
+                    }
                 },
                 onDismiss = { showTrackSelection = false },
                 modifier = Modifier
                     .padding(16.dp)
+                    .widthIn(max = 500.dp)
                     .navigationBarsPadding()
+                    .displayCutoutPadding()
                     .pointerInput(Unit) {
                         detectTapGestures { }
-                    }
-            )
+                    })
         }
     }
 }
@@ -331,17 +327,7 @@ private fun CastExpandedPlayerPhoneVerticalPreview() {
         CastExpandedPlayerLayout(
             isExpandedScreen = false,
             uiState = mockUiStateEpisode(),
-            onDeviceClick = {},
-            onClose = {},
-            onSeekTo = {},
-            onPlay = {},
-            onPause = {},
-            onPlayPreviousItem = {},
-            onPlayNextItem = {},
-            onSkipSegment = {},
-            onVolumeChange = {},
-            onAudioTrackSelected = {},
-            onSubtitleTrackSelected = {}
+            actions = mockActions()
         )
     }
 }
@@ -353,17 +339,7 @@ private fun CastExpandedPlayerPhoneHorizontalPreview() {
         CastExpandedPlayerLayout(
             isExpandedScreen = false,
             uiState = mockUiStateEpisode(),
-            onDeviceClick = {},
-            onClose = {},
-            onSeekTo = {},
-            onPlay = {},
-            onPause = {},
-            onPlayPreviousItem = {},
-            onPlayNextItem = {},
-            onSkipSegment = {},
-            onVolumeChange = {},
-            onAudioTrackSelected = {},
-            onSubtitleTrackSelected = {}
+            actions = mockActions()
         )
     }
 }
@@ -375,17 +351,7 @@ private fun CastExpandedPlayerMoviePhoneVerticalPreview() {
         CastExpandedPlayerLayout(
             isExpandedScreen = false,
             uiState = mockUiStateMovie(),
-            onDeviceClick = {},
-            onClose = {},
-            onSeekTo = {},
-            onPlay = {},
-            onPause = {},
-            onPlayPreviousItem = {},
-            onPlayNextItem = {},
-            onSkipSegment = {},
-            onVolumeChange = {},
-            onAudioTrackSelected = {},
-            onSubtitleTrackSelected = {}
+            actions = mockActions()
         )
     }
 }
@@ -397,26 +363,28 @@ private fun CastExpandedPlayerMoviePhoneHorizontalPreview() {
         CastExpandedPlayerLayout(
             isExpandedScreen = false,
             uiState = mockUiStateMovie(),
-            onDeviceClick = {},
-            onClose = {},
-            onSeekTo = {},
-            onPlay = {},
-            onPause = {},
-            onPlayPreviousItem = {},
-            onPlayNextItem = {},
-            onSkipSegment = {},
-            onVolumeChange = {},
-            onAudioTrackSelected = {},
-            onSubtitleTrackSelected = {}
+            actions = mockActions()
         )
     }
 }
 
+private fun mockActions() = CastPlayerActions(
+    onPlay = {},
+    onPause = {},
+    onSeek = {},
+    onPlayPreviousItem = {},
+    onPlayNextItem = {},
+    onSkipSegment = {},
+    onVolumeChange = {},
+    onAudioTrackSelected = {},
+    onSubtitleTrackSelected = {},
+    onDeviceClick = {},
+    onClose = {}
+)
+
 private fun mockUiStateEpisode() = CastPlayerViewModel.UiState(
     currentItemTitle = CastPlayerViewModel.CurrentItemTitle(
-        seriesName = "Series Name",
-        episodeInfo = "S01E01",
-        title = "Episode Title"
+        seriesName = "Series Name", episodeInfo = "S01E01", title = "Episode Title"
     ),
     currentItemPosterUrl = null,
     isMovie = false,

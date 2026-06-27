@@ -5,7 +5,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ExternalSubtitle(
+data class ExternalSubtitle(
     val title: String,
     val language: String,
     val uri: Uri,
