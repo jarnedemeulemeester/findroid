@@ -30,6 +30,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.models.FindroidSegment
+import dev.jdtech.jellyfin.models.FindroidSegmentType
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.player.core.R
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -37,15 +40,18 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun PlaybackButtons(
+    uiState: CastPlayerViewModel.UiState,
     isPlaying: Boolean,
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onSeekBack: () -> Unit,
     onSeekForward: () -> Unit,
-    onSkipSegment: () -> Unit,
-    skippableSegment: Boolean,
-    skipStringRes: Int
+    onSkipSegment: () -> Unit
 ) {
+    val playerState = uiState.playerState
+    val skippableSegment = uiState.currentSegment != null
+    val skipStringRes = uiState.currentSkipButtonStringRes
+
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -103,6 +109,7 @@ fun PlaybackButtons(
 
         FilledIconButton(
             onClick = onSeekBack,
+            enabled = playerState.hasPreviousItem,
             shape = CircleShape,
             interactionSource = backInteractionSource,
             colors = IconButtonDefaults.filledIconButtonColors(
@@ -153,6 +160,7 @@ fun PlaybackButtons(
 
         FilledIconButton(
             onClick = { if (skippableSegment) onSkipSegment() else onSeekForward() },
+            enabled = skippableSegment || playerState.hasNextItem,
             shape = CircleShape,
             interactionSource = nextInteractionSource,
             colors = IconButtonDefaults.filledIconButtonColors(
@@ -192,42 +200,59 @@ fun PlaybackButtonsPreview() {
     FindroidTheme {
         Column {
             PlaybackButtons(
+                uiState = mockUiState(),
                 isPlaying = true,
                 onPlay = {},
                 onPause = {},
                 onSeekBack = {},
                 onSeekForward = {},
                 onSkipSegment = {},
-                skippableSegment = false,
-                skipStringRes = R.string.player_controls_skip_intro,
             )
 
             Spacer(Modifier.height(16.dp))
 
             PlaybackButtons(
+                uiState = mockUiState(),
                 isPlaying = false,
                 onPlay = {},
                 onPause = {},
                 onSeekBack = {},
                 onSeekForward = {},
                 onSkipSegment = {},
-                skippableSegment = false,
-                skipStringRes = R.string.player_controls_skip_intro,
             )
 
             Spacer(Modifier.height(16.dp))
 
             PlaybackButtons(
+                uiState = mockUiState().copy(
+                    currentSegment = FindroidSegment(
+                        FindroidSegmentType.INTRO,
+                        0,
+                        1,
+                    ),
+                ),
                 isPlaying = true,
                 onPlay = {},
                 onPause = {},
                 onSeekBack = {},
                 onSeekForward = {},
                 onSkipSegment = {},
-                skippableSegment = true,
-                skipStringRes = R.string.player_controls_skip_intro,
             )
         }
     }
 }
 
+private fun mockUiState() = CastPlayerViewModel.UiState(
+    currentItemTitle = CastPlayerViewModel.CurrentItemTitle(
+        seriesName = "Series Name", episodeInfo = "S01E01", title = "Episode Title"
+    ),
+    currentItemPosterUrl = null,
+    isMovie = false,
+    defaultAspectRatio = 16f / 9f,
+    trickplayAspectRatio = null,
+    currentSegment = null,
+    currentSkipButtonStringRes = R.string.player_controls_skip_intro,
+    currentTrickplay = null,
+    currentChapters = emptyList(),
+    fileLoaded = true
+)

@@ -18,6 +18,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.mediarouter.media.MediaRouter
 import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
 import dev.jdtech.jellyfin.player.cast.models.Device
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
@@ -43,6 +45,13 @@ fun CastBottomSheet(
     val devices = uiState.availableDevices
     val connectedDevice = uiState.connectedDevice
     val connectionState = uiState.connectionState
+
+    DisposableEffect(viewModel) {
+        viewModel.sessionManager.updateDiscovery(MediaRouter.CALLBACK_FLAG_PERFORM_ACTIVE_SCAN)
+        onDispose {
+            viewModel.sessionManager.updateDiscovery()
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,

@@ -7,26 +7,30 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.player.cast.models.Device
+import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 
 @Composable
 fun CastButton(
     expanded: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CastPlayerViewModel = hiltViewModel()
+    viewModel: CastPlayerViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val devices = uiState.availableDevices
 
     CastButtonContent(
@@ -55,10 +59,10 @@ fun CastButtonContent(
         },
         text = {
             Text(
-                text = when {
-                    devices.isEmpty() -> "Connect TV"
-                    devices.size == 1 -> "TV nearby"
-                    else -> "${devices.size} TVs nearby"
+                text = if (devices.isEmpty()) {
+                    stringResource(CoreR.string.cast_connect_tv)
+                } else {
+                    pluralStringResource(CoreR.plurals.cast_tvs_nearby, devices.size, devices.size)
                 }
             )
         },

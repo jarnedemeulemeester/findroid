@@ -6,8 +6,10 @@ import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
 import com.google.android.gms.cast.CastMediaControlIntent
 import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.CastStateListener
+import com.google.android.gms.cast.framework.SessionManagerListener
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
 import dev.jdtech.jellyfin.player.cast.models.Device
@@ -16,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.google.android.gms.cast.CastDevice as GmsCastDevice
 
 data class ChromeCastDevice(val route: MediaRouter.RouteInfo) : Device(
     id = route.id,
@@ -64,27 +65,45 @@ class CastSessionManagerImpl @Inject constructor(
         }
     }
 
+    private val sessionManagerListener = object : SessionManagerListener<CastSession> {
+        override fun onSessionStarting(session: CastSession) {}
+        override fun onSessionStarted(session: CastSession, sessionId: String) = updateDiscovery(0)
+        override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) =
+            updateDiscovery(0)
+
+        override fun onSessionEnded(session: CastSession, error: Int) = updateDiscovery()
+        override fun onSessionSuspended(session: CastSession, reason: Int) = updateDiscovery()
+        override fun onSessionStartFailed(session: CastSession, error: Int) {}
+        override fun onSessionEnding(session: CastSession) {}
+        override fun onSessionResuming(session: CastSession, sessionId: String) {}
+        override fun onSessionResumeFailed(session: CastSession, error: Int) {}
+    }
+
+
     private val castStateListener = CastStateListener { state ->
-        when (state) {
-            CastState.CONNECTED -> _connectionState.value = CastConnectionState.CONNECTED
-
-            CastState.CONNECTING -> _connectionState.value = CastConnectionState.CONNECTING
-
+        _connectionState.value = when (state) {
+            CastState.CONNECTED -> CastConnectionState.CONNECTED
+            CastState.CONNECTING -> CastConnectionState.CONNECTING
             else -> {
-                _connectionState.value = CastConnectionState.DISCONNECTED
                 _connectedDevice.value = null
-                updateRoutes()
+                CastConnectionState.DISCONNECTED
             }
         }
     }
 
+    override fun init() {
+        castContext.addCastStateListener(castStateListener)
+        castContext.sessionManager.addSessionManagerListener(
+            sessionManagerListener,
+            CastSession::class.java
+        )
+
+        updateDiscovery()
+    }
+
     private fun updateRoutes() {
         val routes = mediaRouter.routes.filter { route ->
-            val isCast = route.matchesSelector(routeSelector)
-            val device = GmsCastDevice.getFromBundle(route.extras)
-            (isCast && device?.hasCapability(GmsCastDevice.CAPABILITY_VIDEO_OUT) == true) || route.supportsControlCategory(
-                MediaControlIntent.CATEGORY_REMOTE_PLAYBACK
-            )
+            !route.isDefault && route.matchesSelector(routeSelector)
         }
 
         _availableDevices.value = routes.map { route ->
@@ -92,12 +111,11 @@ class CastSessionManagerImpl @Inject constructor(
         }
     }
 
-    override fun init() {
-        castContext.addCastStateListener(castStateListener)
+    override fun updateDiscovery(flags: Int) {
         mediaRouter.addCallback(
             routeSelector,
             routeCallback,
-            MediaRouter.CALLBACK_FLAG_PERFORM_ACTIVE_SCAN
+            flags
         )
         updateRoutes()
     }
@@ -114,5 +132,15 @@ class CastSessionManagerImpl @Inject constructor(
     override fun disconnect() {
         castContext.sessionManager.endCurrentSession(true)
         _connectedDevice.value = null
+    }
+
+    override fun release() {
+        mediaRouter.removeCallback(routeCallback)
+
+        castContext.removeCastStateListener(castStateListener)
+        castContext.sessionManager.removeSessionManagerListener(
+            sessionManagerListener,
+            CastSession::class.java
+        )
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -14,19 +15,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.models.FindroidSegment
-import dev.jdtech.jellyfin.player.cast.models.CastPlaybackState
+import dev.jdtech.jellyfin.player.cast.models.CastPlaybackStatus
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
-import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 
 @Composable
 fun PlayerBottomSection(
     uiState: CastPlayerViewModel.UiState,
-    playbackState: CastPlaybackState,
-    chapters: List<PlayerChapter>,
-    segment: FindroidSegment?,
     isScrubbing: Boolean,
     scrubPosition: Float,
-    volume: Float,
     onScrubStart: (Float) -> Unit,
     onScrubStop: () -> Unit,
     onPlay: () -> Unit,
@@ -39,8 +35,13 @@ fun PlayerBottomSection(
     onClickSubtitle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val currentProgress = if (isScrubbing) scrubPosition else playbackState.currentPosition.toFloat()
-    val duration = playbackState.duration.toFloat()
+    val playerState = uiState.playerState
+    val segment = uiState.currentSegment
+    val chapters = uiState.currentChapters
+
+    val currentProgress = if (isScrubbing) scrubPosition else playerState.currentPosition.toFloat()
+    val duration = playerState.duration.toFloat()
+    val volume = playerState.volume
 
     Column(
         modifier = modifier,
@@ -52,6 +53,7 @@ fun PlayerBottomSection(
         Spacer(modifier = Modifier.height(24.dp))
 
         CastScrubbingTimeline(
+            playerStatus = playerState.status,
             currentProgress = currentProgress,
             duration = duration,
             chapters = chapters,
@@ -61,15 +63,15 @@ fun PlayerBottomSection(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        val isPlaying = remember(playerState.status) { playerState.status == CastPlaybackStatus.PLAYING }
         PlaybackButtons(
-            isPlaying = playbackState.isPlaying,
+            uiState = uiState,
+            isPlaying = isPlaying,
             onPlay = onPlay,
             onPause = onPause,
             onSeekBack = onPlayPreviousItem,
             onSeekForward = onPlayNextItem,
             onSkipSegment = { if (segment != null) onSkipSegment(segment) },
-            skippableSegment = segment != null,
-            skipStringRes = uiState.currentSkipButtonStringRes,
         )
 
         Spacer(modifier = Modifier.height(24.dp))

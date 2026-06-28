@@ -25,7 +25,11 @@ class CastSessionManagerImpl @Inject constructor(
     private val _connectedDevice = MutableStateFlow<Device?>(null)
     override val connectedDevice: StateFlow<Device?> = _connectedDevice.asStateFlow()
 
+    override val currentSession = MutableStateFlow<Any?>(null)
+    override val remoteMediaClient = MutableStateFlow<Any?>(null)
+
     override fun init() {}
+    override fun updateDiscovery(flags: Int) {}
     override fun connect(device: Device) {}
     override fun disconnect() {}
 }

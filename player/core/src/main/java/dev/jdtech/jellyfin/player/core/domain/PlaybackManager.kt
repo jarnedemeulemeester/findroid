@@ -48,10 +48,6 @@ class PlaybackManager @Inject constructor(
             Timber.w("Skipping playback progress report: itemId is null.")
             return
         }
-        if (status.durationMs == C.TIME_UNSET) {
-            Timber.w("Skipping playback progress report for item ${status.itemId}: invalid duration.")
-            return
-        }
 
         try {
             repository.postPlaybackProgress(

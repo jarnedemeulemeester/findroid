@@ -72,13 +72,13 @@ fun CastExpandedPlayer(
         WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
     )
 
-    val actions = remember(viewModel, uiState.playbackState.currentPosition) {
+    val actions = remember(viewModel, uiState.playerState.currentPosition) {
         CastPlayerActions(
             onPlay = { viewModel.playerController.play() },
             onPause = { viewModel.playerController.pause() },
             onSeek = { viewModel.playerController.seekTo(it) },
             onPlayPreviousItem = {
-                if (uiState.playbackState.currentPosition > 5000) {
+                if (uiState.playerState.currentPosition > 5000) {
                     viewModel.playerController.seekTo(0)
                 } else {
                     viewModel.playPreviousItem()
@@ -155,14 +155,6 @@ private fun CastExpandedPlayerLayout(
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    val playbackState = uiState.playbackState
-    val connectedDevice = uiState.connectedDevice
-    val volume = uiState.volume
-
-    val posterUrl = uiState.currentItemPosterUrl
-    val segment = uiState.currentSegment
-    val chapters = uiState.currentChapters
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -183,9 +175,6 @@ private fun CastExpandedPlayerLayout(
                         uiState = uiState,
                         isScrubbing = isScrubbing,
                         scrubPosition = scrubPosition,
-                        posterUrl = posterUrl,
-                        playbackState = playbackState,
-                        deviceName = connectedDevice?.name,
                         onClose = actions.onClose,
                         onDeviceClick = actions.onDeviceClick,
                         modifier = Modifier
@@ -195,12 +184,8 @@ private fun CastExpandedPlayerLayout(
 
                     PlayerBottomSection(
                         uiState = uiState,
-                        playbackState = playbackState,
-                        chapters = chapters,
-                        segment = segment,
                         isScrubbing = isScrubbing,
                         scrubPosition = scrubPosition,
-                        volume = volume,
                         onScrubStart = {
                             isScrubbing = true
                             scrubPosition = it
@@ -231,9 +216,6 @@ private fun CastExpandedPlayerLayout(
                     uiState = uiState,
                     isScrubbing = isScrubbing,
                     scrubPosition = scrubPosition,
-                    posterUrl = posterUrl,
-                    playbackState = playbackState,
-                    deviceName = connectedDevice?.name,
                     onClose = actions.onClose,
                     onDeviceClick = actions.onDeviceClick,
                     modifier = Modifier.weight(1f)
@@ -243,12 +225,8 @@ private fun CastExpandedPlayerLayout(
 
                 PlayerBottomSection(
                     uiState = uiState,
-                    playbackState = playbackState,
-                    chapters = chapters,
-                    segment = segment,
                     isScrubbing = isScrubbing,
                     scrubPosition = scrubPosition,
-                    volume = volume,
                     onScrubStart = {
                         isScrubbing = true
                         scrubPosition = it
@@ -284,6 +262,8 @@ private fun CastExpandedPlayerLayout(
                     .background(Color.Black.copy(alpha = 0.5f))
                     .pointerInput(Unit) {
                         detectTapGestures { showTrackSelection = false }
+                    }
+                    .pointerInput(Unit) {
                         detectVerticalDragGestures(
                             onVerticalDrag = { _, dragAmount ->
                                 if (dragAmount > 10f) showTrackSelection = false

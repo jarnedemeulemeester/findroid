@@ -30,11 +30,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -175,8 +177,9 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
-    castViewModel: CastPlayerViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val castViewModel: CastPlayerViewModel = hiltViewModel(context as ViewModelStoreOwner)
     val isOfflineMode = LocalOfflineMode.current
 
     val startDestination =

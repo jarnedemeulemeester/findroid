@@ -6,10 +6,24 @@ enum class CastConnectionState {
     CONNECTED
 }
 
-data class CastPlaybackState(
-    val isPlaying: Boolean = false,
+enum class CastPlaybackStatus {
+    IDLE,
+    BUFFERING,
+    READY,
+    PAUSED,
+    PLAYING,
+    ENDED,
+    ERROR
+}
+
+data class CastPlayerState(
+    val status: CastPlaybackStatus = CastPlaybackStatus.IDLE,
     val currentPosition: Long = 0L,
-    val duration: Long = 0L
+    val duration: Long = 0L,
+    val volume: Float = 1f,
+    val isMuted: Boolean = false,
+    val hasNextItem: Boolean = false,
+    val hasPreviousItem: Boolean = false
 )
 
 open class Device(

@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +41,7 @@ import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
-import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
+import dev.jdtech.jellyfin.player.cast.presentation.CastSessionViewModel
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
@@ -67,9 +66,8 @@ fun SeasonScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val castPlayerViewModel: CastPlayerViewModel = hiltViewModel()
-    val castUiState by castPlayerViewModel.uiState.collectAsState()
-    val castConnectionState = castUiState.connectionState
+    val castSessionViewModel: CastSessionViewModel = hiltViewModel()
+    val castConnectionState by castSessionViewModel.connectionState.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
@@ -79,7 +77,7 @@ fun SeasonScreen(
             when (action) {
                 is SeasonAction.Play -> {
                     if (castConnectionState == CastConnectionState.CONNECTED) {
-                        castPlayerViewModel.playItem(seasonId, BaseItemKind.SEASON.serialName, action.startFromBeginning)
+                        castSessionViewModel.playItem(seasonId, BaseItemKind.SEASON.serialName, action.startFromBeginning)
                     } else {
                         val intent = Intent(context, PlayerActivity::class.java)
                         intent.putExtra("itemId", seasonId.toString())

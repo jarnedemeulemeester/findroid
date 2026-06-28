@@ -417,13 +417,13 @@ constructor(
                 val mediaId = player.currentMediaItem?.mediaId
                 val position = player.currentPosition
                 val duration = player.duration
-                    playbackManager.reportStop(
-                        PlaybackStatus(
-                            itemId = UUID.fromString(mediaId),
-                            positionMs = position,
-                            durationMs = duration
-                        )
+                playbackManager.reportStop(
+                    PlaybackStatus(
+                        itemId = UUID.fromString(mediaId),
+                        positionMs = position,
+                        durationMs = duration
                     )
+                )
                 player.seekToNextMediaItem()
                 player.play()
             }

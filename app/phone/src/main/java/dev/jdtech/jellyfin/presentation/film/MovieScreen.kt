@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +35,6 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
@@ -47,7 +44,8 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
-import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
+import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.presentation.CastSessionViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
@@ -61,8 +59,9 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
+import java.util.UUID
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun MovieScreen(
@@ -80,9 +79,8 @@ fun MovieScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
-    val castPlayerViewModel: CastPlayerViewModel = hiltViewModel()
-    val castUiState by castPlayerViewModel.uiState.collectAsState()
-    val castConnectionState = castUiState.connectionState
+    val castSessionViewModel: CastSessionViewModel = hiltViewModel()
+    val castConnectionState by castSessionViewModel.connectionState.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
@@ -110,7 +108,7 @@ fun MovieScreen(
             when (action) {
                 is MovieAction.Play -> {
                     if (castConnectionState == CastConnectionState.CONNECTED) {
-                        castPlayerViewModel.playItem(movieId, BaseItemKind.MOVIE.serialName, action.startFromBeginning)
+                        castSessionViewModel.playItem(movieId, BaseItemKind.MOVIE.serialName, action.startFromBeginning)
                     } else {
                         val intent = Intent(context, PlayerActivity::class.java)
                         intent.putExtra("itemId", movieId.toString())

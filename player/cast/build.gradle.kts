@@ -34,7 +34,7 @@ dependencies {
     implementation(projects.player.core)
     implementation(projects.settings)
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.mediarouter)
+    api(libs.androidx.mediarouter)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.jdtech.jellyfin.player.cast.models.CastPlaybackState
+import dev.jdtech.jellyfin.player.cast.models.CastPlayerState
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.core.R as CoreR
 
@@ -28,13 +28,15 @@ fun PlayerTopSection(
     uiState: CastPlayerViewModel.UiState,
     isScrubbing: Boolean,
     scrubPosition: Float,
-    posterUrl: String?,
-    playbackState: CastPlaybackState,
-    deviceName: String?,
     onClose: () -> Unit,
     onDeviceClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val playerState = uiState.playerState
+
+    val posterUrl = uiState.currentItemPosterUrl
+    val deviceName = uiState.connectedDevice?.name
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -56,7 +58,7 @@ fun PlayerTopSection(
                 isScrubbing = isScrubbing,
                 scrubPosition = scrubPosition,
                 posterUrl = posterUrl,
-                playbackState = playbackState,
+                playbackState = playerState,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -69,7 +71,7 @@ private fun PlayerImage(
     isScrubbing: Boolean,
     scrubPosition: Float,
     posterUrl: String?,
-    playbackState: CastPlaybackState,
+    playbackState: CastPlayerState,
     modifier: Modifier = Modifier
 ) {
     val trickplay = uiState.currentTrickplay

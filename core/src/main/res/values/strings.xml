@@ -112,4 +112,5 @@
     <string name="cast_searching">Searching…</string>
     <string name="cast_available_devices">Available devices</string>
     <string name="cast_wifi_instruction">To connect via Wi-Fi, make sure this device and your TV are connected to the same Wi-Fi network.</string>
+    <string name="cast_connect_tv">Connect TV</string>
 </resources>

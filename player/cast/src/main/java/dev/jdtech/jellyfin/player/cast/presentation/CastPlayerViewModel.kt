@@ -5,19 +5,13 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jdtech.jellyfin.di.ApplicationScope
-import dev.jdtech.jellyfin.models.FindroidEpisode
-import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.player.cast.CastPlayerController
 import dev.jdtech.jellyfin.player.cast.CastSessionManager
 import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
-import dev.jdtech.jellyfin.player.cast.models.CastPlaybackState
+import dev.jdtech.jellyfin.player.cast.models.CastPlayerState
 import dev.jdtech.jellyfin.player.cast.models.Device
 import dev.jdtech.jellyfin.player.core.R
-import dev.jdtech.jellyfin.player.core.domain.PlaybackManager
-import dev.jdtech.jellyfin.player.core.domain.PlaylistManager
-import dev.jdtech.jellyfin.player.core.domain.models.PlaybackStatus
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerMediaType
@@ -29,10 +23,7 @@ import dev.jdtech.jellyfin.player.core.domain.utils.SegmentUtils.getSkipButtonTe
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.Constants
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,13 +32,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jellyfin.sdk.model.api.BaseItemKind
-import org.jellyfin.sdk.model.api.PlayMethod
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.math.ceil
-import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class CastPlayerViewModel
@@ -55,11 +43,8 @@ class CastPlayerViewModel
 constructor(
     val sessionManager: CastSessionManager,
     val playerController: CastPlayerController,
-    private val playlistManager: PlaylistManager,
-    private val playbackManager: PlaybackManager,
     private val repository: JellyfinRepository,
-    private val appPreferences: AppPreferences,
-    @param:ApplicationScope private val appScope: CoroutineScope
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     data class CurrentItemTitle(
@@ -70,10 +55,9 @@ constructor(
 
     data class UiState(
         val connectionState: CastConnectionState = CastConnectionState.DISCONNECTED,
-        val playbackState: CastPlaybackState = CastPlaybackState(),
+        val playerState: CastPlayerState = CastPlayerState(),
         val availableDevices: List<Device> = emptyList(),
         val connectedDevice: Device? = null,
-        val volume: Float = 1f,
         val currentItemTitle: CurrentItemTitle,
         val currentItemPosterUrl: String?,
         val isMovie: Boolean,
@@ -93,8 +77,7 @@ constructor(
             connectionState = sessionManager.connectionState.value,
             availableDevices = sessionManager.availableDevices.value,
             connectedDevice = sessionManager.connectedDevice.value,
-            playbackState = playerController.playbackState.value,
-            volume = playerController.volume.value,
+            playerState = playerController.playerState.value,
 
             currentItemTitle = CurrentItemTitle(title = ""),
             currentItemPosterUrl = null,
@@ -116,89 +99,64 @@ constructor(
 
     private var currentMediaItemSegments: List<FindroidSegment> = emptyList()
     var currentItemId: UUID? = null
-    var hasPreviousMediaItem = false
-    var hasNextMediaItem = false
 
     // Segments preferences
-    private var segmentsSkipButton: Boolean = false
-    private var segmentsAutoSkip: Boolean = false
+    private val segmentsSkipButton: Boolean
+        get() = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
 
-    private var hasReportedStart = false
+    private val segmentsAutoSkip: Boolean
+        get() = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
+
 
     init {
         sessionManager.connectionState.onEach { value ->
-                _internalUiState.update {
-                    it.copy(
-                        connectionState = value
-                    )
-                }
-            }.launchIn(viewModelScope)
+            _internalUiState.update {
+                it.copy(
+                    connectionState = value
+                )
+            }
+        }.launchIn(viewModelScope)
 
         sessionManager.availableDevices.onEach { value ->
-                _internalUiState.update {
-                    it.copy(
-                        availableDevices = value
-                    )
-                }
-            }.launchIn(viewModelScope)
+            _internalUiState.update {
+                it.copy(
+                    availableDevices = value
+                )
+            }
+        }.launchIn(viewModelScope)
 
         sessionManager.connectedDevice.onEach { value ->
-                _internalUiState.update {
-                    it.copy(
-                        connectedDevice = value
-                    )
-                }
-            }.launchIn(viewModelScope)
+            _internalUiState.update {
+                it.copy(
+                    connectedDevice = value
+                )
+            }
+        }.launchIn(viewModelScope)
 
-        playerController.playbackState.onEach { value ->
-                _internalUiState.update {
-                    it.copy(
-                        playbackState = value
-                    )
-                }
-
-                // Report start only when it actually starts playing
-                if (!hasReportedStart && value.isPlaying) {
-                    val playbackInfo = playerController.playbackInfoResponse.value
-                    val mediaSource = playbackInfo?.mediaSources?.firstOrNull()
-                    val playMethod = when {
-                        mediaSource?.supportsDirectPlay ?: false -> PlayMethod.DIRECT_PLAY
-                        mediaSource?.supportsDirectStream ?: false -> PlayMethod.DIRECT_STREAM
-                        else -> PlayMethod.TRANSCODE
-                    }
-                    playbackManager.reportStart(
-                        PlaybackStatus(
-                            itemId = currentItemId,
-                            positionMs = value.currentPosition,
-                            durationMs = value.duration,
-                            playMethod = playMethod,
-                            mediaSourceId = mediaSource?.id,
-                            playSessionId = playbackInfo?.playSessionId
-                        )
-                    )
-                    hasReportedStart = true
-                } else if (hasReportedStart) {
-                    // Report progress immediately on play/pause change
-                    updatePlaybackProgress()
-                }
-            }.launchIn(viewModelScope)
-
-        playerController.volume.onEach { value -> _internalUiState.update { it.copy(volume = value) } }
-            .launchIn(viewModelScope)
+        playerController.playerState.onEach { value ->
+            _internalUiState.update {
+                it.copy(
+                    playerState = value
+                )
+            }
+            if (segmentsSkipButton || segmentsAutoSkip) {
+                updateCurrentSegment(value.currentPosition)
+            }
+        }.launchIn(viewModelScope)
 
         playerController.subtitleTracks.onEach { value ->
-                _internalUiState.update {
-                    it.copy(
-                        subtitleTracks = value
-                    )
-                }
-            }.launchIn(viewModelScope)
+            _internalUiState.update {
+                it.copy(
+                    subtitleTracks = value
+                )
+            }
+        }.launchIn(viewModelScope)
 
-        playerController.audioTracks.onEach { value -> _internalUiState.update { it.copy(audioTracks = value) } }
-            .launchIn(viewModelScope)
-
-        segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
-        segmentsAutoSkip = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
+        playerController.audioTracks.onEach { value ->
+            _internalUiState.update {
+                it.copy(audioTracks = value)
+            }
+        }.launchIn(viewModelScope)
 
         viewModelScope.launch {
             playerController.currentItem.collect { item ->
@@ -211,89 +169,10 @@ constructor(
                 Timber.d("CurrentItem: $item")
             }
         }
-
-        viewModelScope.launch {
-            playerController.restoringItemId.collect { itemIdStr ->
-                if (itemIdStr != null) {
-                    try {
-                        val itemId = UUID.fromString(itemIdStr)
-                        val findroidItem = repository.getItem(itemId)
-                        if (findroidItem != null) {
-                            val itemKind = when (findroidItem) {
-                                is FindroidMovie -> BaseItemKind.MOVIE
-                                is FindroidEpisode -> BaseItemKind.EPISODE
-                                else -> return@collect
-                            }
-                            val playerItem = playlistManager.getInitialItem(
-                                itemId = itemId,
-                                itemKind = itemKind,
-                                mediaSourceIndex = null,
-                                startFromBeginning = false
-                            )
-                            if (playerItem != null) {
-                                playerController.restoreItem(playerItem)
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-                }
-            }
-        }
-
-        viewModelScope.launch {
-            while (true) {
-                updatePlaybackProgress()
-                delay(10000L.milliseconds)
-            }
-        }
-
-        playerController.playbackState
-            .onEach { state ->
-                if (segmentsSkipButton || segmentsAutoSkip) {
-                    updateCurrentSegment(state.currentPosition)
-                }
-            }
-            .launchIn(viewModelScope)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-
-        appScope.launch {
-            withContext(NonCancellable) {
-                reportPlaybackStop()
-            }
-        }
-    }
-
-    /**
-     * Initializes playback of a specific Jellyfin item on the connected cast device.
-     * Fetches the initial payload from the repository and loads it via [CastPlayerController].
-     */
-    fun playItem(itemId: UUID, itemKind: String, startFromBeginning: Boolean) {
-        viewModelScope.launch {
-            val initialItem = playlistManager.getInitialItem(
-                itemId = itemId,
-                itemKind = BaseItemKind.fromName(itemKind),
-                mediaSourceIndex = null,
-                startFromBeginning = startFromBeginning
-            )
-            currentItemId = itemId
-            _internalUiState.update { it.copy(fileLoaded = false) }
-            if (initialItem != null) {
-                playerController.loadItem(
-                    initialItem, if (startFromBeginning) 0L else initialItem.playbackPosition
-                )
-            }
-        }
     }
 
     /**
      * Handles the transition when a new media item starts playing.
-     * Updates the UI state with metadata (title, poster, aspect ratio, chapters),
-     * notifies the Jellyfin server that playback started, and fetches supplementary
-     * data like skip segments, trickplay thumbnails, and audio tracks.
      */
     private suspend fun onMediaItemTransition(item: PlayerItem) {
         Timber.d("Cast MediaItem transition: ${item.itemId}")
@@ -309,8 +188,6 @@ constructor(
         val trickplayRatio = item.trickplayInfo?.let {
             if (it.width > 0 && it.height > 0) it.width.toFloat() / it.height.toFloat() else null
         }
-
-        hasReportedStart = false
 
         val itemTitle = if (item.parentIndexNumber != null && item.indexNumber != null) {
             val parentIndex = item.parentIndexNumber.toString().padStart(2, '0')
@@ -342,56 +219,11 @@ constructor(
             )
         }
 
-        if (segmentsSkipButton || segmentsAutoSkip) {
-            currentMediaItemSegments = getSegments(item.itemId, repository)
-        }
+        currentMediaItemSegments = getSegments(item.itemId, repository)
 
         if (appPreferences.getValue(appPreferences.playerTrickplay)) {
             getTrickplay(item)
         }
-
-        playlistManager.setCurrentMediaItemIndex(item.itemId)
-
-        val previousItem = playlistManager.getPreviousPlayerItem()
-        if (previousItem != null) {
-            playerController.queuePreviousItem(previousItem)
-        }
-
-        val nextItem = playlistManager.getNextPlayerItem()
-        if (nextItem != null) {
-            playerController.queueNextItem(nextItem)
-        }
-
-        hasPreviousMediaItem = playlistManager.getPreviousPlayerItem() != null
-        hasNextMediaItem = playlistManager.getNextPlayerItem() != null
-    }
-
-    /**
-     * Periodically reports the current playback progress to the Jellyfin server
-     * so that watch states and resume points are saved correctly.
-     */
-    private suspend fun updatePlaybackProgress() {
-        val item = playerController.currentItem.value ?: return
-        val state = playerController.playbackState.value
-        val playbackInfo = playerController.playbackInfoResponse.value
-        val mediaSource = playbackInfo?.mediaSources?.firstOrNull()
-        val playMethod = when {
-            mediaSource?.supportsDirectPlay ?: false -> PlayMethod.DIRECT_PLAY
-            mediaSource?.supportsDirectStream ?: false -> PlayMethod.DIRECT_STREAM
-            else -> PlayMethod.TRANSCODE
-        }
-
-        playbackManager.reportProgress(
-            PlaybackStatus(
-                itemId = item.itemId,
-                positionMs = state.currentPosition,
-                durationMs = state.duration,
-                isPaused = !state.isPlaying,
-                playMethod = playMethod,
-                mediaSourceId = mediaSource?.id,
-                playSessionId = playbackInfo?.playSessionId
-            )
-        )
     }
 
     /**
@@ -412,6 +244,8 @@ constructor(
             }
             return
         }
+
+        Timber.tag("SegmentInfo").d("currentSegment: %s", currentSegment)
 
         val segmentsAutoSkip = appPreferences.getValue(appPreferences.playerMediaSegmentsAutoSkip)
         val segmentsAutoSkipTypes =
@@ -497,8 +331,6 @@ constructor(
      */
     private fun onMediaItemCleared() {
         currentMediaItemSegments = emptyList()
-        hasPreviousMediaItem = false
-        hasNextMediaItem = false
         _internalUiState.update {
             it.copy(
                 currentItemTitle = CurrentItemTitle(title = ""),
@@ -525,8 +357,8 @@ constructor(
     private fun shouldSkipToNextEpisode(segment: FindroidSegment): Boolean {
         return SegmentUtils.shouldSkipToNextEpisode(
             segment = segment,
-            hasNextMediaItem = hasNextMediaItem,
-            playerDurationMillis = playerController.playbackState.value.duration,
+            hasNextMediaItem = playerController.playerState.value.hasNextItem,
+            playerDurationMillis = playerController.playerState.value.duration,
             nextEpisodeThreshold = appPreferences.getValue(appPreferences.playerMediaSegmentsNextEpisodeThreshold)
         )
     }
@@ -573,21 +405,5 @@ constructor(
                 Timber.e(e)
             }
         }
-    }
-
-    private suspend fun reportPlaybackStop() {
-        val itemId = currentItemId ?: return
-        val state = playerController.playbackState.value
-        val playbackInfo = playerController.playbackInfoResponse.value
-
-        playbackManager.reportStop(
-            PlaybackStatus(
-                itemId = itemId,
-                positionMs = state.currentPosition,
-                durationMs = state.duration,
-                mediaSourceId = playbackInfo?.mediaSources?.firstOrNull()?.id,
-                playSessionId = playbackInfo?.playSessionId
-            )
-        )
     }
 }
