@@ -34,7 +34,9 @@ constructor(
         when (action) {
             is SettingsFileEditAction.OnSave -> {
                 val file = File(application.filesDir, filePath)
+                file.parentFile?.mkdirs()
                 file.writeText(action.text)
+                _state.update { it.copy(initialText = action.text) }
             }
             else -> Unit
         }
