@@ -11,7 +11,7 @@
     <string name="genres">Gêneros</string>
     <string name="director">Diretor</string>
     <string name="writers">Escritor</string>
-    <string name="cast_amp_crew">Elenco e Equipe</string>
+    <string name="cast_amp_crew"><![CDATA[Elenco e Equipe]]></string>
     <string name="seasons">Temporadas</string>
     <string name="play_button_description">Reproduzir</string>
     <string name="trailer_button_description">Trailer</string>
