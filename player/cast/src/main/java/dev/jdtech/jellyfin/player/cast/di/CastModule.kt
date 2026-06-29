@@ -6,7 +6,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.player.cast.CastSessionManager
 import dev.jdtech.jellyfin.player.cast.CastPlayerController
-// The implementations will be provided from the respective source sets
 import dev.jdtech.jellyfin.player.cast.CastSessionManagerImpl
 import dev.jdtech.jellyfin.player.cast.CastPlayerControllerImpl
 import javax.inject.Singleton

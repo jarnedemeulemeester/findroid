@@ -45,10 +45,10 @@ android {
     productFlavors {
         register("libre") {
             dimension = "variant"
-            isDefault = true
         }
-        register("gms") {
+        register("proprietary") {
             dimension = "variant"
+            isDefault = true
             matchingFallbacks += listOf("libre")
         }
     }

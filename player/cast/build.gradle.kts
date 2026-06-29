@@ -19,10 +19,10 @@ android {
     productFlavors {
         register("libre") {
             dimension = "variant"
-            isDefault = true
         }
-        register("gms") {
+        register("proprietary") {
             dimension = "variant"
+            isDefault = true
             matchingFallbacks += listOf("libre")
         }
     }
@@ -41,5 +41,5 @@ dependencies {
     implementation(libs.jellyfin.core)
     implementation(libs.timber)
 
-    "gmsImplementation"(libs.play.services.cast.framework)
+    "proprietaryImplementation"(libs.play.services.cast.framework)
 }
