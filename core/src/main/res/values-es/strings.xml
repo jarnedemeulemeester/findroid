@@ -13,7 +13,7 @@
     <string name="genres">Géneros</string>
     <string name="director">Director</string>
     <string name="writers">Escritores</string>
-    <string name="cast_amp_crew">Reparto y equipo</string>
+    <string name="cast_amp_crew"><![CDATA[Reparto y equipo]]></string>
     <string name="seasons">Temporadas</string>
     <string name="play_button_description">Reproducir contenido</string>
     <string name="trailer_button_description">Ver el tráiler</string>
