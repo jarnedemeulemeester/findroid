@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.mediarouter.media.MediaControlIntent
 import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
+import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.CastMediaControlIntent
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
@@ -47,7 +48,7 @@ class CastSessionManagerImpl @Inject constructor(
     private val routeSelector by lazy {
         MediaRouteSelector.Builder()
             .addControlCategory(CastMediaControlIntent.categoryForCast(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID))
-            .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
+            .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_VIDEO_PLAYBACK)
             .build()
     }
 
@@ -103,7 +104,15 @@ class CastSessionManagerImpl @Inject constructor(
 
     private fun updateRoutes() {
         val routes = mediaRouter.routes.filter { route ->
-            !route.isDefault && route.matchesSelector(routeSelector)
+            // 1. Must match the selector (Video Playback) and not be the default route
+            if (route.isDefault || !route.matchesSelector(routeSelector)) return@filter false
+
+            // 2. Filter by device type (excludes single speakers)
+            if (route.deviceType == MediaRouter.RouteInfo.DEVICE_TYPE_REMOTE_SPEAKER) return@filter false
+
+            // 3. Specific check on Cast capabilities (excludes speaker groups and audio-only devices)
+            val castDevice = CastDevice.getFromBundle(route.extras)
+            castDevice?.hasCapability(CastDevice.CAPABILITY_VIDEO_OUT) ?: true
         }
 
         _availableDevices.value = routes.map { route ->
