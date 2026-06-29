@@ -23,6 +23,8 @@ import dev.jdtech.jellyfin.settings.presentation.models.PreferenceFileEdit
 
 @Composable
 fun SettingsFileEditCard(preference: PreferenceFileEdit, modifier: Modifier = Modifier) {
+    val fileName = preference.filePath.split("/").last()
+
     SettingsBaseCard(
         preference = preference,
         onClick = { preference.onClick(preference) },
@@ -42,7 +44,7 @@ fun SettingsFileEditCard(preference: PreferenceFileEdit, modifier: Modifier = Mo
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(preference.nameStringResource),
+                    text = stringResource(preference.nameStringResource, fileName),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 preference.descriptionStringRes?.let {

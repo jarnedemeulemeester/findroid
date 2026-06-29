@@ -302,8 +302,19 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                                 preferences =
                                                                     listOf(
                                                                         PreferenceFileEdit(
-                                                                            nameStringResource = R.string.mpv_edit_conf_file,
+                                                                            nameStringResource = R.string.edit_file_title,
                                                                             filePath = "mpv/mpv.conf",
+                                                                            onClick = {
+                                                                                viewModelScope.launch {
+                                                                                    eventsChannel.send(
+                                                                                        SettingsEvent.NavigateToSettingsFileEdit(it.filePath)
+                                                                                    )
+                                                                                }
+                                                                            }
+                                                                        ),
+                                                                        PreferenceFileEdit(
+                                                                            nameStringResource = R.string.edit_file_title,
+                                                                            filePath = "mpv/input.conf",
                                                                             onClick = {
                                                                                 viewModelScope.launch {
                                                                                     eventsChannel.send(

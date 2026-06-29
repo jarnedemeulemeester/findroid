@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.presentation.settings
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -53,7 +52,7 @@ fun SettingsFileEditScreen(
     }
 
     SettingsFileEditScreenLayout(
-        title = SettingsR.string.mpv_edit_conf_file,
+        fileName = filePath.split("/").last(),
         initialText = state.initialText,
         onAction = { action ->
             when (action) {
@@ -67,7 +66,7 @@ fun SettingsFileEditScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsFileEditScreenLayout(
-    @StringRes title: Int,
+    fileName: String,
     initialText: String,
     onAction: (SettingsFileEditAction) -> Unit,
 ) {
@@ -87,7 +86,7 @@ private fun SettingsFileEditScreenLayout(
         modifier = Modifier.imePadding(),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(title)) },
+                title = { Text(stringResource(SettingsR.string.edit_file_title, fileName)) },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -159,7 +158,7 @@ private fun SettingsFileEditScreenLayout(
 private fun SettingsFileEditScreenLayoutPreview() {
     FindroidTheme {
         SettingsFileEditScreenLayout(
-            title = SettingsR.string.mpv_edit_conf_file,
+            fileName = "mpv.conf",
             initialText = "sample text",
             onAction = {},
         )

@@ -100,9 +100,9 @@
     <string name="media_segments_type_outro">Outro</string>
     <string name="media_segments_type_intro">Intro</string>
     <string name="none">None</string>
+    <string name="edit_file_title">Edit %1$s</string>
     <string name="pref_player_backend">Player backend</string>
     <string name="mpv_options">mpv options</string>
-    <string name="mpv_edit_conf_file">Edit mpv.conf</string>
     <string name="advanced">Advanced</string>
     <string name="discard_changes_dialog_title">Discard changes?</string>
     <string name="discard_changes_dialog_text">You have unsaved changes.</string>
