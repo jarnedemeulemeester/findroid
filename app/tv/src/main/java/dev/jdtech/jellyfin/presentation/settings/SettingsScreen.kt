@@ -53,6 +53,7 @@ fun SettingsScreen(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes)
+            is SettingsEvent.NavigateToSettingsFileEdit -> {}
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> Unit
