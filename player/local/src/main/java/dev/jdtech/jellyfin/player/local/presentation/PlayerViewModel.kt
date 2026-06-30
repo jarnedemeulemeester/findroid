@@ -141,8 +141,26 @@ constructor(
                 )
         )
 
-        if (appPreferences.getValue(appPreferences.playerMpv)) {
-            player =
+
+        val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
+        player = when (playerBackend) {
+            "exoplayer" -> {
+                val renderersFactory =
+                    DefaultRenderersFactory(application)
+                        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                ExoPlayer.Builder(application, renderersFactory)
+                    .setAudioAttributes(audioAttributes, true)
+                    .setTrackSelector(trackSelector)
+                    .setSeekBackIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekBackInc)
+                    )
+                    .setSeekForwardIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                    )
+                    .setPauseAtEndOfMediaItems(true)
+                    .build()
+            }
+            "mpv" -> {
                 MPVPlayer.Builder(application)
                     .setAudioAttributes(audioAttributes, true)
                     .setTrackSelectionParameters(trackSelector.parameters)
@@ -157,22 +175,9 @@ constructor(
                     .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
                     .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
                     .build()
-        } else {
-            val renderersFactory =
-                DefaultRenderersFactory(application)
-                    .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            player =
-                ExoPlayer.Builder(application, renderersFactory)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelector(trackSelector)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .build()
+            }
+
+            else -> throw RuntimeException("$playerBackend is not a valid player backend")
         }
     }
 
