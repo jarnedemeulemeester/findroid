@@ -108,4 +108,5 @@
     <string name="download_paused">一時停止中</string>
     <string name="download_downloading">ダウンロード中…</string>
     <string name="download_failed">ダウンロードに失敗しました</string>
+    <string name="discard">破棄</string>
 </resources>
