@@ -36,7 +36,7 @@ object Chromecast {
         }
 
         directPlayProfile {
-            container("mp4", "m4v", "mkv", "webm")
+            container("mp4", "m4v")
             type = DlnaProfileType.VIDEO
             videoCodec("h264")
             audioCodec("aac", "mp3", "opus", "vorbis", "flac", "ac3", "eac3")
@@ -46,11 +46,12 @@ object Chromecast {
             container = "ts"
             type = DlnaProfileType.VIDEO
             videoCodec("h264")
-            audioCodec("aac", "mp3", "ac3", "eac3")
+            audioCodec("aac", "mp3")
             protocol = MediaStreamProtocol.HLS
             context = EncodingContext.STREAMING
             minSegments = 2
             breakOnNonKeyFrames = true
+            maxAudioChannels = "2"
         }
 
         subtitleProfile("vtt", SubtitleDeliveryMethod.EXTERNAL)

@@ -90,6 +90,8 @@ class CastPlayerControllerImpl @Inject constructor(
 
     private var hasReportedStart = false
 
+    private var maxBitrate: Int? = null
+
     private data class CachedMedia(
         val item: PlayerItem,
         val playbackInfo: PlaybackInfoResponse? = null,
@@ -168,6 +170,8 @@ class CastPlayerControllerImpl @Inject constructor(
                             isMuted = session?.isMute ?: false
                         )
                     }
+
+                    maxBitrate = measureNetworkSpeed()
                 }
 
                 val client = session?.remoteMediaClient
@@ -380,9 +384,9 @@ class CastPlayerControllerImpl @Inject constructor(
                 playbackManager.reportProgress(playbackReportStatus)
             }
         } else if (status == CastPlaybackStatus.PLAYING) {
+            hasReportedStart = true
             scope.launch {
                 playbackManager.reportStart(playbackReportStatus)
-                hasReportedStart = true
             }
         }
     }
@@ -456,15 +460,41 @@ class CastPlayerControllerImpl @Inject constructor(
         }
     }
 
+    private suspend fun measureNetworkSpeed(): Int? {
+        val size = 1024 * 1024 // 1MB
+        val startTime = System.currentTimeMillis()
+        return try {
+            val response = jellyfinApi.mediaInfoApi.getBitrateTestBytes(size)
+            val endTime = System.currentTimeMillis()
+            val durationMs = endTime - startTime
+            if (durationMs > 0) {
+                val bytes = response.content.size
+                val speedBps = (bytes.toLong() * 8 * 1000) / durationMs // bps
+                val safetyMargin = 0.8
+                val maxBitrate = speedBps.let { (it * safetyMargin).toInt() }
+
+                Timber.d("MaxBitrate: $maxBitrate")
+
+                return maxBitrate
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to measure network speed")
+            null
+        }
+    }
+
     private suspend fun getPlaybackInfo(
         item: PlayerItem,
         audioStreamIndex: Int?
     ): PlaybackInfoResponse? {
         val userId = jellyfinApi.userId
-        val profile = if (true /* logic for Chromecast 4k */) {
-            Chromecast.deviceProfile
-        } else {
+        val connectedDevice = sessionManager.connectedDevice.value
+        val profile = if (connectedDevice?.supportsH265 == true) {
             ChromecastH265.deviceProfile
+        } else {
+            Chromecast.deviceProfile
         }
 
         return try {
@@ -473,6 +503,7 @@ class CastPlayerControllerImpl @Inject constructor(
                 PlaybackInfoDto(
                     userId = userId,
                     deviceProfile = profile,
+                    maxStreamingBitrate = maxBitrate,
                     audioStreamIndex = audioStreamIndex,
                     enableDirectPlay = audioStreamIndex == null,
                     enableDirectStream = true,
@@ -539,8 +570,6 @@ class CastPlayerControllerImpl @Inject constructor(
         }
 
         Timber.d("Video url: $streamUrl")
-        Timber.d("PlaySessionId (url): ${playbackInfo.playSessionId}")
-        Timber.d("Bitrate: ${mediaSource.bitrate}")
 
         val mediaInfoBuilder = MediaInfo.Builder(streamUrl)
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
@@ -652,12 +681,12 @@ class CastPlayerControllerImpl @Inject constructor(
                 .build()
 
             hasReportedStart = false
-            client.load(loadRequest)
-
             playbackInfoResponse = result.playbackInfo
             _subtitleTracks.value = result.subtitleTracks
             _audioTracks.value = result.audioTracks
             _currentItem.value = item
+
+            client.load(loadRequest)
             manageQueue(item)
         }
     }

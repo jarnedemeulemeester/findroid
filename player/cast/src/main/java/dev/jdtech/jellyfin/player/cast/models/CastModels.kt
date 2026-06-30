@@ -30,5 +30,6 @@ open class Device(
     open val id: String,
     open val name: String,
     open val description: String? = null,
-    open val enabled: Boolean = true
+    open val enabled: Boolean = true,
+    open val supportsH265: Boolean = false
 )

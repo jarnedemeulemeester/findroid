@@ -24,7 +24,11 @@ data class ChromeCastDevice(val route: MediaRouter.RouteInfo) : Device(
     id = route.id,
     name = route.name,
     description = route.description,
-    enabled = route.isEnabled
+    enabled = route.isEnabled,
+    supportsH265 = CastDevice.getFromBundle(route.extras)?.let {
+        it.modelName.contains("Ultra", ignoreCase = true) ||
+                it.modelName.contains("Google TV", ignoreCase = true)
+    } ?: false
 )
 
 @Singleton
