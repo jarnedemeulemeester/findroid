@@ -96,10 +96,16 @@ class PlayerGestureHelper(
 
                     // This is a temporary solution for chapter skipping.
                     // TODO: Remove this after implementing #636
-                    if (appPreferences.getValue(appPreferences.playerGesturesChapterSkip)) {
-                        handleChapterSkip(e)
-                    } else {
-                        enableSpeedIncrease()
+                    when (appPreferences.getValue(appPreferences.playerGesturesHold)) {
+                        "Chapter Navigation" -> {
+                            handleChapterSkip(e)
+                        }
+                        "2x Speed" -> {
+                            enableSpeedIncrease()
+                        }
+                        "Disabled" -> {
+                            return
+                        }
                     }
                 }
 
