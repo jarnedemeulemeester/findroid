@@ -40,6 +40,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.MediaStreamType
@@ -171,7 +172,11 @@ class CastPlayerControllerImpl @Inject constructor(
                         )
                     }
 
-                    maxBitrate = measureNetworkSpeed()
+                    if (session != null && maxBitrate == null) {
+                        scope.launch {
+                            maxBitrate = measureNetworkSpeed()
+                        }
+                    }
                 }
 
                 val client = session?.remoteMediaClient
@@ -460,10 +465,10 @@ class CastPlayerControllerImpl @Inject constructor(
         }
     }
 
-    private suspend fun measureNetworkSpeed(): Int? {
-        val size = 1024 * 1024 // 1MB
+    private suspend fun measureNetworkSpeed(): Int? = withContext(Dispatchers.IO) {
+        val size = 512 * 1024 // 512KB
         val startTime = System.currentTimeMillis()
-        return try {
+        try {
             val response = jellyfinApi.mediaInfoApi.getBitrateTestBytes(size)
             val endTime = System.currentTimeMillis()
             val durationMs = endTime - startTime
@@ -475,7 +480,7 @@ class CastPlayerControllerImpl @Inject constructor(
 
                 Timber.d("MaxBitrate: $maxBitrate")
 
-                return maxBitrate
+                maxBitrate
             } else {
                 null
             }
