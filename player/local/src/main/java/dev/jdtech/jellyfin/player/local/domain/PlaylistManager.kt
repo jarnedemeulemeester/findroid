@@ -109,6 +109,14 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                     items = episodes
                     episode
                 }
+                BaseItemKind.TRAILER -> {
+                    val trailer = repository.getItem(itemId)
+
+                    trailer?.let {
+                        items = listOf(it)
+                    }
+                    trailer
+                }
                 else -> null
             }
 
