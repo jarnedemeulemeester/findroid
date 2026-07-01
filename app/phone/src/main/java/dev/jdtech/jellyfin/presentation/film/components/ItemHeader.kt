@@ -1,10 +1,10 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
-import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -19,9 +20,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
@@ -35,33 +37,29 @@ fun ItemHeader(
     showLogo: Boolean = false,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
-    val context = LocalContext.current
-    var backdropUri =
-        when (item) {
-            is FindroidEpisode -> item.images.primary
-            else -> item.images.backdrop
-        }
-
-    // Ugly workaround to append the files directory when loading local images
-    if (backdropUri?.scheme == null) {
-        backdropUri =
-            Uri.Builder()
-                .appendEncodedPath("${context.filesDir}")
-                .appendEncodedPath(backdropUri?.path)
-                .build()
-    }
-
     ItemHeaderBase(
         item = item,
         showLogo = showLogo,
         backdropImage = {
+            val image = when (item) {
+                is FindroidEpisode -> item.images.primary
+                else -> item.images.backdrop
+            }
+
+            val backdropUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
+
+            val blurPlaceholder = remember(image?.blurHash) {
+                image?.blurHash.toBlurHashPainter()
+            }
+
             AsyncImage(
                 model = backdropUri,
                 contentDescription = null,
                 modifier =
-                    Modifier.fillMaxSize()
+                    Modifier
+                        .fillMaxSize()
                         .parallaxLayoutModifier(scrollState = scrollState, rate = 2),
-                placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
+                placeholder = blurPlaceholder ?: ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                 contentScale = ContentScale.Crop,
             )
         },
@@ -76,34 +74,30 @@ fun ItemHeader(
     showLogo: Boolean = false,
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
-    val context = LocalContext.current
-    var backdropUri =
-        when (item) {
-            is FindroidEpisode -> item.images.primary
-            is FindroidSeason -> item.images.showBackdrop
-            else -> item.images.backdrop
-        }
-
-    // Ugly workaround to append the files directory when loading local images
-    if (backdropUri?.scheme == null) {
-        backdropUri =
-            Uri.Builder()
-                .appendEncodedPath("${context.filesDir}")
-                .appendEncodedPath(backdropUri?.path)
-                .build()
-    }
-
     ItemHeaderBase(
         item = item,
         showLogo = showLogo,
         backdropImage = {
+            val image = when (item) {
+                is FindroidEpisode -> item.images.primary
+                is FindroidSeason -> item.images.showBackdrop
+                else -> item.images.backdrop
+            }
+
+            val backdropUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
+
+            val blurPlaceholder = remember(image?.blurHash) {
+                image?.blurHash.toBlurHashPainter()
+            }
+
             AsyncImage(
                 model = backdropUri,
                 contentDescription = null,
                 modifier =
-                    Modifier.fillMaxSize()
+                    Modifier
+                        .fillMaxSize()
                         .parallaxLayoutModifier(lazyListState = lazyListState, rate = 2),
-                placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
+                placeholder = blurPlaceholder ?: ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                 contentScale = ContentScale.Crop,
             )
         },
@@ -115,18 +109,20 @@ fun ItemHeader(
 private fun ItemHeaderBase(
     item: FindroidItem,
     showLogo: Boolean = false,
-    backdropImage: @Composable (() -> Unit),
+    backdropImage: @Composable (BoxWithConstraintsScope.() -> Unit),
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
 
-    val logoUri =
+    val logo =
         when (item) {
             is FindroidEpisode -> item.images.showLogo
             else -> item.images.logo
         }
 
-    Box(modifier = Modifier.height(288.dp).clipToBounds()) {
+    BoxWithConstraints(modifier = Modifier
+        .height(288.dp)
+        .clipToBounds()) {
         backdropImage()
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawRect(Color.Black.copy(alpha = 0.1f))
@@ -141,10 +137,11 @@ private fun ItemHeaderBase(
         content()
         if (showLogo) {
             AsyncImage(
-                model = logoUri,
+                model = logo?.uri,
                 contentDescription = null,
                 modifier =
-                    Modifier.align(Alignment.BottomCenter)
+                    Modifier
+                        .align(Alignment.BottomCenter)
                         .padding(MaterialTheme.spacings.default)
                         .height(100.dp)
                         .fillMaxWidth(),

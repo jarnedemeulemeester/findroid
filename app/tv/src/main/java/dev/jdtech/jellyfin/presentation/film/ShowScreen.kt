@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -60,6 +61,8 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyShow
 import dev.jdtech.jellyfin.core.presentation.theme.Yellow
+import dev.jdtech.jellyfin.core.presentation.utils.toBlurHashPainter
+import dev.jdtech.jellyfin.core.presentation.utils.toOptimizedImageUri
 import dev.jdtech.jellyfin.film.presentation.show.ShowAction
 import dev.jdtech.jellyfin.film.presentation.show.ShowState
 import dev.jdtech.jellyfin.film.presentation.show.ShowViewModel
@@ -121,15 +124,23 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         state.show?.let { show ->
             var size by remember { mutableStateOf(Size.Zero) }
-            Box(
+            BoxWithConstraints(
                 modifier =
                     Modifier.fillMaxSize().onGloballyPositioned { coordinates ->
                         size = coordinates.size.toSize()
                     }
             ) {
+                val image = show.images.backdrop
+                val imageUri = image?.uri.toOptimizedImageUri(widthDp = maxWidth, heightDp = maxHeight)
+
+                val blurPlaceholder = remember(image?.blurHash) {
+                    image?.blurHash.toBlurHashPainter()
+                }
                 AsyncImage(
-                    model = show.images.backdrop,
+                    model = imageUri,
                     contentDescription = null,
+                    placeholder = blurPlaceholder,
+                    error = blurPlaceholder,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
                 )

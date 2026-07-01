@@ -32,7 +32,6 @@ import dev.jdtech.jellyfin.presentation.settings.components.SettingsMultiSelectD
 import dev.jdtech.jellyfin.presentation.settings.components.SettingsSelectDetailsCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
-import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -45,6 +44,7 @@ import dev.jdtech.jellyfin.settings.presentation.settings.SettingsViewModel
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.restart
 import timber.log.Timber
+import dev.jdtech.jellyfin.settings.R as SettingsR
 
 @Composable
 fun SettingsSubScreen(

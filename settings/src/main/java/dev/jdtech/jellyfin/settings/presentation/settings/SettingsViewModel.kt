@@ -782,7 +782,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                 }
             }
 
-            // Update all (visible) preferences with there current values
+            // Update all (visible) preferences with their current values
             preferences =
                 preferences
                     .map { preferenceGroup ->
