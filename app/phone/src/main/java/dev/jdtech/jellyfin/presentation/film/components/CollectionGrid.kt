@@ -2,6 +2,8 @@ package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -11,7 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
+import dev.jdtech.jellyfin.LocalCastPlayerHeight
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionAction
 import dev.jdtech.jellyfin.models.CollectionSection
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -24,10 +28,18 @@ fun CollectionGrid(
     innerPadding: PaddingValues,
     onAction: (CollectionAction) -> Unit,
 ) {
+    val castPadding = LocalCastPlayerHeight.current
+    val layoutDirection = LocalLayoutDirection.current
+
     LazyVerticalGrid(
         columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
-        modifier = Modifier.padding(innerPadding).fillMaxSize(),
-        contentPadding = PaddingValues(all = MaterialTheme.spacings.default),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            start = innerPadding.calculateStartPadding(layoutDirection) + MaterialTheme.spacings.default,
+            top = innerPadding.calculateTopPadding() + MaterialTheme.spacings.default,
+            end = innerPadding.calculateEndPadding(layoutDirection) + MaterialTheme.spacings.default,
+            bottom = innerPadding.calculateBottomPadding() + castPadding
+        ),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
     ) {

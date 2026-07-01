@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,7 +46,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 @Composable
 fun CastMiniPlayer(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     viewModel: CastPlayerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -79,163 +78,159 @@ fun CastMiniPlayerLayout(
     modifier: Modifier = Modifier
 ) {
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
-    val isExpandedScreen = windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(
-        WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
+    val isMediumScreen = windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(
+        WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
     )
 
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = if (isExpandedScreen) Alignment.BottomEnd else Alignment.BottomCenter
+    Card(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.large,
+        modifier = modifier
+            .padding(MaterialTheme.spacings.medium)
+            .then(
+                if (isMediumScreen) {
+                    Modifier
+                        .widthIn(max = 1000.dp)
+                        .fillMaxWidth(0.5f)
+                } else {
+                    Modifier.fillMaxWidth()
+                }
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-        Card(
-            onClick = onClick,
-            shape = MaterialTheme.shapes.large,
-            modifier = Modifier
-                .padding(MaterialTheme.spacings.medium)
-                .then(
-                    if (isExpandedScreen) {
-                        Modifier
-                            .widthIn(max = 1000.dp)
-                            .fillMaxWidth(0.5f)
-                    } else {
-                        Modifier.fillMaxWidth()
-                    }
-                ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-        ) {
-            Box {
-                Row(
-                    modifier = Modifier
-                        .padding(MaterialTheme.spacings.small)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium)
-                ) {
-                    if (uiState.fileLoaded) {
-                        AsyncImage(
-                            model = uiState.currentItemPosterUrl,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .height(if (isExpandedScreen) 80.dp else 64.dp)
-                                .aspectRatio(uiState.defaultAspectRatio)
-                                .clip(MaterialTheme.shapes.medium),
-                        )
+        Box {
+            Row(
+                modifier = Modifier
+                    .padding(MaterialTheme.spacings.small)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium)
+            ) {
+                if (uiState.fileLoaded) {
+                    AsyncImage(
+                        model = uiState.currentItemPosterUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(if (isMediumScreen) 80.dp else 64.dp)
+                            .aspectRatio(uiState.defaultAspectRatio)
+                            .clip(MaterialTheme.shapes.medium),
+                    )
 
-                        Column(
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            val titleInfo = uiState.currentItemTitle
-                            if (titleInfo.seriesName != null) {
-                                // Episode layout
-                                Text(
-                                    text = titleInfo.seriesName!!,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = titleInfo.episodeInfo + " - " + titleInfo.title,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            } else {
-                                // Film layout
-                                Text(
-                                    text = titleInfo.title,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(4.dp))
+                    Column(
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        val titleInfo = uiState.currentItemTitle
+                        if (titleInfo.seriesName != null) {
+                            // Episode layout
                             Text(
-                                text = connectedDevice.name,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-
-                        val isPlaying = playbackState.status == CastPlaybackStatus.PLAYING
-                        Box(
-                            modifier = Modifier.size(64.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            IconButton(
-                                onClick = onTogglePlayback,
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                ),
-                                shape = MaterialTheme.shapes.medium,
-                                modifier = Modifier.size(48.dp),
-                            ) {
-                                Icon(
-                                    painter = if (isPlaying) painterResource(CoreR.drawable.ic_pause) else painterResource(
-                                        CoreR.drawable.ic_play
-                                    ),
-                                    contentDescription = if (isPlaying) "Pause" else "Play"
-                                )
-                            }
-                        }
-                    } else {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = MaterialTheme.spacings.small)
-                        ) {
-                            Text(
-                                text = connectedDevice.name,
+                                text = titleInfo.seriesName!!,
                                 style = MaterialTheme.typography.titleMedium,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = "Connected",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                text = titleInfo.episodeInfo + " - " + titleInfo.title,
+                                style = MaterialTheme.typography.bodyMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        } else {
+                            // Film layout
+                            Text(
+                                text = titleInfo.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = connectedDevice.name,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
 
-                        Box(
+                    val isPlaying = playbackState.status == CastPlaybackStatus.PLAYING
+                    Box(
+                        modifier = Modifier.size(64.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(
+                            onClick = onTogglePlayback,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            shape = MaterialTheme.shapes.medium,
                             modifier = Modifier.size(48.dp),
-                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                painter = painterResource(CoreR.drawable.ic_cast),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
+                                painter = if (isPlaying) painterResource(CoreR.drawable.ic_pause) else painterResource(
+                                    CoreR.drawable.ic_play
+                                ),
+                                contentDescription = if (isPlaying) "Pause" else "Play"
                             )
                         }
                     }
-                }
-
-                if (uiState.fileLoaded) {
-                    if (playbackState.status == CastPlaybackStatus.BUFFERING) {
-                        LinearProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.BottomCenter),
-                            strokeCap = StrokeCap.Butt
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = MaterialTheme.spacings.small)
+                    ) {
+                        Text(
+                            text = connectedDevice.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                    } else {
-                        LinearProgressIndicator(
-                            progress = {
-                                if (playbackState.duration > 0) {
-                                    playbackState.currentPosition.toFloat() / playbackState.duration
-                                } else 0f
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.BottomCenter),
-                            strokeCap = StrokeCap.Butt
+                        Text(
+                            text = "Connected",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier.size(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(CoreR.drawable.ic_cast),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
             }
+
+            if (uiState.fileLoaded) {
+                if (playbackState.status == CastPlaybackStatus.BUFFERING) {
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter),
+                        strokeCap = StrokeCap.Butt
+                    )
+                } else {
+                    LinearProgressIndicator(
+                        progress = {
+                            if (playbackState.duration > 0) {
+                                playbackState.currentPosition.toFloat() / playbackState.duration
+                            } else 0f
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter),
+                        strokeCap = StrokeCap.Butt
+                    )
+                }
+            }
+
         }
     }
 }
