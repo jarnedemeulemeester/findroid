@@ -247,6 +247,7 @@ private fun EpisodeScreenLayout(
                         onDownloadDeleteClick = {
                             onDownloaderAction(DownloaderAction.DeleteDownload(episode))
                         },
+                        onShuffleClick = {},
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
