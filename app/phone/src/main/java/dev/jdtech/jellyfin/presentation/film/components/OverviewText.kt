@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 
 @Composable
 fun OverviewText(text: String, maxCollapsedLines: Int = Int.MAX_VALUE) {
@@ -25,13 +25,14 @@ fun OverviewText(text: String, maxCollapsedLines: Int = Int.MAX_VALUE) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = text,
-            modifier =
-                Modifier.then(
-                        if (showChevron)
-                            Modifier.clickable { isOverviewExpanded = !isOverviewExpanded }
-                        else Modifier
-                    )
-                    .animateContentSize(),
+            modifier = Modifier
+                .copyOnLongClick(
+                    text = text,
+                    onClick = if (showChevron) {
+                        { isOverviewExpanded = !isOverviewExpanded }
+                    } else null
+                )
+                .animateContentSize(),
             overflow = TextOverflow.Ellipsis,
             maxLines = if (isOverviewExpanded) Int.MAX_VALUE else maxCollapsedLines,
             onTextLayout = { textLayoutResult ->
