@@ -109,4 +109,9 @@
     <string name="download_paused">Paused</string>
     <string name="download_downloading">Downloading…</string>
     <string name="download_failed">Failed to download</string>
+    <string name="cast_select_device">Select a device</string>
+    <string name="cast_searching">Searching…</string>
+    <string name="cast_available_devices">Available devices</string>
+    <string name="cast_wifi_instruction">To connect via Wi-Fi, make sure this device and your TV are connected to the same Wi-Fi network.</string>
+    <string name="cast_connect_tv">Connect TV</string>
 </resources>

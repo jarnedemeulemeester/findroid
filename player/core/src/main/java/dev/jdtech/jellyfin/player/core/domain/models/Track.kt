@@ -11,4 +11,7 @@ data class Track(
     val codec: String?,
     val selected: Boolean,
     val supported: Boolean,
+    val isExternal: Boolean? = false,
+    val isForced: Boolean? = false,
+    val isHearingImpaired: Boolean? = false,
 ) : Parcelable

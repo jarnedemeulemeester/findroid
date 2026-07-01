@@ -43,9 +43,11 @@ android {
 
     flavorDimensions += "variant"
     productFlavors {
-        register("libre") {
+        register("libre") { dimension = "variant" }
+        register("proprietary") {
             dimension = "variant"
             isDefault = true
+            matchingFallbacks += listOf("libre")
         }
     }
 
@@ -89,10 +91,12 @@ dependencies {
     implementation(projects.core)
     implementation(projects.data)
     implementation(projects.player.core)
+    implementation(projects.player.cast)
     implementation(projects.player.local)
     implementation(projects.setup)
     implementation(projects.modes.film)
     implementation(projects.settings)
+    implementation(projects.player.cast)
 
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose.m3)

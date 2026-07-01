@@ -27,8 +27,6 @@ import dev.jdtech.jellyfin.models.toFindroidSegment
 import dev.jdtech.jellyfin.models.toFindroidShow
 import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import java.io.File
-import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -49,11 +47,13 @@ import org.jellyfin.sdk.model.api.PlaybackStartInfo
 import org.jellyfin.sdk.model.api.PlaybackStopInfo
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.RepeatMode
-import org.jellyfin.sdk.model.api.SortOrder as ItemSortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
+import java.io.File
+import java.util.UUID
+import org.jellyfin.sdk.model.api.SortOrder as ItemSortOrder
 
 class JellyfinRepositoryImpl(
     private val context: Context,
@@ -150,11 +150,11 @@ class JellyfinRepositoryImpl(
         sortOrder: SortOrder,
     ): Flow<PagingData<FindroidItem>> {
         return Pager(
-                config = PagingConfig(pageSize = 10, enablePlaceholders = false),
-                pagingSourceFactory = {
-                    ItemsPagingSource(this, parentId, includeTypes, recursive, sortBy, sortOrder)
-                },
-            )
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            pagingSourceFactory = {
+                ItemsPagingSource(this, parentId, includeTypes, recursive, sortBy, sortOrder)
+            },
+        )
             .flow
     }
 
@@ -366,6 +366,8 @@ class JellyfinRepositoryImpl(
                         it.toFindroidSegment()
                     }
 
+                Timber.d("Segments: $apiSegments")
+
                 return@withContext apiSegments
             } catch (e: Exception) {
                 Timber.e(e)
@@ -381,7 +383,8 @@ class JellyfinRepositoryImpl(
                     if (sources != null) {
                         return@withContext File(sources.first(), index.toString()).readBytes()
                     }
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
 
                 return@withContext jellyfinApi.trickplayApi
                     .getTrickplayTileImage(itemId, width, index)
@@ -417,7 +420,12 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun postPlaybackStart(itemId: UUID) {
+    override suspend fun postPlaybackStart(
+        itemId: UUID,
+        playMethod: PlayMethod,
+        mediaSourceId: String?,
+        playSessionId: String?
+    ) {
         Timber.d("Sending start $itemId")
         withContext(Dispatchers.IO) {
             jellyfinApi.playStateApi.reportPlaybackStart(
@@ -426,9 +434,11 @@ class JellyfinRepositoryImpl(
                     canSeek = true,
                     isPaused = false,
                     isMuted = false,
-                    playMethod = PlayMethod.DIRECT_PLAY,
+                    playMethod = playMethod,
                     repeatMode = RepeatMode.REPEAT_NONE,
                     playbackOrder = PlaybackOrder.DEFAULT,
+                    mediaSourceId = mediaSourceId,
+                    playSessionId = playSessionId
                 )
             )
         }
@@ -438,6 +448,8 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         playedPercentage: Int,
+        mediaSourceId: String?,
+        playSessionId: String?
     ) {
         Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
@@ -446,10 +458,12 @@ class JellyfinRepositoryImpl(
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(jellyfinApi.userId!!, itemId, false)
                 }
+
                 playedPercentage > 90 -> {
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
                     database.setPlayed(jellyfinApi.userId!!, itemId, true)
                 }
+
                 else -> {
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
                     database.setPlayed(jellyfinApi.userId!!, itemId, false)
@@ -457,7 +471,13 @@ class JellyfinRepositoryImpl(
             }
             try {
                 jellyfinApi.playStateApi.reportPlaybackStopped(
-                    PlaybackStopInfo(itemId = itemId, positionTicks = positionTicks, failed = false)
+                    PlaybackStopInfo(
+                        itemId = itemId,
+                        positionTicks = positionTicks,
+                        failed = false,
+                        mediaSourceId = mediaSourceId,
+                        playSessionId = playSessionId
+                    )
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
@@ -469,6 +489,9 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
+        playMethod: PlayMethod,
+        mediaSourceId: String?,
+        playSessionId: String?
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
@@ -480,10 +503,12 @@ class JellyfinRepositoryImpl(
                         canSeek = true,
                         isPaused = isPaused,
                         isMuted = false,
-                        playMethod = PlayMethod.DIRECT_PLAY,
+                        playMethod = playMethod,
                         repeatMode = RepeatMode.REPEAT_NONE,
                         playbackOrder = PlaybackOrder.DEFAULT,
                         positionTicks = positionTicks,
+                        mediaSourceId = mediaSourceId,
+                        playSessionId = playSessionId
                     )
                 )
             } catch (_: Exception) {

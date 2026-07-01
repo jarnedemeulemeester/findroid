@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.player.local.domain
+package dev.jdtech.jellyfin.player.core.domain
 
 import androidx.core.net.toUri
 import androidx.media3.common.MimeTypes
@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerMediaType
 import dev.jdtech.jellyfin.player.core.domain.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
@@ -136,7 +137,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             when (startItem) {
                 is FindroidMovie -> null
                 is FindroidEpisode -> {
-                    if (currentItemIndex == 0) {
+                    if (currentItemIndex <= 0 || items.isEmpty()) {
                         null
                     } else {
                         val item = items[itemIndex]
@@ -170,7 +171,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             when (startItem) {
                 is FindroidMovie -> null
                 is FindroidEpisode -> {
-                    if (currentItemIndex == items.lastIndex) {
+                    if (currentItemIndex < 0 || currentItemIndex >= items.lastIndex) {
                         null
                     } else {
                         val item = items[itemIndex]
@@ -227,7 +228,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                         mediaStream.path!!.toUri(),
                         when (mediaStream.codec) {
                             "subrip" -> MimeTypes.APPLICATION_SUBRIP
-                            "webvtt" -> MimeTypes.APPLICATION_SUBRIP
+                            "webvtt" -> MimeTypes.TEXT_VTT
                             "ass" -> MimeTypes.TEXT_SSA
                             else -> MimeTypes.TEXT_UNKNOWN
                         },
@@ -253,15 +254,19 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         return PlayerItem(
             name = name,
             itemId = id,
+            mediaType = if (this is FindroidEpisode) PlayerMediaType.EPISODE else PlayerMediaType.MOVIE,
             mediaSourceId = mediaSource.id,
             mediaSourceUri = mediaSource.path,
             playbackPosition = playbackPosition,
             parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
             indexNumber = if (this is FindroidEpisode) indexNumber else null,
             indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+            seriesName = if (this is FindroidEpisode) seriesName else null,
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
+            posterUrl = images.primary?.toString() ?: images.backdrop?.toString(),
+            seriesPosterUrl = if (this is FindroidEpisode) images.showPrimary?.toString() else null
         )
     }
 

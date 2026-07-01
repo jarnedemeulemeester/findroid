@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -21,4 +23,11 @@ android {
     }
 }
 
-dependencies { implementation(libs.timber) }
+dependencies {
+    implementation(projects.data)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.timber)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.jellyfin.core)
+}
