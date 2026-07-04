@@ -59,10 +59,8 @@
     <string name="offline_mode">Офлайн режим</string>
     <string name="player_start_maximized">Стартиране на цял екран</string>
     <string name="player_start_maximized_summary">Отваряне в режим на цял екран по подразбиране</string>
-    <string name="player_gestures_chapter_skip_summary">Дълго натискане в лявата/дясната част за прескачане на глави (отменя жеста за 2x скорост)</string>
     <string name="pref_player_chapter_markers">Маркери за глави</string>
     <string name="pref_player_chapter_markers_summary">Показване на маркери за глави върху времевата линия</string>
-    <string name="player_gestures_chapter_skip">Жест за глави</string>
     <string name="settings_category_interface">Интерфейс</string>
     <string name="pref_player_trickplay">Миниатюри при превъртане</string>
     <string name="pref_player_trickplay_summary">Показване на миниатюри (преглед) при превъртане на видеото</string>

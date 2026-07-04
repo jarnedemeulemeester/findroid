@@ -59,8 +59,6 @@
     <string name="player_start_maximized_summary">Video standardmäßig maximiert öffnen</string>
     <string name="pref_player_chapter_markers">Kapitelmarker</string>
     <string name="pref_player_chapter_markers_summary">Zeige Kapitelmarker in der Zeitleiste an</string>
-    <string name="player_gestures_chapter_skip">Kapitel Geste</string>
-    <string name="player_gestures_chapter_skip_summary">Drücke lange auf der linken/rechten Seite um Kapitel zu überspringen (überschreibt die 2x-Geschwindigkeitsgesten)</string>
     <string name="pref_player_trickplay">Pseudovideo</string>
     <string name="pref_player_trickplay_summary">Vorschaubilder beim Spulen anzeigen</string>
     <string name="picture_in_picture_gesture">Bild-in-Bild bei Home-Aktion</string>

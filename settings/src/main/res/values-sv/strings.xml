@@ -66,8 +66,6 @@
     <string name="pref_player_gestures_seek_trickplay_summary">Visa förhandsgranskningsbilder vid sökgest</string>
     <string name="trickplay">Trickplay</string>
     <string name="player_start_maximized">Börja maximerad</string>
-    <string name="player_gestures_chapter_skip">Kapitel gest</string>
-    <string name="player_gestures_chapter_skip_summary">Tryck länge på vänster/höger sida för att hoppa över kapitel (åsidosätter 2x hastighetsgest)</string>
     <string name="player_start_maximized_summary">Öppna video i maximerat läge som standard</string>
     <string name="settings_category_interface">Gränssnitt</string>
     <string name="cancel">Avbryt</string>
