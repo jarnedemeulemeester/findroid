@@ -112,7 +112,7 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
                 this@DownloaderViewModel.downloadItem = item
                 this@DownloaderViewModel.downloadId = downloadId
                 var status = DownloadManager.STATUS_RUNNING
-                while (status == DownloadManager.STATUS_RUNNING) {
+                while (status == DownloadManager.STATUS_RUNNING || status == DownloadManager.STATUS_PENDING || status == DownloadManager.STATUS_PAUSED) {
                     // Check download status. UI renders progress on the per item level,
                     // so there is nothing to emit. We are only waiting for this item to finish
                     // downloading.
