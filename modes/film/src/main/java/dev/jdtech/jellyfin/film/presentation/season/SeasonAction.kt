@@ -5,6 +5,7 @@ import java.util.UUID
 
 sealed interface SeasonAction {
     data class Play(val startFromBeginning: Boolean = false) : SeasonAction
+    data class Shuffle(val startFromBeginning: Boolean = false) : SeasonAction
 
     data object MarkAsPlayed : SeasonAction
 

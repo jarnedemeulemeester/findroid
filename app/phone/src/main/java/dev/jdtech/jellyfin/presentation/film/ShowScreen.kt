@@ -100,6 +100,13 @@ fun ShowScreen(
                 is ShowAction.OnHomeClick -> navigateHome()
                 is ShowAction.NavigateToItem -> navigateToItem(action.item)
                 is ShowAction.NavigateToPerson -> navigateToPerson(action.personId)
+                is ShowAction.Shuffle -> {
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    intent.putExtra("itemId", showId.toString())
+                    intent.putExtra("itemKind", BaseItemKind.SERIES.serialName)
+                    intent.putExtra("shuffle", true)
+                    context.startActivity(intent)
+                }
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -207,8 +214,12 @@ private fun ShowScreenLayout(state: ShowState, onAction: (ShowAction) -> Unit) {
                         onDownloadClick = {},
                         onDownloadCancelClick = {},
                         onDownloadDeleteClick = {},
+                        onShuffleClick = { startFromBeginning ->
+                            onAction(ShowAction.Shuffle(startFromBeginning = startFromBeginning))
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         canPlay = state.seasons.isNotEmpty(),
+                        canShuffle = state.seasons.isNotEmpty()
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     OverviewText(text = show.overview, maxCollapsedLines = 3)
