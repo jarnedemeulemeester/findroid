@@ -47,6 +47,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 var isControlsLocked: Boolean = false
 
@@ -240,7 +241,7 @@ class PlayerActivity : BasePlayerActivity() {
                 launch {
                     while (true) {
                         viewModel.updatePlaybackProgress()
-                        delay(5000L)
+                        delay(5000L.milliseconds)
                     }
                 }
 
@@ -251,7 +252,7 @@ class PlayerActivity : BasePlayerActivity() {
                     launch {
                         while (true) {
                             viewModel.updateCurrentSegment()
-                            delay(1000L)
+                            delay(1000L.milliseconds)
                         }
                     }
                 }

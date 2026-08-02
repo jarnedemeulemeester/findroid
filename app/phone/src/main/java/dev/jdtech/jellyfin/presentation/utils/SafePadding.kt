@@ -13,7 +13,10 @@ import androidx.window.core.layout.WindowSizeClass
 data class SafePadding(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
-fun rememberSafePadding(handleStartInsets: Boolean = true): SafePadding {
+fun rememberSafePadding(
+    handleStartInsets: Boolean = true,
+    handleBottomInsets: Boolean = true
+): SafePadding {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
@@ -28,9 +31,11 @@ fun rememberSafePadding(handleStartInsets: Boolean = true): SafePadding {
                 windowSizeClass.isWidthAtLeastBreakpoint(
                     WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
                 ) -> 0.dp
+
                 windowSizeClass.isWidthAtLeastBreakpoint(
                     WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
                 ) -> 0.dp
+
                 else ->
                     with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
             }
@@ -39,7 +44,18 @@ fun rememberSafePadding(handleStartInsets: Boolean = true): SafePadding {
     val safePaddingTop = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() }
     val safePaddingEnd =
         with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
-    val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
+    val safePaddingBottom = if (handleBottomInsets) {
+        with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
+    } else {
+        when {
+            windowSizeClass.isWidthAtLeastBreakpoint(
+                WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
+            ) -> with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
+
+            else ->
+                0.dp
+        }
+    }
 
     return SafePadding(
         start = safePaddingStart,
