@@ -28,7 +28,7 @@ material = "1.14.0"
 media3-ffmpeg-decoder = "1.9.0+1"
 okhttp = "5.4.0"
 timber = "5.0.1"
-slf4j = "2.0.17"
+slf4j = "2.0.18"
 slf4j-android = "2.0.17-0"
 
 [libraries]
