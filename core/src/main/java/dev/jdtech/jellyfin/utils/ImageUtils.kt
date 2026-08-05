@@ -1,4 +1,4 @@
-package dev.jdtech.jellyfin.core.presentation.utils
+package dev.jdtech.jellyfin.utils
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import com.vanniktech.blurhash.BlurHash
+import org.jellyfin.sdk.model.api.ImageType
 import java.io.File
 
 /**
@@ -21,12 +22,13 @@ fun Uri?.toOptimizedImageUri(
     widthDp: Dp? = null,
     heightDp: Dp? = null,
     quality: Int = 80,
+    imageType: ImageType? = null,
 ): Uri? {
     if (this == null) return null
     val context = LocalContext.current
     val density = LocalDensity.current
 
-    return remember(this, widthDp, heightDp, quality) {
+    return remember(this, widthDp, heightDp, quality, imageType) {
         val baseUri = if (scheme == null) {
             Uri.fromFile(File(context.filesDir, path ?: ""))
         } else {
@@ -37,11 +39,19 @@ fun Uri?.toOptimizedImageUri(
             val targetWidthPx = with(density) { widthDp.toPx().toInt() }
             val targetHeightPx = with(density) { heightDp.toPx().toInt() }
 
-            baseUri.buildUpon()
-                .appendQueryParameter("fillWidth", targetWidthPx.toString())
-                .appendQueryParameter("fillHeight", targetHeightPx.toString())
-                .appendQueryParameter("quality", quality.toString())
-                .build()
+            if (imageType == ImageType.LOGO) {
+                baseUri.buildUpon()
+                    .appendQueryParameter("fillWidth", targetWidthPx.toString())
+                    .appendQueryParameter("fillHeight", targetHeightPx.toString())
+                    .appendQueryParameter("quality", quality.toString())
+                    .build()
+            } else {
+                baseUri.buildUpon()
+                    .appendQueryParameter("maxWidth", targetWidthPx.toString())
+                    .appendQueryParameter("maxHeight", targetHeightPx.toString())
+                    .appendQueryParameter("quality", quality.toString())
+                    .build()
+            }
         } else {
             baseUri
         }
