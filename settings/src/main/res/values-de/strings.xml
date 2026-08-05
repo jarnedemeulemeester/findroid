@@ -33,8 +33,8 @@
     <string name="theme_dark">Dunkel</string>
     <string name="dynamic_colors">Dynamische Farben</string>
     <string name="dynamic_colors_summary">Dynamische Farben nutzen (ab Android 12 verfügbar)</string>
-    <string name="player_gestures_vb">Lautstärke und Helligkeits-Gesten</string>
-    <string name="player_gestures_zoom">Zoom Geste</string>
+    <string name="player_gestures_vb">Lautstärke- und Helligkeits-Gesten</string>
+    <string name="player_gestures_zoom">Zoom-Geste</string>
     <string name="player_gestures_zoom_summary">Zwei-Finger-Zoom um das Video an den Bildschirm anzupassen</string>
     <string name="seek_forward_increment">Weiter suchen inkrement</string>
     <string name="settings_category_network">Netzwerk</string>
@@ -50,7 +50,7 @@
     <string name="amoled_theme_summary">Verwenden Sie den Modus für AMOLED mit einem tiefschwarzen Hintergrund</string>
     <string name="amoled_theme">Vollständig dunkler Modus (für AMOLED Bildschirme)</string>
     <string name="player_gestures_seek_summary">Horizontal streichen, um vorwärts oder rückwärts zu suchen</string>
-    <string name="player_gestures_seek">Suchgeste</string>
+    <string name="player_gestures_seek">Such-Geste</string>
     <string name="extra_info">Extra Infos anzeigen</string>
     <string name="app_language">App Sprache</string>
     <string name="offline_mode">Offline-Modus</string>
@@ -59,7 +59,7 @@
     <string name="player_start_maximized_summary">Video standardmäßig maximiert öffnen</string>
     <string name="pref_player_chapter_markers">Kapitelmarker</string>
     <string name="pref_player_chapter_markers_summary">Zeige Kapitelmarker in der Zeitleiste an</string>
-    <string name="player_gestures_chapter_skip">Kapitel Geste</string>
+    <string name="player_gestures_chapter_skip">Kapitel-Geste</string>
     <string name="player_gestures_chapter_skip_summary">Drücke lange auf der linken/rechten Seite um Kapitel zu überspringen (überschreibt die 2x-Geschwindigkeitsgesten)</string>
     <string name="pref_player_trickplay">Pseudovideo</string>
     <string name="pref_player_trickplay_summary">Vorschaubilder beim Spulen anzeigen</string>
@@ -100,4 +100,10 @@
     <string name="media_segments_type_intro">Einleitung</string>
     <string name="none">Keine</string>
     <string name="users">Benutzer</string>
+    <string name="edit_file_title">Bearbeite %1$s</string>
+    <string name="pref_player_backend">Player-Backend</string>
+    <string name="mpv_options">MPV Optionen</string>
+    <string name="advanced">Fortgeschritten</string>
+    <string name="discard_changes_dialog_title">Verwerfe Änderungen?</string>
+    <string name="discard_changes_dialog_text">Es gibt ungespeicherte Änderungen.</string>
 </resources>

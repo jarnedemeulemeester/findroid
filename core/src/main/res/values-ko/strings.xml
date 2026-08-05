@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="error_preparing_player_items">플레이어 항목을 불러오는 중 오류가 발생했습니다.</string>
     <string name="view_details">자세히 보기</string>
@@ -30,7 +30,7 @@
     <string name="no_downloads">다운로드된 항목 없음</string>
     <string name="retry">재시도</string>
     <string name="share">공유</string>
-    <string name="cast_amp_crew">배역 및 제작진</string>
+    <string name="cast_amp_crew"><![CDATA[배역 및 제작진]]></string>
     <string name="app_description">Jellyfin의 서드파티 앱</string>
     <string name="trailer_button_description">예고편 보기</string>
     <string name="jellyfin_banner">Jellyfin 배너</string>

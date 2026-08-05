@@ -217,32 +217,34 @@ class DownloaderImpl(
             return Pair(downloadStatus, progress)
         }
         val query = DownloadManager.Query().setFilterById(downloadId)
-        val cursor = downloadManager.query(query)
-        if (cursor.moveToFirst()) {
-            downloadStatus =
-                cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
-            when (downloadStatus) {
-                DownloadManager.STATUS_RUNNING -> {
-                    val totalBytes =
-                        cursor.getLong(
-                            cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
-                        )
-                    if (totalBytes > 0) {
-                        val downloadedBytes =
+        downloadManager.query(query).use { cursor ->
+            if (cursor.moveToFirst()) {
+                downloadStatus =
+                    cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
+                when (downloadStatus) {
+                    DownloadManager.STATUS_RUNNING -> {
+                        val totalBytes =
                             cursor.getLong(
-                                cursor.getColumnIndexOrThrow(
-                                    DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
-                                )
+                                cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
                             )
-                        progress = downloadedBytes.times(100).div(totalBytes).toInt()
+                        if (totalBytes > 0) {
+                            val downloadedBytes =
+                                cursor.getLong(
+                                    cursor.getColumnIndexOrThrow(
+                                        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
+                                    )
+                                )
+                            progress = downloadedBytes.times(100).div(totalBytes).toInt()
+                        }
+                    }
+
+                    DownloadManager.STATUS_SUCCESSFUL -> {
+                        progress = 100
                     }
                 }
-                DownloadManager.STATUS_SUCCESSFUL -> {
-                    progress = 100
-                }
+            } else {
+                downloadStatus = DownloadManager.STATUS_FAILED
             }
-        } else {
-            downloadStatus = DownloadManager.STATUS_FAILED
         }
         return Pair(downloadStatus, progress)
     }

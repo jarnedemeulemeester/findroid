@@ -13,7 +13,7 @@
     <string name="genres">Žánry</string>
     <string name="director">Režisér</string>
     <string name="writers">Scénáristé</string>
-    <string name="cast_amp_crew">Obsazení &amp; štáb</string>
+    <string name="cast_amp_crew"><![CDATA[Obsazení & štáb]]></string>
     <string name="seasons">Sezóny</string>
     <string name="play_button_description">Přehrát</string>
     <string name="trailer_button_description">Pustit trailer</string>

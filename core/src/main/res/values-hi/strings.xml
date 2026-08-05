@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="next_up">अगला</string>
     <string name="no_favorites">आपके पास कोई पसंदीदा नहीं है</string>
@@ -12,7 +12,7 @@
     <string name="genres">शैलियाँ</string>
     <string name="director">निर्देशक</string>
     <string name="writers">लेखक</string>
-    <string name="cast_amp_crew">कलाकार और क्रू</string>
+    <string name="cast_amp_crew"><![CDATA[कलाकार और क्रू]]></string>
     <string name="seasons">सीज़न</string>
     <string name="trailer_button_description">ट्रेलर देखें</string>
     <string name="favorite_button_description">पसंदीदा</string>

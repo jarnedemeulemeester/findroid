@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.player.local.mpv
 
 import android.content.Context
-import android.content.res.AssetManager
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
@@ -38,7 +37,6 @@ import dev.jdtech.mpv.MPVLib
 import dev.jdtech.mpv.MPVLib.MpvFormat
 import dev.jdtech.mpv.MPVLib.MpvEvent
 import java.io.File
-import java.io.FileOutputStream
 import java.util.concurrent.CopyOnWriteArraySet
 import org.json.JSONArray
 import org.json.JSONException
@@ -240,14 +238,6 @@ class MPVPlayer(
 
         if (!configDir.exists()) configDir.mkdirs()
         if (!cacheDir.exists()) cacheDir.mkdirs()
-
-        arrayOf("mpv.conf").forEach { fileName ->
-            val file = File(configDir, fileName)
-            if (file.exists()) return@forEach
-            context.assets
-                .open(fileName, AssetManager.ACCESS_STREAMING)
-                .copyTo(FileOutputStream(file))
-        }
 
         writeFontsConf(context, configDir)
     }
