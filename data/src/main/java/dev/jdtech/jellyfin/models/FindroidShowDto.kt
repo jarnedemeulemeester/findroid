@@ -18,6 +18,12 @@ data class FindroidShowDto(
     val status: String,
     val productionYear: Int?,
     val endDate: LocalDateTime?,
+    val primaryBlurHash: String?,
+    val backdropBlurHash: String?,
+    val logoBlurHash: String?,
+    val showPrimaryBlurHash: String?,
+    val showBackdropBlurHash: String?,
+    val showLogoBlurHash: String?,
 )
 
 fun FindroidShow.toFindroidShowDto(serverId: String? = null): FindroidShowDto {
@@ -33,5 +39,11 @@ fun FindroidShow.toFindroidShowDto(serverId: String? = null): FindroidShowDto {
         status = status,
         productionYear = productionYear,
         endDate = endDate,
+        primaryBlurHash = images.primary?.blurHash,
+        backdropBlurHash = images.backdrop?.blurHash,
+        logoBlurHash = images.logo?.blurHash,
+        showPrimaryBlurHash = images.showPrimary?.blurHash,
+        showBackdropBlurHash = images.showBackdrop?.blurHash,
+        showLogoBlurHash = images.showLogo?.blurHash,
     )
 }

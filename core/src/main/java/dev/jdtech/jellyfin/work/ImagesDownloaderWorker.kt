@@ -33,16 +33,16 @@ constructor(
     private suspend fun downloadImages(itemId: UUID) {
         withContext(Dispatchers.IO) {
             val item = repository.getItem(itemId) ?: return@withContext
-
             val basePath = "images/${item.id}"
-
             val baseDir = File(appContext.filesDir, basePath)
 
-            // Do not download images if they are already present
-            if (baseDir.exists()) return@withContext
-
             val client = OkHttpClient()
-            val uris = mapOf("primary" to item.images.primary, "backdrop" to item.images.backdrop)
+
+            val imagesToDownload = mapOf(
+                "primary" to item.images.primary,
+                "backdrop" to item.images.backdrop,
+                // "logo" to item.images.logo
+            )
 
             try {
                 baseDir.mkdirs()
@@ -51,22 +51,28 @@ constructor(
                 return@withContext
             }
 
-            for ((name, uri) in uris) {
-                if (uri == null) {
-                    continue
-                }
+            for ((name, image) in imagesToDownload) {
+                val uri = image?.uri ?: continue
+                val file = File(baseDir, name)
 
-                val request = Request.Builder().url(uri.toString()).build()
+                // Skip only if the individual file exists and is not empty
+                if (file.exists() && file.length() > 0) continue
+
+                Timber.d("Downloading image $name for item $itemId")
+
+                val request = Request.Builder()
+                    .url(uri.toString())
+                    .build()
 
                 val imageBytes =
                     try {
                         client.newCall(request).execute().use { response ->
-                            if (!response.isSuccessful) {
+                            if (response.isSuccessful) {
+                                response.body.bytes()
+                            } else {
                                 Timber.e("Failed to download image: ${response.code}")
                                 continue
                             }
-
-                            response.body.bytes()
                         }
                     } catch (e: IOException) {
                         Timber.e(e)
@@ -74,7 +80,6 @@ constructor(
                     }
 
                 try {
-                    val file = File(appContext.filesDir, "$basePath/$name")
                     file.writeBytes(imageBytes)
                 } catch (e: IOException) {
                     Timber.e(e)
