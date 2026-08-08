@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +27,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 
 @Composable
 fun ItemCard(
@@ -46,7 +46,7 @@ fun ItemCard(
             modifier
                 .width(width.dp)
                 .clip(MaterialTheme.shapes.small)
-                .clickable(onClick = { onClick(item) })
+                .copyOnLongClick(item.name, onClick = { onClick(item) })
     ) {
         Surface(shape = MaterialTheme.shapes.small) {
             Box {
@@ -72,21 +72,24 @@ fun ItemCard(
             }
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
+        val titleText = if (item is FindroidEpisode) item.seriesName else item.name
         Text(
-            text = if (item is FindroidEpisode) item.seriesName else item.name,
+            text = titleText,
+            modifier = Modifier.copyOnLongClick(titleText),
             style = MaterialTheme.typography.bodyMedium,
             maxLines = if (item is FindroidEpisode) 1 else 2,
             overflow = TextOverflow.Ellipsis,
         )
         if (item is FindroidEpisode) {
+            val episodeText = stringResource(
+                id = R.string.episode_name_extended,
+                item.parentIndexNumber,
+                item.indexNumber,
+                item.name,
+            )
             Text(
-                text =
-                    stringResource(
-                        id = R.string.episode_name_extended,
-                        item.parentIndexNumber,
-                        item.indexNumber,
-                        item.name,
-                    ),
+                text = episodeText,
+                modifier = Modifier.copyOnLongClick(episodeText),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 maxLines = 1,
