@@ -71,7 +71,7 @@ data class LibraryRoute(
 
 @Serializable data class SeasonRoute(val seasonId: String)
 
-@Serializable data class PlayerRoute(val itemId: String, val itemKind: String)
+@Serializable data class PlayerRoute(val itemId: String, val itemKind: String, val startFromBeginning: Boolean = false)
 
 @Serializable data object SettingsRoute
 
@@ -189,11 +189,12 @@ fun NavigationRoot(
             val route: MovieRoute = backStackEntry.toRoute()
             MovieScreen(
                 movieId = UUID.fromString(route.itemId),
-                navigateToPlayer = { itemId ->
+                navigateToPlayer = { itemId, itemKind, startFromBeginning ->
                     navController.navigate(
                         PlayerRoute(
                             itemId = itemId.toString(),
-                            itemKind = BaseItemKind.MOVIE.serialName,
+                            itemKind = itemKind.serialName,
+                            startFromBeginning = startFromBeginning
                         )
                     )
                 },
@@ -210,11 +211,12 @@ fun NavigationRoot(
                         }
                     }
                 },
-                navigateToPlayer = { itemId ->
+                navigateToPlayer = { itemId, itemKind, startFromBeginning ->
                     navController.navigate(
                         PlayerRoute(
                             itemId = itemId.toString(),
-                            itemKind = BaseItemKind.SERIES.serialName,
+                            itemKind = itemKind.serialName,
+                            startFromBeginning = startFromBeginning
                         )
                     )
                 },
