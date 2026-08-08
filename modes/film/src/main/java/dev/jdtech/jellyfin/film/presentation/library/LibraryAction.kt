@@ -10,4 +10,6 @@ sealed interface LibraryAction {
     data object OnBackClick : LibraryAction
 
     data class ChangeSorting(val sortBy: SortBy, val sortOrder: SortOrder) : LibraryAction
+
+    data class ToggleWatchedFilter(val enabled: Boolean) : LibraryAction
 }

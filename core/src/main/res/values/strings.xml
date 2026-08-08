@@ -51,6 +51,7 @@
     <string name="shows_label">TV Shows</string>
     <string name="episodes_label">Episodes</string>
     <string name="hide">Hide</string>
+    <string name="toggle_watched">Watched</string>
     <string name="sort_by">Sort by</string>
     <string name="sort_order">Sort order</string>
     <string name="close">Close</string>
