@@ -205,7 +205,7 @@ class JellyfinRepositoryImpl(
                 .getItems(
                     jellyfinApi.userId!!,
                     searchTerm = query,
-                    includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
+                    includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES, BaseItemKind.EPISODE),
                     recursive = true,
                 )
                 .content
