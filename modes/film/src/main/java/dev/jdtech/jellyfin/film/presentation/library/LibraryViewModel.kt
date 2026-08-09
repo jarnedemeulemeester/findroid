@@ -9,7 +9,6 @@ import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.SortOrder
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import dev.jdtech.jellyfin.settings.domain.models.Preference
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -92,8 +91,8 @@ constructor(
     private suspend fun initSorting() {
         if (::sortBy.isInitialized && ::sortOrder.isInitialized) return
 
-        val sortByPreference = getSortByPreference()
-        val sortOrderPreference = getSortOrderPreference()
+        val sortByPreference = appPreferences.librarySortBy(parentId)
+        val sortOrderPreference = appPreferences.librarySortOrder(parentId)
         val savedSortBy = appPreferences.getValue(sortByPreference)
         val savedSortOrder = appPreferences.getValue(sortOrderPreference)
 
@@ -124,24 +123,10 @@ constructor(
         this.sortOrder = sortOrder
         viewModelScope.launch {
             _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
-            appPreferences.setValue(getSortByPreference(), sortBy.toString())
-            appPreferences.setValue(getSortOrderPreference(), sortOrder.toString())
+            appPreferences.setValue(appPreferences.librarySortBy(parentId), sortBy.toString())
+            appPreferences.setValue(appPreferences.librarySortOrder(parentId), sortOrder.toString())
         }
     }
-
-    private fun getSortByPreference(): Preference<String?> =
-        when (libraryType) {
-            CollectionType.Movies -> appPreferences.movieLibrarySortBy
-            CollectionType.TvShows -> appPreferences.tvShowLibrarySortBy
-            else -> appPreferences.otherLibrarySortBy
-        }
-
-    private fun getSortOrderPreference(): Preference<String?> =
-        when (libraryType) {
-            CollectionType.Movies -> appPreferences.movieLibrarySortOrder
-            CollectionType.TvShows -> appPreferences.tvShowLibrarySortOrder
-            else -> appPreferences.otherLibrarySortOrder
-        }
 
     fun onAction(action: LibraryAction) {
         when (action) {
