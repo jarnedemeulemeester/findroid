@@ -7,6 +7,8 @@
         <item>@string/sort_by_options_3</item>
         <item>@string/sort_by_options_4</item>
         <item>@string/sort_by_options_5</item>
+        <item>@string/sort_by_episodes_date_added</item>
+        <item>@string/sort_by_episodes_air_date</item>
     </string-array>
     <string-array name="sort_order_options">
         <item>@string/ascending</item>

@@ -40,21 +40,24 @@ import androidx.tv.material3.RadioButton
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.film.presentation.library.LibrarySortBy
 import dev.jdtech.jellyfin.models.SortOrder
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
 fun SortByDialog(
-    currentSortBy: SortBy,
+    currentSortBy: LibrarySortBy,
     currentSortOrder: SortOrder,
-    onUpdate: (sortBy: SortBy, sortOrder: SortOrder) -> Unit,
+    includeEpisodeSortOptions: Boolean = false,
+    onUpdate: (sortBy: LibrarySortBy, sortOrder: SortOrder) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val optionValues = SortBy.entries
     val optionNames = stringArrayResource(CoreR.array.sort_by_options)
-    val options = optionValues.zip(optionNames)
+    val options =
+        LibrarySortBy.entries.zip(optionNames).filter {
+            includeEpisodeSortOptions || !it.first.displaysEpisodes
+        }
 
     val orderValues = SortOrder.entries
     val orderNames = stringArrayResource(CoreR.array.sort_order_options)
@@ -143,9 +146,9 @@ fun SortByDialog(
 
 @Composable
 private fun SortByDialogItem(
-    option: Pair<SortBy, String>,
+    option: Pair<LibrarySortBy, String>,
     isSelected: Boolean,
-    onSelect: (SortBy) -> Unit,
+    onSelect: (LibrarySortBy) -> Unit,
 ) {
     Row(
         modifier =
@@ -169,7 +172,7 @@ private fun SortByDialogItem(
 private fun SortByDialogPreview() {
     FindroidTheme {
         SortByDialog(
-            currentSortBy = SortBy.NAME,
+            currentSortBy = LibrarySortBy.NAME,
             currentSortOrder = SortOrder.ASCENDING,
             onUpdate = { _, _ -> },
             onDismissRequest = {},
@@ -181,6 +184,10 @@ private fun SortByDialogPreview() {
 @Composable
 private fun SortByDialogItemPreview() {
     FindroidTheme {
-        SortByDialogItem(option = Pair(SortBy.NAME, "Title"), isSelected = true, onSelect = {})
+        SortByDialogItem(
+            option = Pair(LibrarySortBy.NAME, "Title"),
+            isSelected = true,
+            onSelect = {},
+        )
     }
 }

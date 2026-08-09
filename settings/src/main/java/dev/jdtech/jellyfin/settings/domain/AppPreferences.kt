@@ -96,8 +96,15 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     val imageCacheSize = Preference("pref_image_cache_size", 20)
 
     // Sorting
+    // Legacy global preferences are retained to initialize the per-library preferences.
     val sortBy = Preference("pref_sort_by", "SortName")
     val sortOrder = Preference("pref_sort_order", "Ascending")
+    val movieLibrarySortBy = Preference<String?>("pref_movie_library_sort_by", null)
+    val movieLibrarySortOrder = Preference<String?>("pref_movie_library_sort_order", null)
+    val tvShowLibrarySortBy = Preference<String?>("pref_tv_show_library_sort_by", null)
+    val tvShowLibrarySortOrder = Preference<String?>("pref_tv_show_library_sort_order", null)
+    val otherLibrarySortBy = Preference<String?>("pref_other_library_sort_by", null)
+    val otherLibrarySortOrder = Preference<String?>("pref_other_library_sort_order", null)
 
     // Offline mode
     val offlineMode = Preference("pref_offline_mode", false)
