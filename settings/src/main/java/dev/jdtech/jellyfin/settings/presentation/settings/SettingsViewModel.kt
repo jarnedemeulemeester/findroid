@@ -251,12 +251,6 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     options = R.array.player_backends,
                                                     optionValues = R.array.player_backends
                                                 ),
-
-                                            )
-                                    ),
-                                    PreferenceGroup(
-                                        preferences =
-                                            listOf(
                                                 PreferenceCategory(
                                                     nameStringResource = R.string.mpv_options,
                                                     onClick = {

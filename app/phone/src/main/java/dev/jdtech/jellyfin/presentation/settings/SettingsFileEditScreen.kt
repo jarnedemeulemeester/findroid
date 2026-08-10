@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.AlertDialog
@@ -73,8 +75,11 @@ private fun SettingsFileEditScreenLayout(
     val textFieldState = rememberTextFieldState()
     val isModified = initialText != textFieldState.text
 
+    val focusRequester = remember { FocusRequester() }
+
     LaunchedEffect(initialText) {
         textFieldState.setTextAndPlaceCursorAtEnd(initialText)
+        focusRequester.requestFocus()
     }
 
     var showDiscardDialog by remember { mutableStateOf(false) }
@@ -119,7 +124,10 @@ private fun SettingsFileEditScreenLayout(
     ) { innerPadding ->
         TextField(
             state = textFieldState,
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .focusRequester(focusRequester),
             textStyle =
                 TextStyle(
                     fontSize = 14.sp,
