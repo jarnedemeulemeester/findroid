@@ -30,7 +30,7 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.player.core.domain.models.Track
-import dev.jdtech.jellyfin.player.local.R as PlayerLocalR
+import dev.jdtech.jellyfin.player.core.R
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import kotlinx.parcelize.Parcelize
@@ -47,8 +47,8 @@ fun VideoPlayerTrackSelectorDialog(
 ) {
     val dialogTitle =
         when (trackType) {
-            C.TRACK_TYPE_AUDIO -> PlayerLocalR.string.select_audio_track
-            C.TRACK_TYPE_TEXT -> PlayerLocalR.string.select_subtitle_track
+            C.TRACK_TYPE_AUDIO -> R.string.select_audio_track
+            C.TRACK_TYPE_TEXT -> R.string.select_subtitle_track
             else -> CoreR.string.unknown_error
         }
     Surface {
@@ -100,7 +100,7 @@ fun VideoPlayerTrackSelectorDialog(
                                     listOf(track.label, track.language, track.codec)
                                         .mapNotNull { it }
                                         .joinToString(" - ")
-                                        .ifEmpty { stringResource(id = PlayerLocalR.string.none) },
+                                        .ifEmpty { stringResource(id = R.string.none) },
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                         }

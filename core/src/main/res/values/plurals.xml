@@ -4,4 +4,8 @@
         <item quantity="one">%d server discovered</item>
         <item quantity="other">%d servers discovered</item>
     </plurals>
+    <plurals name="cast_tvs_nearby">
+        <item quantity="one">TV nearby</item>
+        <item quantity="other">%d TVs nearby</item>
+    </plurals>
 </resources>

@@ -34,12 +34,15 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.LocalCastPlayerHeight
 import dev.jdtech.jellyfin.PlayerActivity
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.presentation.CastSessionViewModel
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
@@ -49,8 +52,8 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
+import java.util.UUID
 
 @Composable
 fun SeasonScreen(
@@ -64,6 +67,9 @@ fun SeasonScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val castSessionViewModel: CastSessionViewModel = hiltViewModel()
+    val castConnectionState by castSessionViewModel.connectionState.collectAsStateWithLifecycle()
+
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
     SeasonScreenLayout(
@@ -71,10 +77,15 @@ fun SeasonScreen(
         onAction = { action ->
             when (action) {
                 is SeasonAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", seasonId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.SEASON.serialName)
-                    context.startActivity(intent)
+                    if (castConnectionState == CastConnectionState.CONNECTED) {
+                        castSessionViewModel.playItem(seasonId, BaseItemKind.SEASON.serialName, action.startFromBeginning)
+                    } else {
+                        val intent = Intent(context, PlayerActivity::class.java)
+                        intent.putExtra("itemId", seasonId.toString())
+                        intent.putExtra("itemKind", BaseItemKind.SEASON.serialName)
+                        intent.putExtra("startFromBeginning", action.startFromBeginning)
+                        context.startActivity(intent)
+                    }
                 }
                 is SeasonAction.OnBackClick -> navigateBack()
                 is SeasonAction.OnHomeClick -> navigateHome()
@@ -90,10 +101,11 @@ fun SeasonScreen(
 @Composable
 private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> Unit) {
     val safePadding = rememberSafePadding()
+    val castPadding = LocalCastPlayerHeight.current
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
-    val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
+    val paddingBottom = safePadding.bottom + castPadding
 
     val lazyListState = rememberLazyListState()
 

@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.LocalCastPlayerHeight
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSuggestions
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
@@ -78,14 +79,18 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeScreenLayout(state: HomeState, onAction: (HomeAction) -> Unit) {
+private fun HomeScreenLayout(
+    state: HomeState,
+    onAction: (HomeAction) -> Unit
+) {
     val scope = rememberCoroutineScope()
-    val safePadding = rememberSafePadding(handleStartInsets = false)
+    val safePadding = rememberSafePadding(handleStartInsets = false, handleBottomInsets = false)
+    val castPadding = LocalCastPlayerHeight.current
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingTop = safePadding.top + MaterialTheme.spacings.small
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
-    val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
+    val paddingBottom = safePadding.bottom + castPadding
 
     val itemsPadding = PaddingValues(start = paddingStart, end = paddingEnd)
 
@@ -95,10 +100,14 @@ private fun HomeScreenLayout(state: HomeState, onAction: (HomeAction) -> Unit) {
     val showServerSelectionSheetState = rememberModalBottomSheetState()
     var showServerSelectionBottomSheet by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier.fillMaxSize().semantics { isTraversalGroup = true }) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .semantics { isTraversalGroup = true }) {
         PullToRefreshBox(isRefreshing = false, onRefresh = { onAction(HomeAction.OnRetryClick) }) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().semantics { traversalIndex = 1f },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .semantics { traversalIndex = 1f },
                 contentPadding = PaddingValues(top = contentPaddingTop, bottom = paddingBottom),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
             ) {

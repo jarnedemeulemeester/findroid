@@ -22,4 +22,9 @@
     <string name="player_controls_skip_preview">Skip preview</string>
     <string name="player_controls_skip_commercial">Skip commercial</string>
     <string name="player_controls_skip_unknown">Skip</string>
+    <string name="player_controls_play">Play</string>
+    <string name="player_controls_pause">Pause</string>
+    <string name="forced">Forced</string>
+    <string name="hearing_impaired">SDH</string>
+    <string name="track_index">Track %1$d</string>
 </resources>

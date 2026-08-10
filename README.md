@@ -50,11 +50,11 @@ I am developing this application in my spare time.
 - Media segments (requires Jellyfin 10.10 or higher)
   - Skip button
   - Auto skip
+- Chromecast support
 
 ## Planned features
 - Android TV
 - Websocket connection (Syncplay)
-- Chromecast support
 
 ## Translating
 [JDTech Weblate](https://weblate.jdtech.dev) is a self-hosted instance of Weblate where you can translate this project and future projects of mine.

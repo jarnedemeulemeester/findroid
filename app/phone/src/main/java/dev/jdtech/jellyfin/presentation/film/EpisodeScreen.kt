@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.LocalCastPlayerHeight
 import dev.jdtech.jellyfin.PlayerActivity
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderEvent
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
@@ -47,6 +47,8 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
+import dev.jdtech.jellyfin.player.cast.models.CastConnectionState
+import dev.jdtech.jellyfin.player.cast.presentation.CastSessionViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
 import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
@@ -60,8 +62,9 @@ import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import dev.jdtech.jellyfin.utils.format
-import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
+import java.util.UUID
+import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
 fun EpisodeScreen(
@@ -78,6 +81,9 @@ fun EpisodeScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+
+    val castSessionViewModel: CastSessionViewModel = hiltViewModel()
+    val castConnectionState by castSessionViewModel.connectionState.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 
@@ -106,11 +112,15 @@ fun EpisodeScreen(
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
-                    val intent = Intent(context, PlayerActivity::class.java)
-                    intent.putExtra("itemId", episodeId.toString())
-                    intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
-                    intent.putExtra("startFromBeginning", action.startFromBeginning)
-                    context.startActivity(intent)
+                    if (castConnectionState == CastConnectionState.CONNECTED) {
+                        castSessionViewModel.playItem(episodeId, BaseItemKind.EPISODE.serialName, action.startFromBeginning)
+                    } else {
+                        val intent = Intent(context, PlayerActivity::class.java)
+                        intent.putExtra("itemId", episodeId.toString())
+                        intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
+                        intent.putExtra("startFromBeginning", action.startFromBeginning)
+                        context.startActivity(intent)
+                    }
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
                 is EpisodeAction.OnHomeClick -> navigateHome()
@@ -132,10 +142,11 @@ private fun EpisodeScreenLayout(
     onDownloaderAction: (DownloaderAction) -> Unit,
 ) {
     val safePadding = rememberSafePadding()
+    val castPadding = LocalCastPlayerHeight.current
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingEnd = safePadding.end + MaterialTheme.spacings.default
-    val paddingBottom = safePadding.bottom + MaterialTheme.spacings.default
+    val paddingBottom = safePadding.bottom + castPadding
 
     val scrollState = rememberScrollState()
 
