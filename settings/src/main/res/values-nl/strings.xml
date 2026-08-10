@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_preferred_subtitle_language">Gewenste ondertiteling taal</string>
     <string name="settings_category_servers">Servers</string>
@@ -63,4 +63,16 @@
     <string name="player_start_maximized_summary">Open video standaard in de gemaximaliseerde modus</string>
     <string name="pref_player_chapter_markers">Hoofdstukmarkeringen</string>
     <string name="pref_player_chapter_markers_summary">Geef hoofdstukmarkeringen weer op de tijdbalk</string>
+    <string name="cancel">Annuleren</string>
+    <string name="users">Gebruikers</string>
+    <string name="home">Thuis</string>
+    <string name="home_suggestions">Suggesties weergeven</string>
+    <string name="home_continue_watching">Doorgaan met kijken weergeven</string>
+    <string name="home_next_up">Volgende weergeven</string>
+    <string name="home_latest">Laatste weergeven</string>
+    <string name="offline_mode_summary">Kijk films en series zonder verbonden te zijn met de server</string>
+    <string name="save">Opslaan</string>
+    <string name="media_segments">Media Segmenten</string>
+    <string name="pref_player_media_segments_skip_button">Skip knop weergeven</string>
+    <string name="pref_player_media_segments_skip_button_summary">Laat een knop zien om makkelijk delen over te slaan</string>
 </resources>

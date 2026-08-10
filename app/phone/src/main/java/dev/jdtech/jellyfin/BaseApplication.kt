@@ -5,6 +5,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -18,6 +23,8 @@ import coil3.svg.SvgDecoder
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.work.MpvCleanupWorker
+import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 import okio.Path.Companion.toOkioPath
@@ -53,6 +60,14 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
         if (appPreferences.getValue(appPreferences.dynamicColors)) {
             DynamicColors.applyToActivitiesIfAvailable(this)
         }
+
+        val workManager = WorkManager.getInstance(applicationContext)
+
+        scheduleUserDataSync(workManager)
+
+        if (!appPreferences.getValue(appPreferences.mpvMigrated)) {
+            scheduleMpvCleanup(workManager)
+        }
     }
 
     @OptIn(ExperimentalCoilApi::class, ExperimentalTime::class)
@@ -76,5 +91,35 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             }
             .crossfade(true)
             .build()
+    }
+
+    private fun scheduleUserDataSync(workManager: WorkManager) {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val syncWorkRequest =
+            OneTimeWorkRequestBuilder<SyncWorker>()
+                .setConstraints(constraints)
+                .build()
+
+        workManager
+            .enqueueUniqueWork(
+                uniqueWorkName = "syncUserData",
+                existingWorkPolicy = ExistingWorkPolicy.KEEP,
+                request = syncWorkRequest
+            )
+    }
+
+    private fun scheduleMpvCleanup(workManager: WorkManager) {
+        val cleanupRequest =
+            OneTimeWorkRequestBuilder<MpvCleanupWorker>()
+                .build()
+
+        workManager.enqueueUniqueWork(
+            uniqueWorkName = "mpv_cleanup",
+            existingWorkPolicy = ExistingWorkPolicy.KEEP,
+            request = cleanupRequest
+        )
     }
 }

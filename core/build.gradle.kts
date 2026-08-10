@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
@@ -49,4 +48,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.okhttp)
     implementation(libs.timber)
+    implementation(libs.slf4j.api)
+    implementation(libs.slf4j.android)
 }

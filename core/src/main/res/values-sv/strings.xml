@@ -7,7 +7,7 @@
     <string name="view_all">Visa alla</string>
     <string name="genres">Genrer</string>
     <string name="director">Regissör</string>
-    <string name="cast_amp_crew"><![CDATA[Cast & Crew]]></string>
+    <string name="cast_amp_crew"><![CDATA[Medverkande]]></string>
     <string name="seasons">Säsonger</string>
     <string name="trailer_button_description">Titta på trailern</string>
     <string name="play_button_description">Spela upp media</string>
@@ -15,7 +15,7 @@
     <string name="next_up">Nästa</string>
     <string name="libraries">Bibliotek</string>
     <string name="series_poster">Serieaffisch</string>
-    <string name="no_downloads">Du har inget nedladdat</string>
+    <string name="no_downloads">Du har ingenting nedladdat</string>
     <string name="search">Sök</string>
     <string name="favorite_button_description">Favorit</string>
     <string name="episode_watched_indicator">Sett avsnitt indikator</string>
@@ -91,7 +91,7 @@
     <string name="cancel_download">Avbryt nedladdning</string>
     <string name="cancel_download_message">Är du säker på att du vill avbryta nedladdningen?</string>
     <string name="unmark_as_played">Avmarkera som uppspelad</string>
-    <string name="collection_no_media">Denna samling innehåller inte några media</string>
+    <string name="collection_no_media">Denna samling innehåller inte någon media</string>
     <string name="delete_download_message">Är du säker på att du vill ta bort denna nedladdning från din enhet?</string>
     <string name="none">Inga</string>
     <string name="manage_servers">Hantera servrar</string>

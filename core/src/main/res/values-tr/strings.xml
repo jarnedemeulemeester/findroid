@@ -4,7 +4,7 @@
     <string name="title_media">Medyam</string>
     <string name="title_home">Ana Sayfa</string>
     <string name="remove">Kaldır</string>
-    <string name="cancel">İptal</string>
+    <string name="cancel">İptal et</string>
     <string name="director">Yönetmen</string>
     <string name="writers">Yazarlar</string>
     <string name="trailer_button_description">Fragmanı izle</string>
@@ -76,7 +76,7 @@
     <string name="image_description_backdrop">%1$sarka plan</string>
     <string name="size">Boyut</string>
     <string name="video">Video</string>
-    <string name="offline_mode">Çevrimdışı Modu</string>
+    <string name="offline_mode">Çevrimdışı modu</string>
     <string name="offline_mode_icon">Çevrindışı Modu ikonu</string>
     <string name="not_enough_storage">Bu öğe, %1$s boş depolama alanı gerektiriyor ancak yalnızca %2$s mevcut</string>
     <string name="no_server_connection">Jellyfin sunucusuyla bağlantı kurulamadı, çevrimdışı izlemek için Çevrimdışı Modu\'nu açın</string>
@@ -99,4 +99,13 @@
     <string name="watch_trailer">Fragmanı izle</string>
     <string name="mark_as_played">İzlendi olarak işaretle</string>
     <string name="collection_no_media">Bu kolleksiyon hiçbir medya içermiyor</string>
+    <string name="runtime_minutes_left">%1$d dakika kaldı</string>
+    <string name="delete_download">İndirileni sil</string>
+    <string name="delete_download_message">Bu indirileni cihazınızdan silmek istediğinizden emin misiniz?</string>
+    <string name="none">Hiçbiri</string>
+    <string name="manage_servers">Sunucuları yönet</string>
+    <string name="download_pending">Bekliyor…</string>
+    <string name="download_paused">Durduruldu</string>
+    <string name="download_downloading">İndiriliyor…</string>
+    <string name="download_failed">İndirme başarısız oldu</string>
 </resources>

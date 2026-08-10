@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,11 +37,9 @@ fun SettingsCategoryCard(preference: PreferenceCategory, modifier: Modifier = Mo
                     painter = painterResource(preference.iconDrawableId!!),
                     contentDescription = null,
                 )
-            } else {
-                Spacer(modifier = Modifier.size(MaterialTheme.spacings.default))
+                Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
 
-            Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(preference.nameStringResource),
@@ -63,6 +60,33 @@ fun SettingsCategoryCard(preference: PreferenceCategory, modifier: Modifier = Mo
 @Preview
 @Composable
 private fun SettingsCategoryCardPreview() {
+    FindroidTheme {
+        SettingsCategoryCard(
+            preference =
+                PreferenceCategory(
+                    nameStringResource = SettingsR.string.settings_category_player,
+                )
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SettingsCategoryCardDescriptionPreview() {
+    FindroidTheme {
+        SettingsCategoryCard(
+            preference =
+                PreferenceCategory(
+                    nameStringResource = SettingsR.string.settings_category_player,
+                    descriptionStringRes = SettingsR.string.settings_category_player,
+                )
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SettingsCategoryCardIconPreview() {
     FindroidTheme {
         SettingsCategoryCard(
             preference =

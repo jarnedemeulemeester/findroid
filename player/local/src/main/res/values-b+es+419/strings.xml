@@ -17,4 +17,10 @@
     <string name="player_trickplay">Avance</string>
     <string name="player_controls_picture_in_picture">Entrar en modo PIP</string>
     <string name="none">Ninguno</string>
+    <string name="player_controls_skip_outro">Saltar tema final</string>
+    <string name="player_controls_next_episode">Siguiente episodio</string>
+    <string name="player_controls_skip_recap">Saltar resumen</string>
+    <string name="player_controls_skip_preview">Saltar vista previa</string>
+    <string name="player_controls_skip_commercial">Saltar anuncio</string>
+    <string name="player_controls_skip_unknown">Saltar</string>
 </resources>

@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.player.local.presentation
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -131,8 +132,26 @@ constructor(
                 )
         )
 
-        if (appPreferences.getValue(appPreferences.playerMpv)) {
-            player =
+
+        val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
+        player = when (playerBackend) {
+            "exoplayer" -> {
+                val renderersFactory =
+                    DefaultRenderersFactory(application)
+                        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                ExoPlayer.Builder(application, renderersFactory)
+                    .setAudioAttributes(audioAttributes, true)
+                    .setTrackSelector(trackSelector)
+                    .setSeekBackIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekBackInc)
+                    )
+                    .setSeekForwardIncrementMs(
+                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                    )
+                    .setPauseAtEndOfMediaItems(true)
+                    .build()
+            }
+            "mpv" -> {
                 MPVPlayer.Builder(application)
                     .setAudioAttributes(audioAttributes, true)
                     .setTrackSelectionParameters(trackSelector.parameters)
@@ -147,22 +166,9 @@ constructor(
                     .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
                     .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
                     .build()
-        } else {
-            val renderersFactory =
-                DefaultRenderersFactory(application)
-                    .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            player =
-                ExoPlayer.Builder(application, renderersFactory)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelector(trackSelector)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .build()
+            }
+
+            else -> throw RuntimeException("$playerBackend is not a valid player backend")
         }
     }
 
@@ -171,12 +177,23 @@ constructor(
 
         viewModelScope.launch {
             val startItem =
-                playlistManager.getInitialItem(
-                    itemId = itemId,
-                    itemKind = BaseItemKind.fromName(itemKind),
-                    mediaSourceIndex = null,
-                    startFromBeginning = startFromBeginning,
-                )
+                try {
+                    playlistManager.getInitialItem(
+                        itemId = itemId,
+                        itemKind = BaseItemKind.fromName(itemKind),
+                        mediaSourceIndex = null,
+                        startFromBeginning = startFromBeginning,
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    Toast.makeText(application, e.localizedMessage, Toast.LENGTH_LONG).show()
+                    null
+                }
+
+            if (startItem == null) {
+                Timber.e("No start item, stopping player initialization")
+                return@launch
+            }
 
             items = listOfNotNull(startItem).toMutableList()
             currentMediaItemIndex = items.indexOf(startItem)
@@ -236,11 +253,14 @@ constructor(
         GlobalScope.launch {
             delay(200L)
             try {
-                repository.postPlaybackStop(
-                    UUID.fromString(mediaId),
-                    position.times(10000),
-                    position.div(duration.toFloat()).times(100).toInt(),
-                )
+                if (mediaId != null && duration != C.TIME_UNSET) {
+                    Timber.d("Sending playback stop")
+                    repository.postPlaybackStop(
+                        UUID.fromString(mediaId),
+                        position.times(10000),
+                        position.div(duration.toFloat()).times(100).toInt(),
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -616,7 +636,7 @@ constructor(
         return maxOf(0, currentChapterIndex - 1)
     }
 
-    fun isLastChapter(): Boolean? =
+    fun isLastChapter(): Boolean =
         getChapters().let { chapters -> getCurrentChapterIndex() == chapters.size - 1 }
 
     /**

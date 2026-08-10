@@ -67,4 +67,5 @@
     <string name="cancel_download">Cancel·la la baixada</string>
     <string name="delete_download">Eliminar la baixada</string>
     <string name="download_downloading">Baixant…</string>
+    <string name="none">Cap</string>
 </resources>

@@ -6,8 +6,8 @@
     <string name="title_home">الرئيسية</string>
     <string name="title_media">وسائطي</string>
     <string name="title_favorite">المفضلة</string>
-    <string name="title_settings">إعدادات</string>
-    <string name="title_download">التحميلات</string>
+    <string name="title_settings">الإعدادات</string>
+    <string name="title_download">التنزيلات</string>
     <string name="view_all">عرض الكل</string>
     <string name="error_loading_data">خطأ أثناء تحميل البيانات</string>
     <string name="show_stacktrace">عرض سجل الأخطاء</string>
@@ -74,7 +74,7 @@
     <string name="subtitle">الترجمة</string>
     <string name="subtitle_chip_text">CC</string>
     <string name="temp">مؤقت</string>
-    <string name="offline_mode">نمط العمل دون اتصال</string>
+    <string name="offline_mode">­وضع عدم الاتصال</string>
     <string name="offline_mode_icon">أيقونة نمط العمل دون اتصال</string>
     <string name="offline_mode_go_online">اتصال</string>
     <string name="downloading_error">خطأ أثناء التحميل</string>
@@ -83,7 +83,7 @@
     <string name="select_storage_location">اختر مكان التخزين</string>
     <string name="storage_unavailable">مكان التخزين غير متاح</string>
     <string name="internal">داخلي</string>
-    <string name="external">خاجي</string>
+    <string name="external">خارجي</string>
     <string name="storage_name">%1$s (%2$d ميغابايت متاح)</string>
     <string name="preparing_download">التحضير للتحميل</string>
     <string name="cancel_download">إلغاء التحميل</string>
@@ -98,7 +98,7 @@
     <string name="add_to_favorites">إضافة للمفضلة</string>
     <string name="remove_from_favorites">إزالة من المفضلة</string>
     <string name="not_set">غير محدد</string>
-    <string name="none">لا شيء</string>
+    <string name="none">لا شيئ</string>
     <string name="manage_servers">إدارة الخوادم</string>
     <string name="jellyfin_banner">لافتة جيلي فين</string>
     <string name="runtime_minutes_left">باقي %1$d دقيقة</string>

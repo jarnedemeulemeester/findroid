@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">設定</string>
     <string name="title_download">下載</string>
@@ -67,4 +67,37 @@
     <string name="pref_player_gestures_seek_trickplay">滑動快轉時啟用特技播放</string>
     <string name="pref_player_gestures_seek_trickplay_summary">手勢尋找時顯示預覽畫面</string>
     <string name="users">使用者</string>
+    <string name="settings_category_interface">介面</string>
+    <string name="pref_player_trickplay">技巧播放</string>
+    <string name="cancel">取消</string>
+    <string name="trickplay">技巧推燻</string>
+    <string name="home">首頁</string>
+    <string name="home_suggestions">顯示建議</string>
+    <string name="home_continue_watching">顯示繼續觀看</string>
+    <string name="home_next_up">顯示下一集</string>
+    <string name="home_latest">顯示最新項目</string>
+    <string name="none">無</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">保存</string>
+    <string name="media_segments">媒體片段</string>
+    <string name="pref_player_media_segments_skip_button">擁有桌頊機</string>
+    <string name="pref_player_media_segments_skip_button_summary">提供一個按鈕以輕鬆跳過部分</string>
+    <string name="pref_player_media_segments_skip_button_type">騉四周已了</string>
+    <string name="pref_player_media_segments_skip_button_duration">求顯示跳過按鈕</string>
+    <string name="pref_player_media_segments_auto_skip">自動跳過</string>
+    <string name="pref_player_media_segments_auto_skip_summary">為選定的程式事段類型啟用自動跳過</string>
+    <string name="pref_player_media_segments_auto_skip_mode">何時自動跳過</string>
+    <string name="pref_player_media_segments_auto_skip_type">要自動跳過的程式則段類型</string>
+    <string name="pref_player_media_segments_next_episode_threshold">跳過至下一集的一眼值</string>
+    <string name="media_segments_auto_skip_pip">僅限PIP模式</string>
+    <string name="media_segments_auto_skip_always">永遠</string>
+    <string name="media_segments_type_unknown">其他</string>
+    <string name="media_segments_type_commercial">廣告</string>
+    <string name="media_segments_type_preview">預覽</string>
+    <string name="media_segments_type_recap">测試</string>
+    <string name="media_segments_type_outro">收尾</string>
+    <string name="media_segments_type_intro">開頁</string>
+    <string name="offline_mode_summary">离線模式摘要</string>
 </resources>
