@@ -16,7 +16,7 @@
     <string name="genres">ジャンル</string>
     <string name="director">監督</string>
     <string name="writers">脚本家</string>
-    <string name="cast_amp_crew">キャスト＆クルー</string>
+    <string name="cast_amp_crew"><![CDATA[キャスト＆クルー]]></string>
     <string name="seasons">シーズン</string>
     <string name="play_button_description">メディアを再生</string>
     <string name="trailer_button_description">予告編を視聴</string>
@@ -28,8 +28,8 @@
     <string name="episode_name_with_end">%1$d-%2$d. %3$s</string>
     <string name="episode_name_extended">シーズン %1$d - %2$d. %3$s</string>
     <string name="episode_name_extended_with_end">シーズン %1$d - %2$d-%3$d. %4$s</string>
-    <string name="season_number">シーズン %1d</string>
-    <string name="episode_number">エピソード %1d</string>
+    <string name="season_number">シーズン %1$d</string>
+    <string name="episode_number">エピソード %1$d</string>
     <string name="next_up">次に再生</string>
     <string name="libraries">ライブラリ</string>
     <string name="series_poster">シリーズポスター</string>
@@ -102,4 +102,11 @@
     <string name="not_set">未設定</string>
     <string name="none">なし</string>
     <string name="manage_servers">サーバーを管理</string>
+    <string name="delete_download">ダウンロードを削除</string>
+    <string name="delete_download_message">このダウンロードをデバイスから削除してもよろしいですか？</string>
+    <string name="download_pending">保留中…</string>
+    <string name="download_paused">一時停止中</string>
+    <string name="download_downloading">ダウンロード中…</string>
+    <string name="download_failed">ダウンロードに失敗しました</string>
+    <string name="discard">破棄</string>
 </resources>

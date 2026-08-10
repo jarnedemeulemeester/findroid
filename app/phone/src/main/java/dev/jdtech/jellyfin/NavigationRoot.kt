@@ -52,6 +52,7 @@ import dev.jdtech.jellyfin.presentation.film.PersonScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
 import dev.jdtech.jellyfin.presentation.settings.AboutScreen
+import dev.jdtech.jellyfin.presentation.settings.SettingsFileEditScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.setup.addresses.ServerAddressesScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
@@ -59,6 +60,7 @@ import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import java.util.UUID
 import kotlinx.serialization.Serializable
 
@@ -103,6 +105,10 @@ data class LibraryRoute(
 
 @Serializable data class SettingsRoute(val indexes: IntArray)
 
+@Serializable data class SettingsFileEditRoute(
+    val filePath: String,
+)
+
 @Serializable data object AboutRoute
 
 data class TabBarItem(
@@ -133,8 +139,9 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
-    isOfflineMode: Boolean,
 ) {
+    val isOfflineMode = LocalOfflineMode.current
+
     val startDestination =
         when {
             hasServers && hasCurrentServer && hasCurrentUser -> HomeRoute
@@ -195,8 +202,9 @@ fun NavigationRoot(
                         }
 
                         navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId)
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     },
                     icon = {
@@ -222,7 +230,7 @@ fun NavigationRoot(
             composable<WelcomeRoute> {
                 WelcomeScreen(onContinueClick = { navController.safeNavigate(ServersRoute) })
             }
-            composable<ServersRoute> { backStackEntry ->
+            composable<ServersRoute> {
                 ServersScreen(
                     navigateToUsers = { navController.safeNavigate(UsersRoute) },
                     navigateToAddresses = { serverId ->
@@ -246,14 +254,9 @@ fun NavigationRoot(
                     navigateBack = { navController.safePopBackStack() },
                 )
             }
-            composable<UsersRoute> { backStackEntry ->
+            composable<UsersRoute> {
                 UsersScreen(
-                    navigateToHome = {
-                        navController.safeNavigate(HomeRoute) {
-                            popUpTo(0)
-                            launchSingleTop = true
-                        }
-                    },
+                    navigateToHome = { navigateHome(navController) },
                     onChangeServerClick = {
                         navController.safeNavigate(ServersRoute) {
                             popUpTo(ServersRoute) { inclusive = false }
@@ -301,8 +304,9 @@ fun NavigationRoot(
                     onSearchClick = {
                         searchExpanded = true
                         navController.safeNavigate(MediaRoute) {
-                            popUpTo(navController.graph.startDestinationId)
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     },
                     onSettingsClick = {
@@ -369,6 +373,7 @@ fun NavigationRoot(
                 MovieScreen(
                     movieId = UUID.fromString(route.movieId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToPerson = { personId ->
                         navController.safeNavigate(PersonRoute(personId.toString()))
                     },
@@ -379,6 +384,7 @@ fun NavigationRoot(
                 ShowScreen(
                     showId = UUID.fromString(route.showId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToItem = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
@@ -392,6 +398,7 @@ fun NavigationRoot(
                 SeasonScreen(
                     seasonId = UUID.fromString(route.seasonId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToItem = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
@@ -408,6 +415,7 @@ fun NavigationRoot(
                 EpisodeScreen(
                     episodeId = UUID.fromString(route.episodeId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToPerson = { personId ->
                         navController.safeNavigate(PersonRoute(personId.toString()))
                     },
@@ -424,6 +432,7 @@ fun NavigationRoot(
                 PersonScreen(
                     personId = UUID.fromString(route.personId),
                     navigateBack = { navController.safePopBackStack() },
+                    navigateHome = { navigateHome(navController) },
                     navigateToItem = { item ->
                         navigateToItem(navController = navController, item = item)
                     },
@@ -436,16 +445,32 @@ fun NavigationRoot(
                     navigateToSettings = { indexes ->
                         navController.safeNavigate(SettingsRoute(indexes = indexes))
                     },
+                    navigateToSettingsFileEdit = { filePath ->
+                        navController.safeNavigate(SettingsFileEditRoute(filePath = filePath))
+                    },
                     navigateToServers = { navController.safeNavigate(ServersRoute) },
                     navigateToUsers = { navController.safeNavigate(UsersRoute) },
                     navigateToAbout = { navController.safeNavigate(AboutRoute) },
                     navigateBack = { navController.safePopBackStack() },
                 )
             }
+            composable<SettingsFileEditRoute> { backStackEntry ->
+                val route: SettingsFileEditRoute = backStackEntry.toRoute()
+                SettingsFileEditScreen(
+                    filePath = route.filePath,
+                    navigateBack = { navController.safePopBackStack() })
+            }
             composable<AboutRoute> {
                 AboutScreen(navigateBack = { navController.safePopBackStack() })
             }
         }
+    }
+}
+
+private fun navigateHome(navController: NavHostController) {
+    navController.safeNavigate(HomeRoute) {
+        popUpTo(navController.graph.startDestinationId)
+        launchSingleTop = true
     }
 }
 

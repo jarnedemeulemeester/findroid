@@ -9,6 +9,10 @@ import dev.jdtech.jellyfin.models.VideoMetadata
 
 val dummyVideoMetadata =
     VideoMetadata(
+        size = 1000000000,
+        videoTracks = emptyList(),
+        audioTracks = emptyList(),
+        subtitleTracks = emptyList(),
         resolution = listOf(Resolution.HD),
         videoCodecs = listOf(VideoCodec.AV1),
         displayProfiles = listOf(DisplayProfile.HDR10),

@@ -32,7 +32,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         mediaSourceIndex: Int? = null,
         startFromBeginning: Boolean = false,
     ): PlayerItem? {
-        Timber.Forest.d("Retrieving initial player item")
+        Timber.d("Retrieving initial player item")
 
         val initialItem =
             when (itemKind) {
@@ -43,7 +43,19 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                     movie
                 }
                 BaseItemKind.SERIES -> {
-                    val season = repository.getSeasons(itemId).first()
+                    val nextUpEpisode = repository.getNextUp(itemId).firstOrNull()
+
+                    val season =
+                        if (nextUpEpisode != null) {
+                            repository.getSeason(nextUpEpisode.seasonId)
+                        } else {
+                            val seasons = repository.getSeasons(itemId)
+                            if (seasons.isEmpty()) {
+                                return null
+                            }
+                            seasons.first()
+                        }
+
                     val episodes =
                         repository
                             .getEpisodes(
@@ -53,7 +65,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                             )
                             .filter { !it.missing }
 
-                    val episode = repository.getNextUp(itemId).firstOrNull() ?: episodes.first()
+                    if (episodes.isEmpty()) {
+                        return null
+                    }
+
+                    val episode = nextUpEpisode ?: episodes.first()
 
                     items = episodes
                     episode
@@ -69,8 +85,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                             )
                             .filter { !it.missing }
 
-                    val episode =
-                        repository.getNextUp(season.seriesId).firstOrNull() ?: episodes.first()
+                    if (episodes.isEmpty()) {
+                        return null
+                    }
+
+                    val episode = episodes.first()
 
                     items = episodes
                     episode
@@ -110,7 +129,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     }
 
     suspend fun getPreviousPlayerItem(): PlayerItem? {
-        Timber.Forest.d("Retrieving previous player item")
+        Timber.d("Retrieving previous player item")
 
         val itemIndex = currentItemIndex - 1
         val playerItem =
@@ -144,7 +163,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     }
 
     suspend fun getNextPlayerItem(): PlayerItem? {
-        Timber.Forest.d("Retrieving next player item")
+        Timber.d("Retrieving next player item")
 
         val itemIndex = currentItemIndex + 1
         val playerItem =

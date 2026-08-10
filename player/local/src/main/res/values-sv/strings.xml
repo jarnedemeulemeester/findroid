@@ -10,11 +10,17 @@
     <string name="player_controls_fast_forward">Spola framåt</string>
     <string name="player_controls_skip_intro">Hoppa över intro</string>
     <string name="player_controls_play_pause">Spela pausa</string>
-    <string name="none">Ingen</string>
+    <string name="none">Inga</string>
     <string name="player_controls_lock">Låser spelaren</string>
     <string name="player_controls_skip_back">Hoppa tillbaka</string>
     <string name="player_controls_picture_in_picture">Använd bild-i-bild</string>
     <string name="player_controls_skip_forward">Hoppa framåt</string>
     <string name="player_trickplay">Trickplay</string>
     <string name="player_controls_progress">Förloppsindikator</string>
+    <string name="player_controls_skip_outro">Hoppa över outro</string>
+    <string name="player_controls_next_episode">Nästa avsnitt</string>
+    <string name="player_controls_skip_recap">Hoppa över sammanfattning</string>
+    <string name="player_controls_skip_preview">Hoppa över förhandsgranskning</string>
+    <string name="player_controls_skip_commercial">Hoppa över reklam</string>
+    <string name="player_controls_skip_unknown">Hoppa över</string>
 </resources>

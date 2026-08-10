@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
@@ -24,19 +23,6 @@ android {
         versionName = Versions.APP_NAME
 
         testInstrumentationRunner = "dev.jdtech.jellyfin.HiltTestRunner"
-    }
-
-    applicationVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-            .forEach { output ->
-                if (variant.buildType.name == "release") {
-                    val outputFileName =
-                        "findroid-v${variant.versionName}-${variant.flavorName}-${output.getFilter("ABI")}.apk"
-                    output.outputFileName = outputFileName
-                }
-            }
     }
 
     buildTypes {
@@ -65,7 +51,14 @@ android {
 
     splits {
         abi {
-            isEnable = true
+            // Detect app bundle and conditionally disable split abis
+            // This is needed due to a "Multiple shrunk-resources files found in directory" error
+            // present since AGP 8.9.0, for more info see:
+            // https://issuetracker.google.com/issues/402800800
+            val isBuildingBundle =
+                gradle.startParameter.taskNames.any { it.lowercase().contains("bundle") }
+            isEnable = !isBuildingBundle
+
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
         }
@@ -124,6 +117,7 @@ dependencies {
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.window)
     implementation(libs.androidx.work)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

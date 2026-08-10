@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_server">Server əlavə edin</string>
+    <string name="add_server_btn_connect">Qoşul</string>
+    <string name="add_server_error_empty_address">Server adresi boşdur</string>
+    <string name="add_server_error_no_id">Serverin identifikatoru yoxdur, serverdə nəsə səhv görünür</string>
+    <string name="add_server_error_not_found">Server tapılmadı</string>
+    <string name="add_server_error_not_jellyfin">%1$s Jellyfin serveri deyil</string>
+    <string name="add_server_error_outdated">%1$s Serverinin versiyası köhnəlib. Serveri güncəlləməniz xahiş olunur</string>
+    <string name="add_server_error_slow">Server cavab verməktə çox yavaşdır: %1$s</string>
+    <string name="add_server_error_version">Dəstəklənməyən server versiyası:%1$s. Xahiş olunur ki, serveri güncəlləyəsiniz</string>
+    <string name="edit_text_password_hint">Şifrə</string>
+    <string name="edit_text_server_address_hint">Server adresi</string>
+    <string name="edit_text_username_hint">İstifadəçi Adı</string>
+    <string name="login">Giriş</string>
+    <string name="login_btn_login">Giriş et</string>
+    <string name="login_btn_quick_connect">Quick Connect (Sürətli Qoşulma)</string>
+    <string name="login_error_wrong_username_password">Yanlış İstifadəçi Adı və ya Şifrəsi</string>
+    <string name="servers">Serverlər</string>
+    <string name="servers_no_servers">Heç bir server tapılmadı</string>
+    <string name="servers_btn_add_server">Server əlavə edin</string>
+    <string name="remove_server_dialog">Serveri silin</string>
+    <string name="remove_server_dialog_text">%s serverini silmək istədiyinizə əminsinizmi?</string>
+    <string name="welcome">Findroidə Xoş Gəldiniz</string>
+    <string name="welcome_btn_continue">Davam et</string>
+    <string name="welcome_btn_learn_more">Jellyfin haqqında daha çox məlumat əldə edin</string>
+    <string name="welcome_text">Findroid, Jellyfin üçün üçüncü tərəf klientidir. Findroid özlüyündə heç bir media saxlamır.\n\nBu klientdən istifadə etmək üçün öz Jellyfin serverinizə sahib olmalısınız.</string>
+    <string name="confirm">Təstiq et</string>
+    <string name="cancel">Ləğv et</string>
+    <string name="or">və ya</string>
+    <string name="server_subtitle">Server:%s</string>
+    <string name="users">İstifadəçilər</string>
+    <string name="users_no_users">Heç bir istifadəçi tapılmadı</string>
+    <string name="users_btn_add_user">İstifadəçi əlavə edin</string>
+    <string name="remove_user_dialog">İstifadəçini silin</string>
+    <string name="remove_user_dialog_text">%s istifadəçisini silmək istədiyinizdən əminsinizmi?</string>
+    <string name="addresses">Adres</string>
+    <string name="add_address">Adres əlavə edin</string>
+    <string name="add_server_address">Server adresini əlavə edin</string>
+    <string name="remove_server_address">Server adresini silin</string>
+    <string name="remove_server_address_dialog_text">%1$s adlı server adresini silmək istədiyinizə əminsinizmi</string>
+</resources>

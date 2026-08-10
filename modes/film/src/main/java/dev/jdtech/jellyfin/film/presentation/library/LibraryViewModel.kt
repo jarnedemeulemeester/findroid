@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.SortOrder
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.util.UUID
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
-import org.jellyfin.sdk.model.api.SortOrder
 
 @HiltViewModel
 class LibraryViewModel
@@ -84,7 +84,7 @@ constructor(
     private suspend fun initSorting() {
         if (!::sortBy.isInitialized || !::sortOrder.isInitialized) {
             sortBy = SortBy.fromString(appPreferences.getValue(appPreferences.sortBy))
-            sortOrder = SortOrder.fromName(appPreferences.getValue(appPreferences.sortOrder))
+            sortOrder = SortOrder.fromString(appPreferences.getValue(appPreferences.sortOrder))
             _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
         }
     }

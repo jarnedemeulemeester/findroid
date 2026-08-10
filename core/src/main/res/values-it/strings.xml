@@ -95,11 +95,17 @@
     <string name="title_settings">Impostazioni</string>
     <string name="title_download">Download</string>
     <string name="season_number">Stagione %1$d</string>
-    <string name="episode_number">Episodio %2$d</string>
+    <string name="episode_number">Episodio %1$d</string>
     <string name="sort_by_options_6">Casuale</string>
     <string name="offline_mode">Modalità Offline</string>
     <string name="not_set">Non impostato</string>
     <string name="none">Nessuno</string>
     <string name="manage_servers">Gestisci server</string>
     <string name="runtime_minutes_left">%1$d minuti rimasti</string>
+    <string name="delete_download">Elimina il download</string>
+    <string name="delete_download_message">Sei sicuro di voler cancellare questo download dal tuo dispositivo?</string>
+    <string name="download_pending">In sospeso…</string>
+    <string name="download_paused">Pausa</string>
+    <string name="download_downloading">Sto scaricando…</string>
+    <string name="download_failed">Download non riuscito</string>
 </resources>

@@ -15,11 +15,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.jdtech.jellyfin.core.R as CoreR
-import dev.jdtech.jellyfin.models.AudioChannel
+import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.models.AudioCodec
 import dev.jdtech.jellyfin.models.DisplayProfile
-import dev.jdtech.jellyfin.models.Resolution
-import dev.jdtech.jellyfin.models.VideoCodec
 import dev.jdtech.jellyfin.models.VideoMetadata
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -74,17 +72,5 @@ fun VideoMetadataBarItem(text: String, @DrawableRes icon: Int? = null) {
 @Composable
 @Preview(showBackground = true)
 private fun VideoMetadataBarPreview() {
-    FindroidTheme {
-        VideoMetadataBar(
-            videoMetadata =
-                VideoMetadata(
-                    resolution = listOf(Resolution.UHD),
-                    videoCodecs = listOf(VideoCodec.AV1),
-                    displayProfiles = listOf(DisplayProfile.HDR10),
-                    audioCodecs = listOf(AudioCodec.TRUEHD),
-                    audioChannels = listOf(AudioChannel.CH_7_1),
-                    isAtmos = listOf(false),
-                )
-        )
-    }
+    FindroidTheme { VideoMetadataBar(videoMetadata = dummyVideoMetadata) }
 }

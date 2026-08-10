@@ -17,11 +17,13 @@ fun InfoText(
     writers: List<FindroidItemPerson>,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
-        Text(
-            text = "${stringResource(CoreR.string.genres)}: ${genres.joinToString()}",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        director?.let { director ->
+        if (genres.isNotEmpty()) {
+            Text(
+                text = "${stringResource(CoreR.string.genres)}: ${genres.joinToString()}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        if (director != null) {
             Text(
                 text = "${stringResource(CoreR.string.director)}: ${director.name}",
                 style = MaterialTheme.typography.bodyMedium,

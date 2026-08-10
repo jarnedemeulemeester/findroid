@@ -51,6 +51,7 @@ fun ItemButtonsBar(
     onTrailerClick: (uri: String) -> Unit,
     modifier: Modifier = Modifier,
     downloaderState: DownloaderState? = null,
+    canPlay: Boolean = true,
 ) {
     val context = LocalContext.current
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -88,6 +89,7 @@ fun ItemButtonsBar(
                         item = item,
                         onClick = { onPlayClick(false) },
                         modifier = Modifier.weight(weight = 1f, fill = true),
+                        enabled = item.canPlay && canPlay,
                     )
                     if (item.playbackPositionTicks.div(600000000) > 0) {
                         FilledTonalIconButton(onClick = { onPlayClick(true) }) {
@@ -105,7 +107,11 @@ fun ItemButtonsBar(
                         WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
                     )
                 ) {
-                    PlayButton(item = item, onClick = { onPlayClick(false) })
+                    PlayButton(
+                        item = item,
+                        onClick = { onPlayClick(false) },
+                        enabled = item.canPlay && canPlay,
+                    )
                     if (item.playbackPositionTicks.div(600000000) > 0) {
                         FilledTonalIconButton(onClick = { onPlayClick(true) }) {
                             Icon(

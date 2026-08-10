@@ -13,7 +13,7 @@
     <string name="genres">Géneros</string>
     <string name="director">Director</string>
     <string name="writers">Escritores</string>
-    <string name="cast_amp_crew">Reparto y equipo</string>
+    <string name="cast_amp_crew"><![CDATA[Reparto y equipo]]></string>
     <string name="seasons">Temporadas</string>
     <string name="play_button_description">Reproducir contenido</string>
     <string name="trailer_button_description">Ver el adelanto</string>
@@ -98,7 +98,14 @@
     <string name="title_download">Descargas</string>
     <string name="offline_mode">Modo sin conexión</string>
     <string name="season_number">Temporada %1$d</string>
-    <string name="episode_number">Episodio %2$d</string>
+    <string name="episode_number">Episodio %1$d</string>
     <string name="none">Ninguno</string>
     <string name="manage_servers">Administrar servidores</string>
+    <string name="runtime_minutes_left">%1$d minutos restantes</string>
+    <string name="delete_download">Borrar descarga</string>
+    <string name="delete_download_message">¿Estás seguro de querer eliminar esta descarga de tu dispositivo?</string>
+    <string name="download_pending">Pendiente…</string>
+    <string name="download_paused">Pausado</string>
+    <string name="download_downloading">Descargando…</string>
+    <string name="download_failed">Falló la descarga</string>
 </resources>

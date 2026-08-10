@@ -48,7 +48,7 @@
     <string name="sort_by_options_5">Data de Lançamento</string>
     <string name="genres">Género</string>
     <string name="director">Diretor</string>
-    <string name="cast_amp_crew">Elenco &amp; Equipa</string>
+    <string name="cast_amp_crew"><![CDATA[Elenco & Equipa]]></string>
     <string name="trailer_button_description">Ver o trailer</string>
     <string name="episode_watched_indicator">Indicador de episódio visto</string>
     <string name="error_preparing_player_items">Erro na preparação de itens do reprodutor.</string>
@@ -92,7 +92,7 @@
     <string name="unmark_as_played">Desmarcar como visto</string>
     <string name="add_to_favorites">Adicionar aos favoritos</string>
     <string name="season_number">Temporada %1$d</string>
-    <string name="episode_number">Episódio %2$d</string>
+    <string name="episode_number">Episódio %1$d</string>
     <string name="offline_mode">Modo offline</string>
     <string name="show_stacktrace">Mostrar stacktrace</string>
     <string name="title_settings">Configurações</string>

@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.FindroidSource
 import dev.jdtech.jellyfin.models.SortBy
+import dev.jdtech.jellyfin.models.SortOrder
 import dev.jdtech.jellyfin.models.toFindroidCollection
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidItem
@@ -48,7 +49,7 @@ import org.jellyfin.sdk.model.api.PlaybackStartInfo
 import org.jellyfin.sdk.model.api.PlaybackStopInfo
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.RepeatMode
-import org.jellyfin.sdk.model.api.SortOrder
+import org.jellyfin.sdk.model.api.SortOrder as ItemSortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
@@ -132,7 +133,7 @@ class JellyfinRepositoryImpl(
                     includeItemTypes = includeTypes,
                     recursive = recursive,
                     sortBy = listOf(ItemSortBy.fromName(sortBy.sortString)),
-                    sortOrder = listOf(sortOrder),
+                    sortOrder = listOf(ItemSortOrder.fromName(sortOrder.sortString)),
                     startIndex = startIndex,
                     limit = limit,
                 )

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Einstellungen</string>
     <string name="title_download">Downloads</string>
@@ -33,8 +33,8 @@
     <string name="theme_dark">Dunkel</string>
     <string name="dynamic_colors">Dynamische Farben</string>
     <string name="dynamic_colors_summary">Dynamische Farben nutzen (ab Android 12 verfügbar)</string>
-    <string name="player_gestures_vb">Lautstärke und Helligkeits-Gesten</string>
-    <string name="player_gestures_zoom">Zoom Geste</string>
+    <string name="player_gestures_vb">Lautstärke- und Helligkeits-Gesten</string>
+    <string name="player_gestures_zoom">Zoom-Geste</string>
     <string name="player_gestures_zoom_summary">Zwei-Finger-Zoom um das Video an den Bildschirm anzupassen</string>
     <string name="seek_forward_increment">Weiter suchen inkrement</string>
     <string name="settings_category_network">Netzwerk</string>
@@ -50,7 +50,7 @@
     <string name="amoled_theme_summary">Verwenden Sie den Modus für AMOLED mit einem tiefschwarzen Hintergrund</string>
     <string name="amoled_theme">Vollständig dunkler Modus (für AMOLED Bildschirme)</string>
     <string name="player_gestures_seek_summary">Horizontal streichen, um vorwärts oder rückwärts zu suchen</string>
-    <string name="player_gestures_seek">Suchgeste</string>
+    <string name="player_gestures_seek">Such-Geste</string>
     <string name="extra_info">Extra Infos anzeigen</string>
     <string name="app_language">App Sprache</string>
     <string name="offline_mode">Offline-Modus</string>
@@ -59,7 +59,7 @@
     <string name="player_start_maximized_summary">Video standardmäßig maximiert öffnen</string>
     <string name="pref_player_chapter_markers">Kapitelmarker</string>
     <string name="pref_player_chapter_markers_summary">Zeige Kapitelmarker in der Zeitleiste an</string>
-    <string name="player_gestures_chapter_skip">Kapitel Geste</string>
+    <string name="player_gestures_chapter_skip">Kapitel-Geste</string>
     <string name="player_gestures_chapter_skip_summary">Drücke lange auf der linken/rechten Seite um Kapitel zu überspringen (überschreibt die 2x-Geschwindigkeitsgesten)</string>
     <string name="pref_player_trickplay">Pseudovideo</string>
     <string name="pref_player_trickplay_summary">Vorschaubilder beim Spulen anzeigen</string>
@@ -68,4 +68,42 @@
     <string name="pref_player_gestures_seek_trickplay">Pseudovideo bei der Suchgeste</string>
     <string name="trickplay">Pseudovideo</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Vorschaubilder bei der Suchgeste anzeigen</string>
+    <string name="settings_category_interface">Oberfläche</string>
+    <string name="home">Startseite</string>
+    <string name="home_suggestions">Vorschläge anzeigen</string>
+    <string name="home_continue_watching">Weitersehen anzeigen</string>
+    <string name="home_next_up">Als nächstes anzeigen</string>
+    <string name="home_latest">Neueste Inhalte anzeigen</string>
+    <string name="offline_mode_summary">Filme und Serien ohne Verbindung zum Server ansehen</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="media_segments">Mediensegmente</string>
+    <string name="pref_player_media_segments_skip_button">Überspringen-Schaltfläche anzeigen</string>
+    <string name="pref_player_media_segments_skip_button_summary">Eine Schaltfläche zum einfachen Überspringen von Teilen bereitstellen</string>
+    <string name="pref_player_media_segments_skip_button_type">Segmenttyp für Überspringen-Schaltfläche</string>
+    <string name="pref_player_media_segments_skip_button_duration">Überspringen-Schaltfläche anzeigen für</string>
+    <string name="pref_player_media_segments_auto_skip">Automatisch überspringen</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Automatisches Überspringen für ausgewählte Segmenttypen aktivieren</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Wann automatisch überspringen</string>
+    <string name="pref_player_media_segments_auto_skip_type">Segmenttyp zum automatischen Überspringen</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Schwellenwert für Folgenwechsel</string>
+    <string name="media_segments_auto_skip_pip">nur im PiP-Modus</string>
+    <string name="media_segments_auto_skip_always">immer</string>
+    <string name="media_segments_type_unknown">Andere</string>
+    <string name="media_segments_type_commercial">Werbung</string>
+    <string name="media_segments_type_preview">Vorschau</string>
+    <string name="media_segments_type_recap">Zusammenfassung</string>
+    <string name="media_segments_type_outro">Abspann</string>
+    <string name="media_segments_type_intro">Einleitung</string>
+    <string name="none">Keine</string>
+    <string name="users">Benutzer</string>
+    <string name="edit_file_title">Bearbeite %1$s</string>
+    <string name="pref_player_backend">Player-Backend</string>
+    <string name="mpv_options">MPV Optionen</string>
+    <string name="advanced">Fortgeschritten</string>
+    <string name="discard_changes_dialog_title">Verwerfe Änderungen?</string>
+    <string name="discard_changes_dialog_text">Es gibt ungespeicherte Änderungen.</string>
 </resources>

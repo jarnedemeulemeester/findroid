@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.film.domain.VideoMetadataParser
 import dev.jdtech.jellyfin.models.FindroidItemPerson
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ class MovieViewModel
 @Inject
 constructor(
     private val repository: JellyfinRepository,
+    private val appPreferences: AppPreferences,
     private val videoMetadataParser: VideoMetadataParser,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MovieState())
@@ -37,6 +39,7 @@ constructor(
                 val actors = getActors(movie)
                 val director = getDirector(movie)
                 val writers = getWriters(movie)
+                val displayExtraInfo = appPreferences.getValue(appPreferences.displayExtraInfo)
                 _state.emit(
                     _state.value.copy(
                         movie = movie,
@@ -44,6 +47,7 @@ constructor(
                         actors = actors,
                         director = director,
                         writers = writers,
+                        displayExtraInfo = displayExtraInfo,
                     )
                 )
             } catch (e: Exception) {

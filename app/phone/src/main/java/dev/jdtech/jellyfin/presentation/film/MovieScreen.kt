@@ -17,8 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -49,9 +46,11 @@ import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
+import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
+import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.film.components.VideoMetadataBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
@@ -66,6 +65,7 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 fun MovieScreen(
     movieId: UUID,
     navigateBack: () -> Unit,
+    navigateHome: () -> Unit,
     navigateToPerson: (personId: UUID) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
@@ -116,6 +116,7 @@ fun MovieScreen(
                     }
                 }
                 is MovieAction.OnBackClick -> navigateBack()
+                is MovieAction.OnHomeClick -> navigateHome()
                 is MovieAction.NavigateToPerson -> navigateToPerson(action.personId)
                 else -> Unit
             }
@@ -246,6 +247,10 @@ private fun MovieScreenLayout(
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
+                    if (state.displayExtraInfo && state.videoMetadata != null) {
+                        ExtraInfoText(videoMetadata = state.videoMetadata!!)
+                        Spacer(Modifier.height(MaterialTheme.spacings.medium))
+                    }
                     OverviewText(text = movie.overview, maxCollapsedLines = 3)
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                     InfoText(
@@ -268,30 +273,12 @@ private fun MovieScreenLayout(
             }
         } ?: run { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
 
-        Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(
-                        start = safePadding.start + MaterialTheme.spacings.small,
-                        top = safePadding.top + MaterialTheme.spacings.small,
-                        end = safePadding.end + MaterialTheme.spacings.small,
-                    )
-        ) {
-            IconButton(
-                onClick = { onAction(MovieAction.OnBackClick) },
-                modifier = Modifier.alpha(0.7f),
-                colors =
-                    IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White,
-                    ),
-            ) {
-                Icon(
-                    painter = painterResource(CoreR.drawable.ic_arrow_left),
-                    contentDescription = null,
-                )
-            }
-        }
+        ItemTopBar(
+            hasBackButton = true,
+            hasHomeButton = true,
+            onBackClick = { onAction(MovieAction.OnBackClick) },
+            onHomeClick = { onAction(MovieAction.OnHomeClick) },
+        )
     }
 }
 

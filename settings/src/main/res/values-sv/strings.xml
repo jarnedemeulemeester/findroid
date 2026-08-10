@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Inställningar</string>
     <string name="title_download">Nedladdningar</string>
@@ -69,4 +69,35 @@
     <string name="player_gestures_chapter_skip">Kapitel gest</string>
     <string name="player_gestures_chapter_skip_summary">Tryck länge på vänster/höger sida för att hoppa över kapitel (åsidosätter 2x hastighetsgest)</string>
     <string name="player_start_maximized_summary">Öppna video i maximerat läge som standard</string>
+    <string name="settings_category_interface">Gränssnitt</string>
+    <string name="cancel">Avbryt</string>
+    <string name="home">Hem</string>
+    <string name="home_suggestions">Visa förslag</string>
+    <string name="home_continue_watching">Visa fortsätt att titta</string>
+    <string name="home_next_up">Visa näst på tur</string>
+    <string name="home_latest">Visa senast tillagd media</string>
+    <string name="offline_mode_summary">Se filmer eller serier utan en anslutning till servern</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Spara</string>
+    <string name="media_segments">Mediasegment</string>
+    <string name="pref_player_media_segments_skip_button">Visa hoppa över knapp</string>
+    <string name="pref_player_media_segments_skip_button_summary">Ger en knapp för att enkelt hoppa över olika delar</string>
+    <string name="pref_player_media_segments_skip_button_type">Vilka typer av segment som visar hoppa över knappen</string>
+    <string name="pref_player_media_segments_skip_button_duration">Visa hoppa över knappen för</string>
+    <string name="pref_player_media_segments_auto_skip">Hoppa över automatiskt</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Sätt på för att automatiskt hoppa över valda segment typer</string>
+    <string name="pref_player_media_segments_auto_skip_mode">När den ska hoppa över automatiskt</string>
+    <string name="pref_player_media_segments_auto_skip_type">Vilken del som den ska hoppa över automatiskt</string>
+    <string name="media_segments_auto_skip_always">alltid</string>
+    <string name="media_segments_type_unknown">Andra</string>
+    <string name="media_segments_type_commercial">Reklam</string>
+    <string name="media_segments_type_preview">Förhandsgranskning</string>
+    <string name="media_segments_type_recap">Sammanfattning</string>
+    <string name="media_segments_type_outro">Outro</string>
+    <string name="media_segments_type_intro">Intro</string>
+    <string name="none">Inga</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Gräns för att hoppa till nästa avsnitt</string>
+    <string name="media_segments_auto_skip_pip">bara i pip läge</string>
 </resources>

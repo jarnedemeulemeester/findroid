@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_description">אפליקציית צד-שלישי ל-Jellyfin</string>
     <string name="jellyfin_banner">באנר Jellyfin</string>
@@ -10,7 +10,7 @@
     <string name="error_loading_data">שגיאה בטעינת המידע</string>
     <string name="retry">נסה שוב</string>
     <string name="writers">כותבים</string>
-    <string name="cast_amp_crew">שחקנים &amp; צוות</string>
+    <string name="cast_amp_crew"><![CDATA[שחקנים & צוות]]></string>
     <string name="seasons">עונות</string>
     <string name="favorite_button_description">מועדף</string>
     <string name="episode_name">%1$d. %2$s</string>
@@ -83,4 +83,4 @@
     <string name="episode_name_extended_with_end">ע%1$d:פ%2$d-%3$d - %4$s</string>
     <string name="storage_name">%1$s (%2$d מ\"ב פנויים)</string>
     <string name="downloaded_indicator">מחוון הורדה</string>
-    </resources>
+</resources>

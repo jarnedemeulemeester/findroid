@@ -92,7 +92,7 @@
     <string name="remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="collection_no_media">Táto kolekcia neobsahuje žiadne média</string>
     <string name="season_number">Séria %1$d</string>
-    <string name="episode_number">Epizóda %2$d</string>
+    <string name="episode_number">Epizóda %1$d</string>
     <string name="offline_mode">Režim offline</string>
     <string name="title_settings">Nastavenia</string>
     <string name="show_stacktrace">Zobraziť stacktrace</string>

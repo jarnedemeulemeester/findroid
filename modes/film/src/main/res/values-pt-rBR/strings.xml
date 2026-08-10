@@ -3,4 +3,5 @@
     <string name="latest_library">%1$s mais recentes</string>
     <string name="next_up">A seguir</string>
     <string name="continue_watching">Continuar assistindo</string>
+    <string name="search_placeholder">Pesquisar filmes e séries</string>
 </resources>

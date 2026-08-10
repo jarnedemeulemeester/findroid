@@ -66,7 +66,7 @@
     <string name="title_media">Mine medier</string>
     <string name="director">Instruktør</string>
     <string name="writers">Forfattere</string>
-    <string name="cast_amp_crew">Medvirkende</string>
+    <string name="cast_amp_crew"><![CDATA[Medvirkende]]></string>
     <string name="play_button_description">Afspil mediet</string>
     <string name="check_button_description">Marker som afspillet eller ikke-afspillet</string>
     <string name="episode_watched_indicator">Indikator for set episode</string>
@@ -83,7 +83,7 @@
     <string name="title_settings">Indstillinger</string>
     <string name="title_download">Downloads</string>
     <string name="season_number">Sæson %1$d</string>
-    <string name="episode_number">Episode %2$d</string>
+    <string name="episode_number">Episode %1$d</string>
     <string name="series_poster">Plakat for serie</string>
     <string name="image_description_poster">%1$s plakat</string>
     <string name="sort_by_options_5">Udgivelsesdato</string>
