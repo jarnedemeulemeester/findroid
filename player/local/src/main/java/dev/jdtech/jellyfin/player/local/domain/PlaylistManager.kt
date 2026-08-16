@@ -6,6 +6,7 @@ import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
+import dev.jdtech.jellyfin.models.FindroidPart
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
@@ -13,6 +14,7 @@ import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.utils.isPartName
 import java.util.UUID
 import javax.inject.Inject
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -38,8 +40,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             when (itemKind) {
                 BaseItemKind.MOVIE -> {
                     val movie = repository.getMovie(itemId)
-
-                    items = listOf(movie)
+                    items = movie.toPlaylist()
                     movie
                 }
                 BaseItemKind.SERIES -> {
@@ -71,7 +72,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
 
                     val episode = nextUpEpisode ?: episodes.first()
 
-                    items = episodes
+                    items = episodes.flatMap { it.toPlaylist() }
                     episode
                 }
                 BaseItemKind.SEASON -> {
@@ -91,7 +92,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
 
                     val episode = episodes.first()
 
-                    items = episodes
+                    items = episodes.flatMap { it.toPlaylist() }
                     episode
                 }
                 BaseItemKind.EPISODE -> {
@@ -106,7 +107,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                             )
                             .filter { !it.missing }
 
-                    items = episodes
+                    items = episodes.flatMap { it.toPlaylist() }
                     episode
                 }
                 else -> null
@@ -131,28 +132,22 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     suspend fun getPreviousPlayerItem(): PlayerItem? {
         Timber.d("Retrieving previous player item")
 
+        if (currentItemIndex <= 0) {
+            return null
+        }
+
         val itemIndex = currentItemIndex - 1
+        val item = items[itemIndex]
         val playerItem =
-            when (startItem) {
-                is FindroidMovie -> null
-                is FindroidEpisode -> {
-                    if (currentItemIndex == 0) {
-                        null
-                    } else {
-                        val item = items[itemIndex]
-                        if (playerItems.firstOrNull { it.itemId == item.id } == null) {
-                            try {
-                                item.toPlayerItem(null, 0L)
-                            } catch (e: Exception) {
-                                Timber.e("Failed to retrieve previous player item: $e")
-                                null
-                            }
-                        } else {
-                            null
-                        }
-                    }
+            if (playerItems.firstOrNull { it.itemId == item.id } == null) {
+                try {
+                    item.toPlayerItem(null, 0L)
+                } catch (e: Exception) {
+                    Timber.e("Failed to retrieve previous player item: $e")
+                    null
                 }
-                else -> null
+            } else {
+                null
             }
 
         if (playerItem != null) {
@@ -165,28 +160,22 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     suspend fun getNextPlayerItem(): PlayerItem? {
         Timber.d("Retrieving next player item")
 
+        if (currentItemIndex == items.lastIndex) {
+            return null
+        }
+
         val itemIndex = currentItemIndex + 1
+        val item = items[itemIndex]
         val playerItem =
-            when (startItem) {
-                is FindroidMovie -> null
-                is FindroidEpisode -> {
-                    if (currentItemIndex == items.lastIndex) {
-                        null
-                    } else {
-                        val item = items[itemIndex]
-                        if (playerItems.firstOrNull { it.itemId == item.id } == null) {
-                            try {
-                                item.toPlayerItem(null, 0L)
-                            } catch (e: Exception) {
-                                Timber.e("Failed to retrieve next player item: $e")
-                                null
-                            }
-                        } else {
-                            null
-                        }
-                    }
+            if (playerItems.firstOrNull { it.itemId == item.id } == null) {
+                try {
+                    item.toPlayerItem(null, 0L)
+                } catch (e: Exception) {
+                    Timber.e("Failed to retrieve next player item: $e")
+                    null
                 }
-                else -> null
+            } else {
+                null
             }
 
         if (playerItem != null) {
@@ -250,15 +239,33 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                 }
                 else -> null
             }
+
+        val mainName = if (this is FindroidPart) {
+            this.parentName
+        } else {
+            name
+        }
+
+        val partName = if (mediaSource.name.isPartName()) mediaSource.name else null
+
+        val parentEpisodeInfo = if (this is FindroidPart) {
+            Triple(parentIndexNumber, indexNumber, indexNumberEnd)
+        } else if (this is FindroidEpisode) {
+            Triple(parentIndexNumber, indexNumber, indexNumberEnd)
+        } else {
+            Triple(null, null, null)
+        }
+
         return PlayerItem(
-            name = name,
+            name = mainName,
             itemId = id,
+            partName = partName,
             mediaSourceId = mediaSource.id,
             mediaSourceUri = mediaSource.path,
             playbackPosition = playbackPosition,
-            parentIndexNumber = if (this is FindroidEpisode) parentIndexNumber else null,
-            indexNumber = if (this is FindroidEpisode) indexNumber else null,
-            indexNumberEnd = if (this is FindroidEpisode) indexNumberEnd else null,
+            parentIndexNumber = parentEpisodeInfo.first,
+            indexNumber = parentEpisodeInfo.second,
+            indexNumberEnd = parentEpisodeInfo.third,
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
@@ -269,5 +276,19 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         return this.map { chapter ->
             PlayerChapter(startPosition = chapter.startPosition, name = chapter.name)
         }
+    }
+
+    private fun FindroidItem.toPlaylist(): List<FindroidItem> {
+        val items = mutableListOf<FindroidItem>()
+        items.add(this)
+        val parts = when (this) {
+            is FindroidMovie -> this.additionalParts
+            is FindroidEpisode -> this.additionalParts
+            else -> emptyList()
+        }
+        for (part in parts) {
+            items.add(part)
+        }
+        return items
     }
 }

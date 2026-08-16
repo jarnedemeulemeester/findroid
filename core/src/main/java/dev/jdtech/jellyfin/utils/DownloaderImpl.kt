@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.models.toFindroidEpisodeDto
 import dev.jdtech.jellyfin.models.toFindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.toFindroidMovieDto
+import dev.jdtech.jellyfin.models.toFindroidPartDto
 import dev.jdtech.jellyfin.models.toFindroidSeasonDto
 import dev.jdtech.jellyfin.models.toFindroidSegmentsDto
 import dev.jdtech.jellyfin.models.toFindroidShowDto
@@ -139,6 +140,36 @@ class DownloaderImpl(
             database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
 
             downloadExternalMediaStreams(item, source, storageIndex)
+            
+            val additionalParts = when (item) {
+                is FindroidMovie -> item.additionalParts
+                is FindroidEpisode -> item.additionalParts
+                else -> emptyList()
+            }
+
+            for (part in additionalParts) {
+                val partSources = jellyfinRepository.getMediaSources(part.id, true)
+                val partSource = partSources.firstOrNull() ?: continue
+                val partPath = Uri.fromFile(File(storageLocation, "downloads/${part.id}.${partSource.id}.download"))
+                val partRequest = DownloadManager.Request(partSource.path.toUri())
+                    .setTitle("${item.name} - ${part.name}")
+                    .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
+                    .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationUri(partPath)
+                val partDownloadId = downloadManager.enqueue(partRequest)
+                
+                val partSourceDto = partSource.toFindroidSourceDto(part.id, partPath.path.orEmpty())
+                database.insertSource(partSourceDto.copy(downloadId = partDownloadId))
+                database.insertPart(part.toFindroidPartDto())
+                
+                val partTrickplayInfo = part.trickplayInfo?.get(partSource.id)
+                if (partTrickplayInfo != null) {
+                    downloadTrickplayData(part.id, partSource.id, partTrickplayInfo)
+                }
+                
+                startImagesDownloader(part.id)
+            }
 
             segments.forEach { database.insertSegment(it.toFindroidSegmentsDto(item.id)) }
 
@@ -205,6 +236,23 @@ class DownloaderImpl(
         database.deleteMediaStreamsBySourceId(source.id)
 
         database.deleteUserData(item.id)
+        
+        val additionalParts = when (item) {
+            is FindroidMovie -> item.additionalParts
+            is FindroidEpisode -> item.additionalParts
+            else -> emptyList()
+        }
+        for (part in additionalParts) {
+            val partSources = database.getSources(part.id)
+            for (partSourceDto in partSources) {
+                if (partSourceDto.downloadId != null) {
+                    downloadManager.remove(partSourceDto.downloadId!!)
+                }
+                database.deleteSource(partSourceDto.id)
+                File(partSourceDto.path).delete()
+            }
+            database.deletePart(part.id)
+        }
 
         File(context.filesDir, "trickplay/${item.id}").deleteRecursively()
         File(context.filesDir, "images/${item.id}").deleteRecursively()
@@ -320,6 +368,15 @@ class DownloaderImpl(
         val downloadImagesRequest =
             OneTimeWorkRequestBuilder<ImagesDownloaderWorker>()
                 .setInputData(workDataOf(ImagesDownloaderWorker.KEY_ITEM_ID to item.id.toString()))
+                .build()
+
+        workManager.enqueue(downloadImagesRequest)
+    }
+
+    private fun startImagesDownloader(itemId: UUID) {
+        val downloadImagesRequest =
+            OneTimeWorkRequestBuilder<ImagesDownloaderWorker>()
+                .setInputData(workDataOf(ImagesDownloaderWorker.KEY_ITEM_ID to itemId.toString()))
                 .build()
 
         workManager.enqueue(downloadImagesRequest)
