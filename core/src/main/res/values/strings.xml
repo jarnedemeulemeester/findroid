@@ -45,7 +45,6 @@
     <string name="view_details_underlined"><u>View details</u></string>
     <string name="unknown_error">Unknown error</string>
     <string name="info">Extra info</string>
-    <string name="multiple_parts">Multiple parts</string>
   	<string name="search_hint">Search movies, shows, episodes…</string>
     <string name="download_button_description">Download</string>
     <string name="person_detail_title">Details</string>
