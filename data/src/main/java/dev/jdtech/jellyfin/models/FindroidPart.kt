@@ -25,6 +25,7 @@ data class FindroidPart(
     val parentIndexNumber: Int? = null,
     val indexNumber: Int? = null,
     val indexNumberEnd: Int? = null,
+    override val additionalParts: List<FindroidPart> = emptyList(),
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidPart(

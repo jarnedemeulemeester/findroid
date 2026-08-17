@@ -248,12 +248,18 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
 
         val partName = if (mediaSource.name.isPartName()) mediaSource.name else null
 
-        val parentEpisodeInfo = if (this is FindroidPart) {
-            Triple(parentIndexNumber, indexNumber, indexNumberEnd)
-        } else if (this is FindroidEpisode) {
-            Triple(parentIndexNumber, indexNumber, indexNumberEnd)
-        } else {
-            Triple(null, null, null)
+        val parentEpisodeInfo = when (this) {
+            is FindroidPart -> {
+                Triple(parentIndexNumber, indexNumber, indexNumberEnd)
+            }
+
+            is FindroidEpisode -> {
+                Triple(parentIndexNumber, indexNumber, indexNumberEnd)
+            }
+
+            else -> {
+                Triple(null, null, null)
+            }
         }
 
         return PlayerItem(

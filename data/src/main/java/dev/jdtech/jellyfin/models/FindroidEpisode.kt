@@ -35,7 +35,7 @@ data class FindroidEpisode(
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>,
     override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
-    val additionalParts: List<FindroidPart> = emptyList(),
+    override val additionalParts: List<FindroidPart> = emptyList(),
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidEpisode(

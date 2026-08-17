@@ -10,7 +10,6 @@ import androidx.core.net.toUri
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
@@ -33,12 +32,12 @@ import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.ImagesDownloaderWorker
-import java.io.File
-import java.util.UUID
-import kotlin.Exception
-import kotlin.math.ceil
 import kotlinx.coroutines.coroutineScope
 import timber.log.Timber
+import java.io.File
+import java.util.UUID
+import kotlin.math.ceil
+import dev.jdtech.jellyfin.core.R as CoreR
 
 class DownloaderImpl(
     private val context: Context,
@@ -70,8 +69,8 @@ class DownloaderImpl(
             val storageLocation = context.getExternalFilesDirs(null)[storageIndex]
             if (
                 storageLocation == null ||
-                    Environment.getExternalStorageState(storageLocation) !=
-                        Environment.MEDIA_MOUNTED
+                Environment.getExternalStorageState(storageLocation) !=
+                Environment.MEDIA_MOUNTED
             ) {
                 return@coroutineScope Pair(
                     -1,
@@ -93,7 +92,17 @@ class DownloaderImpl(
             }
             val request =
                 DownloadManager.Request(source.path.toUri())
-                    .setTitle(item.name)
+                    .setTitle(
+                        if (item.additionalParts.isNotEmpty()) {
+                            "${item.name} - ${
+                                item.sources.firstOrNull()?.name?.getTranslatablePartName(
+                                    context
+                                )
+                            }"
+                        } else {
+                            item.name
+                        }
+                    )
                     .setAllowedOverMetered(
                         appPreferences.getValue(appPreferences.downloadOverMobileData)
                     )
@@ -114,6 +123,7 @@ class DownloaderImpl(
                         )
                     )
                 }
+
                 is FindroidEpisode -> {
                     val show = jellyfinRepository.getShow(item.seriesId)
                     database.insertShow(
@@ -140,7 +150,7 @@ class DownloaderImpl(
             database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
 
             downloadExternalMediaStreams(item, source, storageIndex)
-            
+
             val additionalParts = when (item) {
                 is FindroidMovie -> item.additionalParts
                 is FindroidEpisode -> item.additionalParts
@@ -150,25 +160,30 @@ class DownloaderImpl(
             for (part in additionalParts) {
                 val partSources = jellyfinRepository.getMediaSources(part.id, true)
                 val partSource = partSources.firstOrNull() ?: continue
-                val partPath = Uri.fromFile(File(storageLocation, "downloads/${part.id}.${partSource.id}.download"))
+                val partPath = Uri.fromFile(
+                    File(
+                        storageLocation,
+                        "downloads/${part.id}.${partSource.id}.download"
+                    )
+                )
                 val partRequest = DownloadManager.Request(partSource.path.toUri())
-                    .setTitle("${item.name} - ${part.name}")
+                    .setTitle("${item.name} - ${part.name.getTranslatablePartName(context)}")
                     .setAllowedOverMetered(appPreferences.getValue(appPreferences.downloadOverMobileData))
                     .setAllowedOverRoaming(appPreferences.getValue(appPreferences.downloadWhenRoaming))
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                     .setDestinationUri(partPath)
                 val partDownloadId = downloadManager.enqueue(partRequest)
-                
+
                 val partSourceDto = partSource.toFindroidSourceDto(part.id, partPath.path.orEmpty())
                 database.insertSource(partSourceDto.copy(downloadId = partDownloadId))
                 database.insertPart(part.toFindroidPartDto())
-                
+
                 val partTrickplayInfo = part.trickplayInfo?.get(partSource.id)
                 if (partTrickplayInfo != null) {
                     downloadTrickplayData(part.id, partSource.id, partTrickplayInfo)
                 }
-                
-                startImagesDownloader(part.id)
+
+                startImagesDownloader(part)
             }
 
             segments.forEach { database.insertSegment(it.toFindroidSegmentsDto(item.id)) }
@@ -183,7 +198,8 @@ class DownloaderImpl(
             try {
                 val source = jellyfinRepository.getMediaSources(item.id).first { it.id == sourceId }
                 deleteItem(item, source)
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
             Timber.e(e)
             return@coroutineScope Pair(
                 -1,
@@ -207,6 +223,7 @@ class DownloaderImpl(
             is FindroidMovie -> {
                 database.deleteMovie(item.id)
             }
+
             is FindroidEpisode -> {
                 database.deleteEpisode(item.id)
                 val remainingEpisodes = database.getEpisodesBySeasonId(item.seasonId)
@@ -236,7 +253,7 @@ class DownloaderImpl(
         database.deleteMediaStreamsBySourceId(source.id)
 
         database.deleteUserData(item.id)
-        
+
         val additionalParts = when (item) {
             is FindroidMovie -> item.additionalParts
             is FindroidEpisode -> item.additionalParts
@@ -335,10 +352,10 @@ class DownloaderImpl(
     ) {
         val maxIndex =
             ceil(
-                    trickplayInfo.thumbnailCount
-                        .toDouble()
-                        .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)
-                )
+                trickplayInfo.thumbnailCount
+                    .toDouble()
+                    .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)
+            )
                 .toInt()
         val byteArrays = mutableListOf<ByteArray>()
         for (i in 0..maxIndex) {
@@ -368,15 +385,6 @@ class DownloaderImpl(
         val downloadImagesRequest =
             OneTimeWorkRequestBuilder<ImagesDownloaderWorker>()
                 .setInputData(workDataOf(ImagesDownloaderWorker.KEY_ITEM_ID to item.id.toString()))
-                .build()
-
-        workManager.enqueue(downloadImagesRequest)
-    }
-
-    private fun startImagesDownloader(itemId: UUID) {
-        val downloadImagesRequest =
-            OneTimeWorkRequestBuilder<ImagesDownloaderWorker>()
-                .setInputData(workDataOf(ImagesDownloaderWorker.KEY_ITEM_ID to itemId.toString()))
                 .build()
 
         workManager.enqueue(downloadImagesRequest)
