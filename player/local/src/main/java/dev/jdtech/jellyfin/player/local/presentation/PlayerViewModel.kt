@@ -236,11 +236,19 @@ constructor(
             }
 
         Timber.d("Stream url: $streamUrl")
+
+        val partName = this.partName
+        val title = if (partName != null) {
+            "$name - ${partName.getTranslatablePartName(application)}"
+        } else {
+            name
+        }
+
         val mediaItem =
             MediaItem.Builder()
                 .setMediaId(itemId.toString())
                 .setUri(streamUrl)
-                .setMediaMetadata(MediaMetadata.Builder().setTitle(name).build())
+                .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build())
                 .setSubtitleConfigurations(mediaSubtitles)
                 .build()
 
@@ -358,14 +366,16 @@ constructor(
                                 } else {
                                     "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd}"
                                 }
-                                if (item.partName != null) {
-                                    "$baseStr - ${item.partName!!.getTranslatablePartName(application)} - ${item.name}"
+                                val partName = item.partName
+                                if (partName != null) {
+                                    "$baseStr - ${partName.getTranslatablePartName(application)} - ${item.name}"
                                 } else {
                                     "$baseStr - ${item.name}"
                                 }
                             } else {
-                                if (item.partName != null) {
-                                    "${item.name} - ${item.partName!!.getTranslatablePartName(application)}"
+                                val partName = item.partName
+                                if (partName != null) {
+                                    "${item.name} - ${partName.getTranslatablePartName(application)}"
                                 } else {
                                     item.name
                                 }
