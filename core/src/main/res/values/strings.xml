@@ -109,6 +109,7 @@
     <string name="download_paused">Paused</string>
     <string name="download_downloading">Downloading…</string>
     <string name="download_queued">Queued</string>
+    <string name="download_progress">Downloading… %1$d%%</string>
     <string name="download_downloading_size">Downloading… %1$s</string>
     <string name="download_notification_channel">Downloads</string>
     <string name="download_notification_title">Downloading</string>

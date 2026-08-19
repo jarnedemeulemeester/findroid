@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import android.text.format.Formatter
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,19 +22,52 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.models.FindroidEpisode
+import dev.jdtech.jellyfin.utils.DownloadEntry
+import dev.jdtech.jellyfin.utils.DownloadEntryStatus
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 
 @Composable
-fun EpisodeCard(episode: FindroidEpisode, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun EpisodeCard(
+    episode: FindroidEpisode,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    /** This episode's place in the download queue, when it is in one. */
+    downloadEntry: DownloadEntry? = null,
+) {
     val backgroundColor = MaterialTheme.colorScheme.background
+    val activeEntry = downloadEntry?.takeIf { !it.status.isTerminal }
+    val statusText =
+        when (activeEntry?.status) {
+            DownloadEntryStatus.QUEUED -> stringResource(CoreR.string.download_queued)
+            DownloadEntryStatus.PAUSED -> stringResource(CoreR.string.download_paused)
+            DownloadEntryStatus.PREPARING -> stringResource(CoreR.string.download_pending)
+            DownloadEntryStatus.RUNNING ->
+                when {
+                    activeEntry.progress >= 0 ->
+                        stringResource(CoreR.string.download_progress, activeEntry.progress)
+                    // No total size to compute a percentage from, so report what has arrived.
+                    activeEntry.bytesDownloaded > 0 ->
+                        stringResource(
+                            CoreR.string.download_downloading_size,
+                            Formatter.formatShortFileSize(
+                                LocalContext.current,
+                                activeEntry.bytesDownloaded,
+                            ),
+                        )
+                    else -> stringResource(CoreR.string.download_downloading)
+                }
+            else -> null
+        }
 
     Row(
         modifier =
@@ -53,7 +87,16 @@ fun EpisodeCard(episode: FindroidEpisode, onClick: () -> Unit, modifier: Modifie
                 modifier = Modifier.align(Alignment.TopEnd).padding(MaterialTheme.spacings.small),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
             ) {
-                if (episode.isDownloaded()) DownloadedBadge()
+                if (activeEntry != null) {
+                    DownloadingBadge(
+                        progress =
+                            activeEntry.progress
+                                .takeIf {
+                                    it >= 0 && activeEntry.status == DownloadEntryStatus.RUNNING
+                                }
+                                ?.div(100f)
+                    )
+                } else if (episode.isDownloaded()) DownloadedBadge()
                 if (episode.played) PlayedBadge()
             }
         }
@@ -71,6 +114,14 @@ fun EpisodeCard(episode: FindroidEpisode, onClick: () -> Unit, modifier: Modifie
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                if (statusText != null) {
+                    Text(
+                        text = statusText,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
                 Text(
                     text = episode.overview,
                     modifier = Modifier.alpha(0.7f),

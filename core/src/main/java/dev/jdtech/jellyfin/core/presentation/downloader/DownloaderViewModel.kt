@@ -37,6 +37,12 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
     private val eventsChannel = Channel<DownloaderEvent>()
     val events = eventsChannel.receiveAsFlow()
 
+    /**
+     * The queue as a whole, for lists that want to show which of their items are waiting. A screen
+     * showing one item wants [state]; a screen showing many wants this.
+     */
+    val queue = downloadQueue.state
+
     var downloadId: Long? = null
 
     private val handler = Handler(Looper.getMainLooper())

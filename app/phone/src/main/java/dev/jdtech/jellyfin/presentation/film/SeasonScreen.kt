@@ -46,6 +46,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
+import dev.jdtech.jellyfin.utils.DownloadEntry
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
@@ -70,6 +71,8 @@ fun SeasonScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+    // So an episode waiting its turn says so in the list, rather than only on its own screen.
+    val queue by downloaderViewModel.queue.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
@@ -82,6 +85,7 @@ fun SeasonScreen(
     SeasonScreenLayout(
         state = state,
         downloaderState = downloaderState,
+        downloadEntries = queue.entries.associateBy { it.itemId },
         onAction = { action ->
             when (action) {
                 is SeasonAction.Play -> {
@@ -106,6 +110,7 @@ fun SeasonScreen(
 private fun SeasonScreenLayout(
     state: SeasonState,
     downloaderState: DownloaderState,
+    downloadEntries: Map<UUID, DownloadEntry>,
     onAction: (SeasonAction) -> Unit,
     onDownloaderAction: (DownloaderAction) -> Unit,
 ) {
@@ -212,6 +217,7 @@ private fun SeasonScreenLayout(
                     EpisodeCard(
                         episode = episode,
                         onClick = { onAction(SeasonAction.NavigateToItem(episode)) },
+                        downloadEntry = downloadEntries[episode.id],
                         modifier = Modifier.padding(start = paddingStart, end = paddingEnd),
                     )
                 }
@@ -249,6 +255,7 @@ private fun SeasonScreenLayoutPreview() {
         SeasonScreenLayout(
             state = SeasonState(season = dummySeason),
             downloaderState = DownloaderState(),
+            downloadEntries = emptyMap(),
             onAction = {},
             onDownloaderAction = {},
         )
