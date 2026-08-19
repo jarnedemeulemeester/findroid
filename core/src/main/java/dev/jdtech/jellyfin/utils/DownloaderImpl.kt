@@ -210,6 +210,35 @@ class DownloaderImpl(
         File(context.filesDir, "images/${item.id}").deleteRecursively()
     }
 
+    override suspend fun getDownloadInfo(downloadId: Long): DownloadInfo? {
+        val query = DownloadManager.Query().setFilterById(downloadId)
+        downloadManager.query(query).use { cursor ->
+            if (!cursor.moveToFirst()) return null
+            val status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
+            val totalBytes =
+                cursor.getLong(
+                    cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+                )
+            val downloadedBytes =
+                cursor.getLong(
+                    cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+                )
+            val reason = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON))
+            val progress =
+                when {
+                    status == DownloadManager.STATUS_SUCCESSFUL -> 100
+                    totalBytes > 0 -> downloadedBytes.times(100).div(totalBytes).toInt()
+                    else -> -1
+                }
+            return DownloadInfo(
+                status = status,
+                progress = progress,
+                reason = reason,
+                bytesDownloaded = downloadedBytes,
+            )
+        }
+    }
+
     override suspend fun getProgress(downloadId: Long?): Pair<Int, Int> {
         var downloadStatus = -1
         var progress = -1
