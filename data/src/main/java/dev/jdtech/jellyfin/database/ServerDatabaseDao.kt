@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import dev.jdtech.jellyfin.models.FindroidDownloadQueueEntryDto
 import dev.jdtech.jellyfin.models.FindroidEpisodeDto
 import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.FindroidMovieDto
@@ -202,6 +203,15 @@ interface ServerDatabaseDao {
 
     @Query("SELECT * FROM segments WHERE itemId = :itemId")
     fun getSegments(itemId: UUID): List<FindroidSegmentDto>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDownloadQueueEntry(entry: FindroidDownloadQueueEntryDto)
+
+    @Query("SELECT * FROM downloadQueue ORDER BY position ASC")
+    fun getDownloadQueue(): List<FindroidDownloadQueueEntryDto>
+
+    @Query("DELETE FROM downloadQueue WHERE itemId = :itemId")
+    fun deleteDownloadQueueEntry(itemId: UUID)
 
     @Query("SELECT * FROM seasons") fun getSeasons(): List<FindroidSeasonDto>
 

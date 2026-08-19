@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import dev.jdtech.jellyfin.models.FindroidDownloadQueueEntryDto
 import dev.jdtech.jellyfin.models.FindroidEpisodeDto
 import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.FindroidMovieDto
@@ -36,8 +37,9 @@ import dev.jdtech.jellyfin.models.User
             FindroidUserDataDto::class,
             FindroidTrickplayInfoDto::class,
             FindroidSegmentDto::class,
+            FindroidDownloadQueueEntryDto::class,
         ],
-    version = 8,
+    version = 9,
     autoMigrations =
         [
             AutoMigration(from = 2, to = 3),
@@ -45,6 +47,7 @@ import dev.jdtech.jellyfin.models.User
             AutoMigration(from = 4, to = 5, spec = ServerDatabase.TrickplayMigration::class),
             AutoMigration(from = 5, to = 6, spec = ServerDatabase.IntrosMigration::class),
             AutoMigration(from = 7, to = 8),
+            AutoMigration(from = 8, to = 9),
         ],
 )
 @TypeConverters(Converters::class)

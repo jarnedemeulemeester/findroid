@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="download_sequential">Sequential</string>
+    <string name="download_sequential_summary">Download one item at a time, so all bandwidth goes to a single download instead of being shared between several.</string>
     <string name="settings_category_language">Language</string>
     <string name="settings_preferred_audio_language">Preferred audio language</string>
     <string name="settings_preferred_subtitle_language">Preferred subtitle language</string>

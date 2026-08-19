@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import android.app.DownloadManager
+import android.text.format.Formatter
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,11 +38,21 @@ import kotlin.math.roundToInt
 
 @Composable
 fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryClick: () -> Unit) {
+    // Null means the total size is unknown, which is always so for a transcode: the server makes
+    // it on the fly and sends no Content-Length. There is no percentage to draw, so the bar goes
+    // indeterminate and the byte count stands in for it.
+    val progress = state.progress
     val animatedProgress by
         animateFloatAsState(
-            targetValue = state.progress,
+            targetValue = progress ?: 0f,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
         )
+    val downloadedText =
+        if (progress == null && state.bytesDownloaded > 0) {
+            Formatter.formatShortFileSize(LocalContext.current, state.bytesDownloaded)
+        } else {
+            null
+        }
 
     val textColor =
         when (state.status) {
@@ -76,24 +89,55 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             Column(modifier = Modifier.weight(1f)) {
+                // Local vals: DownloaderState lives in another module, so its nullable properties
+                // cannot be smart cast here.
+                val itemsTotal = state.itemsTotal
+                val itemsCompleted = state.itemsCompleted
+                val counter =
+                    if (itemsTotal != null && itemsCompleted != null) "$itemsCompleted/$itemsTotal"
+                    else null
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(
-                        text = statusText,
-                        color = textColor,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Text(
-                        text = animatedProgress.times(100).roundToInt().toString() + "%",
-                        color = textColor,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small)) {
+                        Text(
+                            text = statusText,
+                            color = textColor,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        if (counter != null) {
+                            Text(
+                                text = counter,
+                                modifier = Modifier.alpha(0.7f),
+                                color = textColor,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        }
+                    }
+                    when {
+                        progress != null ->
+                            Text(
+                                text = animatedProgress.times(100).roundToInt().toString() + "%",
+                                color = textColor,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        downloadedText != null ->
+                            Text(
+                                text = downloadedText,
+                                color = textColor,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                    }
                 }
                 Spacer(Modifier.height(MaterialTheme.spacings.small))
-                when (state.status) {
-                    DownloadManager.STATUS_PENDING -> {
+                when {
+                    // A bar pinned at zero reads as a stalled download, so anything still moving
+                    // without a known total gets the indeterminate one instead. A paused download
+                    // keeps the static bar: it is not moving, and the label already says so.
+                    state.status == DownloadManager.STATUS_PENDING ||
+                        (progress == null && state.status == DownloadManager.STATUS_RUNNING) -> {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                     else -> {
@@ -117,7 +161,10 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
             CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
                 when (state.status) {
                     DownloadManager.STATUS_PENDING,
-                    DownloadManager.STATUS_RUNNING -> {
+                    DownloadManager.STATUS_RUNNING,
+                    // A paused download holds up the whole sequential queue, so it has to stay
+                    // cancellable — the item buttons row is hidden while the card is mounted.
+                    DownloadManager.STATUS_PAUSED -> {
                         FilledTonalIconButton(onClick = onCancelClick) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_x),
@@ -157,6 +204,43 @@ private fun DownloaderCardDownloadingPreview() {
     FindroidTheme {
         DownloaderCard(
             state = DownloaderState(status = DownloadManager.STATUS_RUNNING, progress = 0.5f),
+            onCancelClick = {},
+            onRetryClick = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun DownloaderCardBatchPreview() {
+    FindroidTheme {
+        DownloaderCard(
+            state =
+                DownloaderState(
+                    status = DownloadManager.STATUS_RUNNING,
+                    progress = 0.84f,
+                    itemsCompleted = 3,
+                    itemsTotal = 13,
+                ),
+            onCancelClick = {},
+            onRetryClick = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun DownloaderCardUnknownSizePreview() {
+    FindroidTheme {
+        DownloaderCard(
+            state =
+                DownloaderState(
+                    status = DownloadManager.STATUS_RUNNING,
+                    progress = null,
+                    bytesDownloaded = 533_725_184,
+                    itemsCompleted = 1,
+                    itemsTotal = 10,
+                ),
             onCancelClick = {},
             onRetryClick = {},
         )
