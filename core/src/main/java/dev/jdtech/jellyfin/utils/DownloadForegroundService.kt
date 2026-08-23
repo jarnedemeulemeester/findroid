@@ -23,13 +23,10 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * Keeps the process alive and visible while the download queue has work.
+ * Keeps the process alive while the queue has work.
  *
- * Without it the queue is ordinary background work: the system is free to freeze the process once
- * the app is not on screen, which stops the queue advancing to the next item, and the download it
- * is waiting on gets no scheduling priority. That matters more here than it would elsewhere,
- * because a transcode cannot be resumed — the server answers `Accept-Ranges: none`, so an
- * interrupted transcode is not continued but started over or failed outright.
+ * Without it the system is free to freeze the process once the app leaves the screen. The download
+ * in flight survives, since DownloadManager owns it, but nothing behind it ever starts.
  */
 @AndroidEntryPoint
 class DownloadForegroundService : Service() {
@@ -41,8 +38,7 @@ class DownloadForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Post the notification before anything else: the system kills a foreground service that
-        // has not shown one within a few seconds of being started.
+        // First: the system kills a foreground service that has not shown a notification.
         startForegroundWith(getString(CoreR.string.download_pending))
 
         if (observer == null) {
@@ -51,8 +47,7 @@ class DownloadForegroundService : Service() {
                     downloadQueue.state.collect { snapshot ->
                         val live = snapshot.entries.filterNot { it.status.isTerminal }
                         if (live.isEmpty()) {
-                            // Nothing left to do; hanging around would hold a notification and a
-                            // wake-lock-shaped process for no reason.
+                            // Nothing left to do, so stop holding a notification.
                             stopSelf()
                             return@collect
                         }
@@ -83,8 +78,8 @@ class DownloadForegroundService : Service() {
                 ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, 0)
             }
         } catch (e: Exception) {
-            // Starting a foreground service is refused outright in some states, e.g. when the app
-            // was launched from the background. Downloads still run, just without the protection.
+            // Refused outright in some states, such as a start from the background. Downloads
+            // still run, only without the protection.
             Timber.e(e, "Could not start the download foreground service")
         }
     }
@@ -116,7 +111,7 @@ class DownloadForegroundService : Service() {
             .setSilent(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .apply {
-                // A transcode reports no size, so there is no honest percentage to draw.
+                // No total size means no honest percentage to draw.
                 if (progress in 0..100) setProgress(100, progress, false)
                 else setProgress(0, 0, true)
             }

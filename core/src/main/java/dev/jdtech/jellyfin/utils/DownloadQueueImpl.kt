@@ -24,13 +24,9 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
- * Because the sequential preference being off bypasses the queue entirely (see
- * [DownloadQueue.submit]), the queue is unconditionally sequential: at most one download is ever in
- * flight, which means the dispatcher coroutine can double as the progress poller.
- *
- * The queue is mirrored into [DownloadQueueStore] so it survives the process dying. Without that a
- * season download lost everything past the episode in flight, and re-adding it fetched a second
- * copy of that episode, because nothing was left that remembered the first.
+ * Strictly one at a time, which lets the dispatcher coroutine double as the progress
+ * poller. Mirrored into [DownloadQueueStore] so a restart does not lose everything behind
+ * the item in flight, and does not fetch a second copy of the item that was.
  */
 class DownloadQueueImpl(
     private val downloader: Downloader,
@@ -77,7 +73,6 @@ class DownloadQueueImpl(
             get() = Triple(status, downloadId, retries)
     }
 
-    /** What the dispatcher should do with an entry it has picked up. */
     private sealed interface Work {
         val entry: Entry
 
@@ -105,8 +100,7 @@ class DownloadQueueImpl(
         scope.launch {
             while (true) {
                 wake.receive()
-                // Per iteration containment: one thrown exception must never wedge the dispatcher
-                // for the rest of the process lifetime.
+                // One thrown exception must not wedge the dispatcher for the rest of the process.
                 try {
                     drain()
                 } catch (e: CancellationException) {
@@ -138,14 +132,12 @@ class DownloadQueueImpl(
         val persisted = withContext(ioDispatcher) { store.load() }
         if (persisted.isEmpty()) return
 
-        // A batch with nothing left to do is history. Keeping it would put a finished season's
-        // card back on screen at every launch.
+        // A batch with nothing left to do is history, and would otherwise reappear at every launch.
         val liveBatches =
             persisted.filterNot { it.status.isTerminal }.mapTo(mutableSetOf()) { it.batchId }
         val (keep, drop) = persisted.partition { it.batchId in liveBatches }
         forget(drop.map { it.itemId })
 
-        // Rehydrating goes to the repository, so it happens before the lock is taken.
         val rebuilt =
             keep.mapNotNull { row ->
                 val item = runCatching { loadItem.load(row.itemId, row.itemType) }.getOrNull()
@@ -175,15 +167,14 @@ class DownloadQueueImpl(
         val adopted = mutableListOf<Entry>()
         mutex.withLock {
             for ((entry, batchTotal) in rebuilt) {
-                // Anything submitted since the process came up wins: it is newer, and its download
-                // may already be running.
+                // Anything submitted since startup wins; its download may already be running.
                 if (entries.containsKey(entry.itemId)) continue
                 entries[entry.itemId] = entry
                 batchTotals[entry.batchId] = batchTotal
                 adopted += entry
             }
-            // Taken from every restored row rather than only the adopted ones: handing the same
-            // position out twice would put a newly submitted item ahead of one already waiting.
+            // From every restored row, not just the adopted ones: a reused position would put a new
+            // item ahead of one already waiting.
             nextPosition = maxOf(nextPosition, rebuilt.maxOf { it.first.position } + 1)
             if (adopted.isEmpty()) return@withLock
             publishLocked()
@@ -200,8 +191,8 @@ class DownloadQueueImpl(
     private suspend fun reconcile(entry: Entry) {
         if (entry.status.isTerminal || entry.status == DownloadEntryStatus.QUEUED) return
 
-        // PREPARING means the process died inside downloadItem, which enqueues with DownloadManager
-        // before it writes the sources row. That row is the only record of whether it got that far.
+        // PREPARING means the process died inside downloadItem, which enqueues before it writes the
+        // sources row. That row is the only record of whether it got that far.
         val downloadId =
             entry.downloadId
                 ?: withContext(ioDispatcher) { sources.downloadIdFor(entry.itemId, entry.sourceId) }
@@ -209,7 +200,6 @@ class DownloadQueueImpl(
 
         when {
             info != null && !info.status.isFinishedDownload -> {
-                // Still going, or paused: adopt it and let the dispatcher watch it.
                 entry.downloadId = downloadId
                 entry.status = DownloadEntryStatus.RUNNING
                 entry.bytesDownloaded = info.bytesDownloaded
@@ -219,8 +209,8 @@ class DownloadQueueImpl(
                 entry.progress = 100
             }
             else -> {
-                // Nothing to adopt and nothing finished on disk, so start it over. A transcode
-                // cannot be resumed anyway, so there is nothing in a partial file worth keeping.
+                // Nothing to adopt and nothing finished on disk, so start it over. A partial file is no
+                // help: the server may not support ranges, and DownloadManager has forgotten the job.
                 entry.downloadId = null
                 entry.progress = -1
                 entry.bytesDownloaded = 0
@@ -230,8 +220,6 @@ class DownloadQueueImpl(
     }
 
     override suspend fun submit(requests: List<DownloadRequest>): SubmitOutcome {
-        // Read per call, never cached: preferences are not reactive in this app, so reading once at
-        // construction would make the toggle require an app restart.
         if (!isSequentialEnabled()) {
             return SubmitOutcome.Bypassed
         }
@@ -265,9 +253,8 @@ class DownloadQueueImpl(
                         batchTotals[batchId] = accepted
                         SubmitOutcome.Queued(batchId, accepted)
                     } else {
-                        // Every request is already live in an earlier batch. A batch id with no
-                        // entries can never gain any and the caller would observe it forever, so
-                        // hand back the batch that actually owns the work.
+                        // Everything asked for is already live. A batch id with no entries would never gain any,
+                        // so hand back the batch that actually owns the work.
                         val owner = requests.firstNotNullOfOrNull { entries[it.item.id] }
                         if (owner != null) {
                             SubmitOutcome.Queued(
@@ -284,8 +271,7 @@ class DownloadQueueImpl(
                 result
             }
         if (outcome is SubmitOutcome.Queued) {
-            // Downloads must keep going with the app off screen, and a transcode cannot be
-            // resumed if the process is frozen and the connection dropped.
+            // Downloads must keep going once the app is off screen, or the queue stops advancing.
             onWorkAccepted()
         }
         wake.trySend(Unit)
@@ -293,8 +279,8 @@ class DownloadQueueImpl(
     }
 
     override suspend fun cancel(itemIds: Set<UUID>) {
-        // Remove under the lock FIRST, so nextWorkLocked() cannot pick a victim and awaitTerminal
-        // sees the identity mismatch and bails out immediately.
+        // Remove under the lock first, so nextWorkLocked cannot pick a victim and awaitTerminal
+        // sees the mismatch and bails out.
         val victims =
             mutex.withLock {
                 val removed = itemIds.mapNotNull { entries.remove(it) }
@@ -305,8 +291,8 @@ class DownloadQueueImpl(
                 forget(removed.map { it.itemId })
                 removed.filterNot { it.status == DownloadEntryStatus.SUCCEEDED }
             }
-        // On the queue's own scope, not the caller's: the view model that asked for the cancel is
-        // usually about to be cleared, and the cleanup must not die with it.
+        // On the queue's scope, not the caller's: the view model asking for the cancel is usually
+        // about to be cleared.
         scope.launch { removeVictims(victims) }
     }
 
@@ -318,30 +304,24 @@ class DownloadQueueImpl(
                 batchTotals.remove(batchId)
                 if (removed.isNotEmpty()) publishLocked()
                 forget(removed.map { it.itemId })
-                // A succeeded entry's file is already on disk, and its sources row still carries
-                // the download id, so cancelDownload() would find it and deleteItem() it. Cancel
-                // means stop, not delete what has already finished.
+                // A succeeded entry's row still carries its download id, so cancelDownload would find the
+                // finished file and delete it. Cancel means stop, not delete what already finished.
                 removed.filterNot { it.status == DownloadEntryStatus.SUCCEEDED }
             }
-        // On the queue's own scope, not the caller's: the view model that asked for the cancel is
-        // usually about to be cleared, and the cleanup must not die with it.
         scope.launch { removeVictims(victims) }
     }
 
     /**
-     * Deliberately does NOT cancel a victim's prepare job. [Downloader.downloadItem] enqueues with
-     * DownloadManager well before it writes the sources row carrying the download id, with
-     * suspending network calls in between — cancelling in that window would strand a full size
-     * file on disk that no database row, and therefore no part of the app, can ever reach.
-     * [prepare] already notices its entry has been removed and cleans the enqueue up itself, so
-     * an in flight entry is simply left to finish and tidy up after itself.
+     * Deliberately does not cancel a victim's prepare job. [Downloader.downloadItem] enqueues
+     * with DownloadManager before it writes the row carrying the download id, so cancelling in
+     * that window strands a full size file nothing can reach. [prepare] cleans up its own
+     * orphan instead.
      */
     private suspend fun removeVictims(victims: List<Entry>) {
         for (victim in victims) {
-            // QUEUED was never handed to downloadItem, so there is nothing of ours to cancel;
-            // skipping it also keeps the fallback lookup from finding a sources row left by some
-            // unrelated, already finished download and deleting it. PREPARING is still inside
-            // downloadItem and is cleaned up by prepare()'s own orphan branch.
+            // QUEUED never reached downloadItem, so there is nothing of ours to cancel, and looking
+            // its id up could match a row left by an unrelated finished download. PREPARING is still
+            // inside downloadItem and cleans up after itself.
             if (
                 victim.status == DownloadEntryStatus.QUEUED ||
                     victim.status == DownloadEntryStatus.PREPARING
@@ -388,11 +368,10 @@ class DownloadQueueImpl(
             } catch (e: Exception) {
                 Timber.e(e, "Download queue entry failed")
             } finally {
-                // Safety net: an entry left non terminal would make nextWorkLocked() hand back the
-                // same entry forever and stall every future download.
+                // An entry left non terminal would be handed back forever and stall the queue.
                 mutex.withLock {
-                    // QUEUED is deliberate: a retry puts the entry back in line, and forcing that
-                    // to FAILED here would mean the retry never happened.
+                    // QUEUED is deliberate: a retry puts the entry back in line, and failing it here would mean
+                    // the retry never happened.
                     if (
                         entries[entry.itemId] === entry &&
                             !entry.status.isTerminal &&
@@ -410,17 +389,15 @@ class DownloadQueueImpl(
         }
     }
 
-    /** Caller holds [mutex]. Flips a chosen entry to PREPARING so it cannot be picked twice. */
+    /** Flips the chosen entry to PREPARING so it cannot be picked twice. */
     private fun nextWorkLocked(): Work? {
         val busy =
             entries.values.firstOrNull {
                 !it.status.isTerminal && it.status != DownloadEntryStatus.QUEUED
             }
         if (busy != null) {
-            // Only reachable for an entry restored from a previous run: in the normal path the
-            // dispatcher is already watching the busy entry and does not come back for more work
-            // until it goes terminal. It is with DownloadManager already, so it must not be
-            // enqueued a second time.
+            // Only reachable for an entry restored from a previous run. It is already with
+            // DownloadManager, so it must be watched rather than enqueued again.
             return busy.downloadId?.let { Work.Resume(busy) }
         }
         return entries.values
@@ -446,9 +423,8 @@ class DownloadQueueImpl(
             return
         }
 
-        // A download for this exact source may already be in flight, left behind by a queue that
-        // died before it could be persisted. Adopting it is what stops a second copy of the same
-        // file being fetched alongside the first.
+        // A download for this source may already be in flight, left by a queue that died before it
+        // was persisted. Adopting it is what prevents a second copy of the same file.
         val inFlight =
             withContext(ioDispatcher) { sources.downloadIdFor(entry.itemId, entry.sourceId) }
         val inFlightStatus = inFlight?.let { downloader.getDownloadInfo(it)?.status }
@@ -517,9 +493,8 @@ class DownloadQueueImpl(
                 } ?: return
 
             val info = downloader.getDownloadInfo(downloadId)
-            // Resolved outside the lock: a null row means DownloadManager has no record of the id,
-            // and only the database can say whether DownloadReceiver already stripped the
-            // ".download" suffix (success) or the job was simply lost.
+            // A null row means DownloadManager has forgotten the id, and only the database can say
+            // whether that was success or a lost job.
             val renamed = if (info == null) isAlreadyDownloaded(entry) else false
 
             val terminal =
@@ -530,8 +505,7 @@ class DownloadQueueImpl(
                         val before = entry.durable
                         applyInfoLocked(entry, info, renamed)
                         publishLocked()
-                        // Only when something worth keeping changed: applyInfoLocked runs on every
-                        // poll, and rewriting an unchanged status once a second is pure churn.
+                        // Only when something durable changed; applyInfoLocked runs every poll.
                         if (before != entry.durable) rememberLocked(entry)
                         entry.status.isTerminal
                     }
@@ -545,7 +519,6 @@ class DownloadQueueImpl(
     private suspend fun isAlreadyDownloaded(entry: Entry): Boolean =
         withContext(ioDispatcher) { sources.isDownloaded(entry.itemId, entry.sourceId) }
 
-    /** Caller holds [mutex]. */
     private fun applyInfoLocked(entry: Entry, info: DownloadInfo?, renamed: Boolean) {
         when {
             info == null && renamed -> {
@@ -562,14 +535,12 @@ class DownloadQueueImpl(
             }
             info.status == DownloadManager.STATUS_FAILED -> {
                 if (entry.retries < MAX_RETRIES && isWorthRetrying(info.reason)) {
-                    // A transcode answers Accept-Ranges: none, so DownloadManager cannot pick up
-                    // where it left off and reports failure instead. Starting over is the only
-                    // way to finish, and beats leaving the item stranded.
+                    // A server without range support cannot be resumed, so DownloadManager reports failure
+                    // rather than continuing. Starting over is the only way to finish it.
                     entry.retries++
                     entry.downloadId = null
                     entry.progress = -1
-                    // A restarted transcode begins from zero; keeping the old count would show
-                    // progress running backwards.
+                    // A restart begins from zero; keeping the old count would run progress backwards.
                     entry.bytesDownloaded = 0
                     entry.status = DownloadEntryStatus.QUEUED
                     Timber.d("Retrying ${entry.item.name}, attempt ${entry.retries}")
@@ -592,10 +563,9 @@ class DownloadQueueImpl(
     }
 
     /**
-     * Drops finished entries once the queue has been idle for a while, so a completed season does
-     * not pin its items for the rest of the process. The grace period matters: clearing the moment
-     * the last entry goes terminal would let StateFlow conflation swallow the terminal snapshot,
-     * and collectors would never see the batch finish.
+     * Drops finished entries once the queue has been idle, so a finished batch does not pin its
+     * items for the rest of the process. The delay matters: clearing the moment the last entry
+     * goes terminal lets StateFlow conflation swallow the snapshot that says so.
      */
     private fun scheduleIdlePrune() {
         pruneJob?.cancel()
@@ -614,13 +584,13 @@ class DownloadQueueImpl(
             }
     }
 
-    /** Caller holds [mutex]. Drops totals for batches that no longer have any entries. */
+    /** Drops totals for batches that no longer have entries. */
     private fun dropOrphanedBatchTotalsLocked() {
         val liveBatches = entries.values.mapTo(mutableSetOf()) { it.batchId }
         batchTotals.keys.retainAll(liveBatches)
     }
 
-    /** Caller holds [mutex]. Drops batches whose entries have all reached a terminal status. */
+    /** Drops batches whose entries have all reached a terminal status. */
     private fun pruneTerminalBatchesLocked(): List<UUID> {
         val liveBatches =
             entries.values.filter { !it.status.isTerminal }.mapTo(mutableSetOf()) { it.batchId }
@@ -630,10 +600,7 @@ class DownloadQueueImpl(
         return dropped
     }
 
-    /**
-     * Losing the mirror costs the ability to resume, not the download itself, so a failure here is
-     * logged and swallowed rather than allowed to take the queue down.
-     */
+    /** Losing the mirror costs resumability, not the download, so this never takes the queue down. */
     private suspend fun rememberLocked(entry: Entry) {
         try {
             withContext(ioDispatcher) {
@@ -670,7 +637,6 @@ class DownloadQueueImpl(
         }
     }
 
-    /** Caller holds [mutex]. */
     private fun publishLocked() {
         _state.value =
             DownloadQueueState(
@@ -693,9 +659,8 @@ class DownloadQueueImpl(
     }
 
     /**
-     * Whether a failure is the kind that starting over could fix. A dropped or truncated
-     * connection is; running out of room, or a destination that has gone away, is not — retrying
-     * those just burns the server's transcode budget to fail the same way.
+     * Whether starting over could fix the failure. A dropped or truncated connection could;
+     * running out of room, or a destination that has gone away, could not.
      */
     private fun isWorthRetrying(reason: Int): Boolean =
         reason == DownloadManager.ERROR_CANNOT_RESUME ||
@@ -711,7 +676,6 @@ class DownloadQueueImpl(
     }
 }
 
-/** Whether DownloadManager considers a download over, one way or the other. */
 private val Int.isFinishedDownload: Boolean
     get() = this == DownloadManager.STATUS_SUCCESSFUL || this == DownloadManager.STATUS_FAILED
 

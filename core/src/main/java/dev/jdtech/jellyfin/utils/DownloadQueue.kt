@@ -16,7 +16,7 @@ enum class DownloadEntryStatus {
     /** Accepted, not yet handed to [Downloader.downloadItem]. */
     QUEUED,
 
-    /** Inside [Downloader.downloadItem]: media source lookup, DB writes, trickplay tiles. */
+    /** Inside [Downloader.downloadItem], which is not instant: it also writes rows and images. */
     PREPARING,
     RUNNING,
     PAUSED,
@@ -33,9 +33,8 @@ data class DownloadEntry(
     val sourceId: String,
     val name: String,
     val status: DownloadEntryStatus,
-    /** 0..100, or -1 while the total size is still unknown. */
+    /** 0..100, or -1 when the total size is unknown. */
     val progress: Int = -1,
-    /** Bytes on disk so far; the only honest progress signal when [progress] is -1. */
     val bytesDownloaded: Long = 0,
     val downloadId: Long? = null,
     val errorText: UiText? = null,
@@ -48,43 +47,36 @@ data class DownloadQueueState(
 )
 
 sealed interface SubmitOutcome {
-    /**
-     * The sequential downloads preference is off. Nothing was queued and the queue was not touched
-     * at all; the caller downloads directly, exactly as it does today.
-     */
+    /** The preference is off. Nothing was queued; the caller downloads directly as before. */
     data object Bypassed : SubmitOutcome
 
     /**
-     * [isNewBatch] is false when every request was already live in an earlier batch and
-     * [batchId] therefore identifies that pre-existing batch rather than one this call created.
-     * Callers must not assume ownership of a batch they did not create.
+     * [isNewBatch] is false when every request was already live, so [batchId] identifies the batch
+     * that already owns them rather than one this call created.
      */
     data class Queued(val batchId: UUID, val accepted: Int, val isNewBatch: Boolean = true) :
         SubmitOutcome
 }
 
 /**
- * App scoped, strictly one at a time download queue. Only ever used when the sequential downloads
- * preference is enabled — see [submit].
+ * App scoped, strictly one at a time download queue, used only when the sequential preference is on.
  *
- * Serialization has to happen here rather than in the system DownloadManager: DownloadManager runs
- * everything it has been handed concurrently, so the only way to give one item the full bandwidth
- * is to delay the `enqueue` call for item N+1 until item N reaches a terminal status.
+ * Serialising has to happen here rather than in DownloadManager, which runs everything it is handed
+ * at once: the only way to give one item the full bandwidth is to hold back the next enqueue until
+ * the current item reaches a terminal status.
  */
 interface DownloadQueue {
     val state: StateFlow<DownloadQueueState>
 
     /**
-     * Rebuilds the queue saved by a previous run and picks the work back up. Call once at startup.
-     * Without it the rest of a season is lost whenever the process dies, and re-adding it fetches a
-     * second copy of whatever was already in flight.
+     * Rebuilds the queue saved by a previous run. Call once at startup: without it everything past
+     * the item in flight is lost when the process dies.
      */
     fun resume()
 
     /**
-     * Reads the sequential downloads preference at call time. When it is off this returns
-     * [SubmitOutcome.Bypassed] and does nothing else. Otherwise [requests] are appended in the
-     * given order as one batch; items already live in the queue are skipped.
+     * Reads the preference at call time, returning [SubmitOutcome.Bypassed] when it is off.
+     * Otherwise [requests] are appended in order as one batch, skipping items already queued.
      */
     suspend fun submit(requests: List<DownloadRequest>): SubmitOutcome
 

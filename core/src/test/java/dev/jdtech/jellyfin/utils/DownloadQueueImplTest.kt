@@ -14,19 +14,11 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/**
- * Covers the behaviours that were actually got wrong while this queue was being built: cancelling
- * deleting finished downloads, an entry reaching the cancel path that had never been started, a
- * batch of duplicates reported as new, downloads overlapping, and a retry that never happened.
- */
+/** Covers the behaviours that were actually got wrong while this queue was being written. */
 @OptIn(ExperimentalCoroutinesApi::class)
 class DownloadQueueImplTest {
 
-    /**
-     * The queue's own scope. It shares the test's scheduler and its dispatcher loop never
-     * completes, so it has to be cancelled before the test body ends: runTest drains the scheduler
-     * on the way out and would otherwise never finish.
-     */
+    /** Cancelled by [queueTest]; see there for why the timing matters. */
     private var queueScope: TestScope? = null
 
     private fun TestScope.queue(
@@ -54,9 +46,8 @@ class DownloadQueueImplTest {
     }
 
     /**
-     * Advances a bounded amount rather than to idle. Two reasons: some tests deliberately keep a
-     * download running forever, so there is no idle to reach, and advancing to idle would also run
-     * the queue's 30s prune, which clears the very entries being asserted on.
+     * Bounded rather than advancing to idle: some tests keep a download running forever, and idle
+     * would also run the 30s prune that clears the entries being asserted on.
      */
     private fun TestScope.settle() {
         advanceTimeBy(1_000)
@@ -64,13 +55,9 @@ class DownloadQueueImplTest {
     }
 
     /**
-     * runTest, with the queue's scope cancelled inside it and in a finally.
-     *
-     * Both details are load bearing. Inside, because runTest drains the shared scheduler on its way
-     * out and the queue's dispatcher loop never completes, so a cancel after the body has returned
-     * is already too late — @After cannot do this job, it runs after the drain has wedged. And in a
-     * finally, because an assertion throwing part way through would otherwise skip the cancel and
-     * turn a plain test failure into the whole run spinning at full CPU until something kills it.
+     * runTest, with the queue's scope cancelled inside it and in a finally. Both are load bearing:
+     * runTest drains the scheduler on the way out and the queue's loop never completes, so @After
+     * is too late, and without the finally a failed assertion wedges the run instead of failing it.
      */
     private fun queueTest(body: suspend TestScope.() -> Unit) = runTest {
         try {
@@ -213,7 +200,7 @@ class DownloadQueueImplTest {
     }
 
     @Test
-    fun `an interrupted download is retried, because a transcode cannot resume`() = queueTest {
+    fun `an interrupted download is retried when it cannot be resumed`() = queueTest {
         val downloader = FakeDownloader()
         val item = TestItem()
         downloader.statuses[item.id] =

@@ -5,24 +5,19 @@ import dev.jdtech.jellyfin.models.UiText
 
 data class DownloaderState(
     val status: Int = 0,
-    /**
-     * For a batch this is the progress of the item currently downloading, not of the batch. Null
-     * means there is no percentage to show: a transcode is generated on the fly and served without
-     * a Content-Length, so the total size is unknown for the whole download.
-     */
+    /** Progress of the item downloading now, or null when the server reported no total size. */
     val progress: Float? = 0f,
-    /** Bytes fetched so far. Shown in place of a percentage when [progress] is null. */
+    /** Shown in place of a percentage when [progress] is null. */
     val bytesDownloaded: Long = 0,
     val errorText: UiText? = null,
-    /** 1-based position of the item being downloaded; null for a single item download. */
+    /** 1-based position within the batch; null when only one item was asked for. */
     val itemsCompleted: Int? = null,
-    /** Size of the batch; null for a single item download. */
     val itemsTotal: Int? = null,
 ) {
     /**
-     * Really means "keep the downloader card mounted". STATUS_FAILED is in here because the card
-     * carries the error text and the retry button, and STATUS_PAUSED because a paused download
-     * holds up the whole sequential queue and so has to stay visible and cancellable.
+     * Really means "keep the downloader card on screen". Failed and paused are in here because the
+     * card carries the error and the cancel button, and a paused item holds up everything behind
+     * it.
      */
     val isDownloading: Boolean
         get() =

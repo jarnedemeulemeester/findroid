@@ -5,16 +5,13 @@ import dev.jdtech.jellyfin.models.FindroidDownloadQueueEntryDto
 import dev.jdtech.jellyfin.models.FindroidItem
 import java.util.UUID
 
-/** What kind of item an entry holds, which decides how it is rebuilt after a restart. */
+/** Decides how an entry is rebuilt after a restart. */
 enum class QueuedItemType {
     MOVIE,
     EPISODE,
 }
 
-/**
- * A queue entry reduced to what is worth surviving a restart. Progress is absent on purpose:
- * DownloadManager owns it and it is re-read on restore, so it never has to be written back.
- */
+/** A queue entry reduced to what is worth surviving a restart. */
 data class PersistedQueueEntry(
     val itemId: UUID,
     val batchId: UUID,
@@ -28,7 +25,7 @@ data class PersistedQueueEntry(
     val batchTotal: Int,
 )
 
-/** Where the queue keeps itself so a restart does not lose the rest of a season. */
+/** Where the queue keeps itself between runs. */
 interface DownloadQueueStore {
     /** In queue order. */
     suspend fun load(): List<PersistedQueueEntry>
@@ -39,11 +36,8 @@ interface DownloadQueueStore {
 }
 
 /**
- * Rebuilds the item behind a persisted entry.
- *
- * The queue cannot hold onto the item across a restart: [Downloader.downloadItem] needs a real one,
- * with its media sources, series and season ids, trickplay and images, and a stub would silently
- * write half a download. So only the id and type are stored, and the item is fetched again.
+ * Rebuilds the item behind a persisted entry. Only its id and type are stored, because
+ * [Downloader.downloadItem] needs a real item and a stub would write half a download.
  */
 fun interface QueuedItemLoader {
     /** Null when the item can no longer be found, in which case the entry is dropped. */
@@ -73,10 +67,7 @@ class DatabaseDownloadQueueStore(private val database: ServerDatabaseDao) : Down
 
     override suspend fun remove(itemId: UUID) = database.deleteDownloadQueueEntry(itemId)
 
-    /**
-     * Null for a row this build cannot read, rather than a thrown exception: an enum constant
-     * renamed or removed in a later version must not stop the whole queue from loading.
-     */
+    /** Null rather than throwing, so one unreadable row cannot stop the queue loading. */
     private fun FindroidDownloadQueueEntryDto.toPersistedOrNull(): PersistedQueueEntry? {
         val type = QueuedItemType.entries.firstOrNull { it.name == itemType } ?: return null
         val entryStatus = DownloadEntryStatus.entries.firstOrNull { it.name == status } ?: return null

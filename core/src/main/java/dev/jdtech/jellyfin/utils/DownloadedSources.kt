@@ -3,18 +3,11 @@ package dev.jdtech.jellyfin.utils
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import java.util.UUID
 
-/**
- * The two facts the download queue needs from the database, kept separate from the 78-method DAO so
- * the queue can be exercised without one.
- */
+/** The two facts the queue needs from the database, kept narrow so it can be tested without one. */
 interface DownloadedSources {
-    /** Whether the file for [sourceId] is on disk and finished. */
     suspend fun isDownloaded(itemId: UUID, sourceId: String): Boolean
 
-    /**
-     * The DownloadManager id recorded for [sourceId], if one was. Recovers the id for a download
-     * that was cancelled after being enqueued but before the queue learned its id.
-     */
+    /** Recovers the id of a download enqueued before the queue learned it, so it can be cancelled. */
     suspend fun downloadIdFor(itemId: UUID, sourceId: String): Long?
 }
 

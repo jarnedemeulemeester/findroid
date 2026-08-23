@@ -37,10 +37,7 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
     private val eventsChannel = Channel<DownloaderEvent>()
     val events = eventsChannel.receiveAsFlow()
 
-    /**
-     * The queue as a whole, for lists that want to show which of their items are waiting. A screen
-     * showing one item wants [state]; a screen showing many wants this.
-     */
+    /** For lists showing many items. A screen showing one item wants [state] instead. */
     val queue = downloadQueue.state
 
     var downloadId: Long? = null
@@ -66,8 +63,7 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
         viewModelScope.launch {
             val sourceId = item.sources.firstOrNull()?.id ?: return@launch
 
-            // Reads the preference itself and hands back Bypassed when sequential downloads are
-            // off, so with the setting off this path is exactly what it was before.
+            // Hands back Bypassed when the preference is off, leaving the old path untouched.
             val outcome =
                 downloadQueue.submit(
                     listOf(
@@ -102,9 +98,8 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
     }
 
     /**
-     * Reports what the queue says about [itemId], rather than polling DownloadManager. The queue is
-     * the only thing that knows an item is waiting its turn, which DownloadManager cannot express:
-     * it has not been handed the download yet.
+     * Follows the queue rather than polling DownloadManager, which cannot report an item waiting
+     * its turn because it has not been handed the download yet.
      */
     private fun follow(itemId: UUID) {
         handler.removeCallbacksAndMessages(null)
@@ -114,8 +109,7 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
                 downloadQueue.state.collect { snapshot ->
                     val entry = snapshot.entries.firstOrNull { it.itemId == itemId }
                     if (entry == null) {
-                        // Cancelled, or pruned long after finishing. Either way there is nothing
-                        // left to report.
+                        // Cancelled, or pruned after finishing.
                         _state.emit(DownloaderState())
                         return@collect
                     }
@@ -127,10 +121,7 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
             }
     }
 
-    /**
-     * Submits a whole season as one batch, in episode order, so the episodes a viewer will watch
-     * first are the ones that finish first.
-     */
+    /** Submits a season as one batch in episode order, so the earliest episodes finish first. */
     private fun downloadMany(items: List<FindroidItem>, storageIndex: Int = 0) {
         viewModelScope.launch {
             val pending =
@@ -160,8 +151,7 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
                 return@launch
             }
 
-            // Sequential downloads are off, so this behaves like asking for each of them
-            // separately: they all go to DownloadManager and share the connection.
+            // Off, so this matches asking for each separately: they all share the connection.
             _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
             for (request in requests) {
                 downloader.downloadItem(
@@ -264,9 +254,8 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
                         _state.emit(
                             DownloaderState(
                                 status = status,
-                                // takeIf, not coerceAtLeast: -1 means the total size is unknown,
-                                // and clamping it to 0 would draw a download that is moving as one
-                                // stuck at 0%.
+                                // takeIf, not coerceAtLeast: clamping the unknown size to 0 draws
+                                // a moving download as one stuck at 0%.
                                 progress = progress.takeIf { it >= 0 }?.div(100f),
                             )
                         )
@@ -302,13 +291,7 @@ constructor(private val downloader: Downloader, private val downloadQueue: Downl
     }
 }
 
-/**
- * The state of one queued item, with a count of everything still outstanding beside it.
- *
- * The count is deliberately of the whole queue rather than of some batch: an item only waits
- * because other items are ahead of it, and "3 left" is what explains why nothing appears to be
- * happening to this one yet.
- */
+/** One queued item, with a count of what is outstanding to explain why it is waiting. */
 internal fun DownloadEntry.toDownloaderState(all: List<DownloadEntry>): DownloaderState {
     val status =
         when (status) {

@@ -38,9 +38,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryClick: () -> Unit) {
-    // Null means the total size is unknown, which is always so for a transcode: the server makes
-    // it on the fly and sends no Content-Length. There is no percentage to draw, so the bar goes
-    // indeterminate and the byte count stands in for it.
+    // Null means the server reported no total size, so there is no percentage to draw: the bar
+    // goes indeterminate and the byte count stands in for it.
     val progress = state.progress
     val animatedProgress by
         animateFloatAsState(
@@ -89,8 +88,7 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                // Local vals: DownloaderState lives in another module, so its nullable properties
-                // cannot be smart cast here.
+                // Local vals: DownloaderState is in another module, so no smart cast here.
                 val itemsTotal = state.itemsTotal
                 val itemsCompleted = state.itemsCompleted
                 val counter =
@@ -133,9 +131,8 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
                 }
                 Spacer(Modifier.height(MaterialTheme.spacings.small))
                 when {
-                    // A bar pinned at zero reads as a stalled download, so anything still moving
-                    // without a known total gets the indeterminate one instead. A paused download
-                    // keeps the static bar: it is not moving, and the label already says so.
+                    // A bar pinned at zero reads as stalled, so anything moving without a known
+                    // total gets the indeterminate one. Paused keeps the static bar.
                     state.status == DownloadManager.STATUS_PENDING ||
                         (progress == null && state.status == DownloadManager.STATUS_RUNNING) -> {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -162,8 +159,7 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
                 when (state.status) {
                     DownloadManager.STATUS_PENDING,
                     DownloadManager.STATUS_RUNNING,
-                    // A paused download holds up the whole sequential queue, so it has to stay
-                    // cancellable — the item buttons row is hidden while the card is mounted.
+                    // A paused download holds up the queue, so it has to stay cancellable.
                     DownloadManager.STATUS_PAUSED -> {
                         FilledTonalIconButton(onClick = onCancelClick) {
                             Icon(
