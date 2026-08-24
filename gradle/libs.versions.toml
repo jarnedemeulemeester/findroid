@@ -1,5 +1,5 @@
 [versions]
-aboutlibraries = "15.0.4"
+aboutlibraries = "15.1.1"
 android-desugar-jdk-libs = "2.1.5"
 android-plugin = "9.3.1"
 androidx-activity = "1.13.0"
