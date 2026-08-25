@@ -38,8 +38,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
@@ -132,39 +132,44 @@ constructor(
                 )
         )
 
-        if (appPreferences.getValue(appPreferences.playerMpv)) {
-            player =
-                MPVPlayer.Builder(application)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelectionParameters(trackSelector.parameters)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
-                    .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
-                    .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
-                    .build()
-        } else {
-            val renderersFactory =
-                DefaultRenderersFactory(application)
-                    .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            player =
-                ExoPlayer.Builder(application, renderersFactory)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelector(trackSelector)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .build()
-        }
+        val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
+        player =
+            when (playerBackend) {
+                "exoplayer" -> {
+                    val renderersFactory =
+                        DefaultRenderersFactory(application)
+                            .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                    ExoPlayer.Builder(application, renderersFactory)
+                        .setAudioAttributes(audioAttributes, true)
+                        .setTrackSelector(trackSelector)
+                        .setSeekBackIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekBackInc)
+                        )
+                        .setSeekForwardIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                        )
+                        .setPauseAtEndOfMediaItems(true)
+                        .build()
+                }
+                "mpv" -> {
+                    MPVPlayer.Builder(application)
+                        .setAudioAttributes(audioAttributes, true)
+                        .setTrackSelectionParameters(trackSelector.parameters)
+                        .setSeekBackIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekBackInc)
+                        )
+                        .setSeekForwardIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                        )
+                        .setPauseAtEndOfMediaItems(true)
+                        .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
+                        .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
+                        .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
+                        .build()
+                }
+
+                else -> throw RuntimeException("$playerBackend is not a valid player backend")
+            }
     }
 
     fun initializePlayer(itemId: UUID, itemKind: String, startFromBeginning: Boolean) {
@@ -535,9 +540,10 @@ constructor(
     }
 
     fun seekToPreviousWithStopReport() {
-        viewModelScope.launch (Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.Main) {
             val shouldTransitionToPreviousItem =
-                player.hasPreviousMediaItem() && player.currentPosition <= player.maxSeekToPreviousPosition
+                player.hasPreviousMediaItem() &&
+                    player.currentPosition <= player.maxSeekToPreviousPosition
 
             if (shouldTransitionToPreviousItem) {
                 reportCurrentItemPlaybackStopped()
@@ -545,18 +551,15 @@ constructor(
 
             player.seekToPrevious()
         }
-
     }
 
     private fun moveToNextMediaItem(autoplay: Boolean) {
-        viewModelScope.launch (Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.Main) {
             if (!player.hasNextMediaItem()) {
                 return@launch
             }
 
-
             reportCurrentItemPlaybackStopped()
-
 
             player.seekToNextMediaItem()
 

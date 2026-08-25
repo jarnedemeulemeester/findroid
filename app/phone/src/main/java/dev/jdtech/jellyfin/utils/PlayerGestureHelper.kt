@@ -408,23 +408,26 @@ class PlayerGestureHelper(
             },
         )
 
-    private val hideGestureVolumeIndicatorOverlayAction = Runnable {
-        activity.binding.gestureVolumeLayout.visibility = View.GONE
-    }
-
-    private val hideGestureBrightnessIndicatorOverlayAction = Runnable {
-        activity.binding.gestureBrightnessLayout.visibility = View.GONE
-        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-            appPreferences.setValue(
-                appPreferences.playerBrightness,
-                activity.window.attributes.screenBrightness,
-            )
+    private val hideGestureVolumeIndicatorOverlayAction =
+        Runnable {
+            activity.binding.gestureVolumeLayout.visibility = View.GONE
         }
-    }
 
-    private val hideGestureProgressOverlayAction = Runnable {
-        activity.binding.progressScrubberLayout.visibility = View.GONE
-    }
+    private val hideGestureBrightnessIndicatorOverlayAction =
+        Runnable {
+            activity.binding.gestureBrightnessLayout.visibility = View.GONE
+            if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
+                appPreferences.setValue(
+                    appPreferences.playerBrightness,
+                    activity.window.attributes.screenBrightness,
+                )
+            }
+        }
+
+    private val hideGestureProgressOverlayAction =
+        Runnable {
+            activity.binding.progressScrubberLayout.visibility = View.GONE
+        }
 
     /** Handles scale/zoom gesture */
     private val zoomGestureDetector =

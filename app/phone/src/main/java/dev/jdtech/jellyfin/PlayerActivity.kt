@@ -80,12 +80,13 @@ class PlayerActivity : BasePlayerActivity() {
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    private val skipButtonTimeout = Runnable {
-        if (!binding.playerView.isControllerFullyVisible) {
-            skipSegmentButton.isVisible = false
-            skipButtonTimeoutExpired = true
+    private val skipButtonTimeout =
+        Runnable {
+            if (!binding.playerView.isControllerFullyVisible) {
+                skipSegmentButton.isVisible = false
+                skipButtonTimeoutExpired = true
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -376,9 +377,7 @@ class PlayerActivity : BasePlayerActivity() {
         finish()
     }
 
-    private fun pipParams(
-        enableAutoEnter: Boolean = viewModel.player.isPlaying
-    ): PictureInPictureParams {
+    private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
         val aspectRatio =
