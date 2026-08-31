@@ -1,14 +1,6 @@
 package dev.jdtech.jellyfin.presentation.cast
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -37,9 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -50,11 +39,10 @@ import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.player.cast.presentation.CastPlayerViewModel
 import dev.jdtech.jellyfin.player.core.domain.models.Track
-import dev.jdtech.jellyfin.presentation.cast.components.CastTrackSelectionSheet
+import dev.jdtech.jellyfin.presentation.cast.components.CastTrackSelectionDialog
 import dev.jdtech.jellyfin.presentation.cast.components.PlayerBottomSection
 import dev.jdtech.jellyfin.presentation.cast.components.PlayerTopSection
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
-import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.player.core.R as PlayerCoreR
 
@@ -257,50 +245,21 @@ private fun CastExpandedPlayerLayout(
             }
         }
 
-        AnimatedVisibility(
-            visible = showTrackSelection, enter = fadeIn(), exit = fadeOut()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
-                    .pointerInput(Unit) {
-                        detectTapGestures { showTrackSelection = false }
-                    }
-                    .pointerInput(Unit) {
-                        detectVerticalDragGestures(
-                            onVerticalDrag = { _, dragAmount ->
-                                if (dragAmount > 10f) showTrackSelection = false
-                            })
-                    })
-        }
-
-        AnimatedVisibility(
+        CastTrackSelectionDialog(
             visible = showTrackSelection,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOutVertically(targetOffsetY = { it }),
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            CastTrackSelectionSheet(
-                type = trackType,
-                tracks = if (trackType == C.TRACK_TYPE_AUDIO) uiState.audioTracks else uiState.subtitleTracks,
-                onSetTrack = {
-                    if (trackType == C.TRACK_TYPE_AUDIO) {
-                        it?.let { actions.onAudioTrackSelected(it) }
-                    } else {
-                        actions.onSubtitleTrackSelected(it)
-                    }
-                },
-                onDismiss = { showTrackSelection = false },
-                displayExtraInfo = uiState.displayExtraInfo,
-                modifier = Modifier
-                    .padding(MaterialTheme.spacings.small)
-                    .widthIn(max = 500.dp)
-                    .padding(bottom = safePadding.bottom)
-                    .pointerInput(Unit) {
-                        detectTapGestures { }
-                    })
-        }
+            type = trackType,
+            tracks = if (trackType == C.TRACK_TYPE_AUDIO) uiState.audioTracks else uiState.subtitleTracks,
+            onSetTrack = {
+                if (trackType == C.TRACK_TYPE_AUDIO) {
+                    it?.let { actions.onAudioTrackSelected(it) }
+                } else {
+                    actions.onSubtitleTrackSelected(it)
+                }
+            },
+            onDismiss = { showTrackSelection = false },
+            displayExtraInfo = uiState.displayExtraInfo,
+            modifier = Modifier.padding(bottom = safePadding.bottom)
+        )
     }
 }
 
