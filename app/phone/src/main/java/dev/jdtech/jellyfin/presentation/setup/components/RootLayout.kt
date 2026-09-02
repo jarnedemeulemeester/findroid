@@ -12,7 +12,7 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 
 @Composable
 fun RootLayout(padding: PaddingValues = PaddingValues(), content: @Composable BoxScope.() -> Unit) {
-    val safePadding = rememberSafePadding()
+    val safePadding = rememberSafePadding(handleImeInsets = true)
 
     val safePaddingValues =
         PaddingValues(

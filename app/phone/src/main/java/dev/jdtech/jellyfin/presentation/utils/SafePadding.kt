@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.presentation.utils
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -15,16 +17,23 @@ data class SafePadding(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 @Composable
 fun rememberSafePadding(
     handleStartInsets: Boolean = true,
-    handleBottomInsets: Boolean = true
+    handleBottomInsets: Boolean = true,
+    handleImeInsets: Boolean = false,
 ): SafePadding {
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
+    val safeInsets = if (handleImeInsets) {
+        WindowInsets.safeDrawing
+    } else {
+        WindowInsets.safeDrawing.exclude(WindowInsets.ime)
+    }
+
     val safePaddingStart =
         if (handleStartInsets) {
-            with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+            with(density) { safeInsets.getLeft(this, layoutDirection).toDp() }
         } else {
             // Navigation rail handles safe drawing inset in medium and expanded width
             when {
@@ -37,20 +46,20 @@ fun rememberSafePadding(
                 ) -> 0.dp
 
                 else ->
-                    with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+                    with(density) { safeInsets.getLeft(this, layoutDirection).toDp() }
             }
         }
 
-    val safePaddingTop = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() }
+    val safePaddingTop = with(density) { safeInsets.getTop(this).toDp() }
     val safePaddingEnd =
-        with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+        with(density) { safeInsets.getRight(this, layoutDirection).toDp() }
     val safePaddingBottom = if (handleBottomInsets) {
-        with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
+        with(density) { safeInsets.getBottom(this).toDp() }
     } else {
         when {
             windowSizeClass.isWidthAtLeastBreakpoint(
                 WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
-            ) -> with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
+            ) -> with(density) { safeInsets.getBottom(this).toDp() }
 
             else ->
                 0.dp

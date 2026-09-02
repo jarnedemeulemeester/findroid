@@ -78,7 +78,7 @@ fun ServerAddressesScreen(
 @Composable
 fun ServerAddressesLayout(state: ServerAddressesState, onAction: (ServerAddressesAction) -> Unit) {
     val layoutDirection = LocalLayoutDirection.current
-    val safePadding = rememberSafePadding()
+    val safePadding = rememberSafePadding(handleImeInsets = true)
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
     val paddingTop = MaterialTheme.spacings.default
