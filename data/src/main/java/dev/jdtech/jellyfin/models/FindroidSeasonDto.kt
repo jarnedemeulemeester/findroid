@@ -26,6 +26,12 @@ data class FindroidSeasonDto(
     val seriesName: String,
     val overview: String,
     val indexNumber: Int,
+    val primaryBlurHash: String?,
+    val backdropBlurHash: String?,
+    val logoBlurHash: String?,
+    val showPrimaryBlurHash: String?,
+    val showBackdropBlurHash: String?,
+    val showLogoBlurHash: String?,
 )
 
 fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
@@ -36,5 +42,11 @@ fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
         seriesName = seriesName,
         overview = overview,
         indexNumber = indexNumber,
+        primaryBlurHash = images.primary?.blurHash,
+        backdropBlurHash = images.backdrop?.blurHash,
+        logoBlurHash = images.logo?.blurHash,
+        showPrimaryBlurHash = images.showPrimary?.blurHash,
+        showBackdropBlurHash = images.showBackdrop?.blurHash,
+        showLogoBlurHash = images.showLogo?.blurHash,
     )
 }
