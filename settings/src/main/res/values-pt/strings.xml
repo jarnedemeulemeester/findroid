@@ -85,4 +85,16 @@
     <string name="settings_category_interface">Interface</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_gestures_seek_trickplay">Trickplay com gesto de busca</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Ativar avanço automatico para tipos de segmento selecionados</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Quando avançar automaticamente</string>
+    <string name="pref_player_media_segments_auto_skip_type">Tipo de segmento para avançar automaticamente</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Avançar para o próximo limite de episódio</string>
+    <string name="media_segments_auto_skip_pip">Apenas em modo pip</string>
+    <string name="media_segments_auto_skip_always">Sempre</string>
+    <string name="media_segments_type_unknown">Outros</string>
+    <string name="media_segments_type_commercial">Comercial</string>
+    <string name="media_segments_type_intro">Abertura</string>
+    <string name="edit_file_title">Editar %1$s</string>
+    <string name="mpv_options">Opções do mpv</string>
+    <string name="advanced">Avançado</string>
 </resources>
