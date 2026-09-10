@@ -35,13 +35,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.jdtech.jellyfin.PlayerActivity
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderAction
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
+import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummySeason
 import dev.jdtech.jellyfin.film.presentation.season.SeasonAction
 import dev.jdtech.jellyfin.film.presentation.season.SeasonState
 import dev.jdtech.jellyfin.film.presentation.season.SeasonViewModel
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.film.components.Direction
 import dev.jdtech.jellyfin.presentation.film.components.EpisodeCard
+import dev.jdtech.jellyfin.utils.DownloadEntry
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
 import dev.jdtech.jellyfin.presentation.film.components.ItemPoster
@@ -49,6 +54,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.ObserveAsEvents
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
 
@@ -60,14 +66,26 @@ fun SeasonScreen(
     navigateToItem: (item: FindroidItem) -> Unit,
     navigateToSeries: (seriesId: UUID) -> Unit,
     viewModel: SeasonViewModel = hiltViewModel(),
+    downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
+    // So an episode waiting its turn says so in the list, rather than only on its own screen.
+    val queue by downloaderViewModel.queue.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadSeason(seasonId = seasonId) }
 
+    ObserveAsEvents(downloaderViewModel.events) {
+        // As episodes are downloaded, reload season to render
+        // the download badges
+        viewModel.loadSeason(seasonId = seasonId)
+    }
+
     SeasonScreenLayout(
         state = state,
+        downloaderState = downloaderState,
+        downloadEntries = queue.entries.associateBy { it.itemId },
         onAction = { action ->
             when (action) {
                 is SeasonAction.Play -> {
@@ -84,11 +102,18 @@ fun SeasonScreen(
             }
             viewModel.onAction(action)
         },
+        onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
 }
 
 @Composable
-private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> Unit) {
+private fun SeasonScreenLayout(
+    state: SeasonState,
+    downloaderState: DownloaderState,
+    downloadEntries: Map<UUID, DownloadEntry>,
+    onAction: (SeasonAction) -> Unit,
+    onDownloaderAction: (DownloaderAction) -> Unit,
+) {
     val safePadding = rememberSafePadding()
 
     val paddingStart = safePadding.start + MaterialTheme.spacings.default
@@ -141,8 +166,17 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                         },
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.default.div(2)))
+                    // Using any because we want the delete button to be visible if ANY episode
+                    // in the season has been downloaded
+                    val isSeasonDownloaded = state.episodes.any { it.isDownloaded() }
+                    // Only want to show the download button if any episodes still haven't
+                    // been downloaded
+                    val canSeasonBeDownloaded = state.episodes.any { it.canDownload } && !state.episodes.all { it.isDownloaded() }
                     ItemButtonsBar(
                         item = season,
+                        downloaderState = downloaderState,
+                        isItemDownloaded = isSeasonDownloaded,
+                        canDownload = canSeasonBeDownloaded,
                         onPlayClick = { startFromBeginning ->
                             onAction(SeasonAction.Play(startFromBeginning = startFromBeginning))
                         },
@@ -159,9 +193,21 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                             }
                         },
                         onTrailerClick = {},
-                        onDownloadClick = {},
-                        onDownloadCancelClick = {},
-                        onDownloadDeleteClick = {},
+                        onDownloadClick = { storageIndex ->
+                            onDownloaderAction(
+                                DownloaderAction.DownloadMany(state.episodes, storageIndex)
+                            )
+                        },
+                        onDownloadCancelClick = {
+                            onDownloaderAction(
+                                DownloaderAction.CancelDownloadMany
+                            )
+                        },
+                        onDownloadDeleteClick = {
+                            onDownloaderAction(
+                                DownloaderAction.DeleteDownloadMany(state.episodes)
+                            )
+                        },
                         modifier =
                             Modifier.padding(start = paddingStart, end = paddingEnd).fillMaxWidth(),
                         canPlay = state.episodes.isNotEmpty(),
@@ -171,6 +217,7 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                     EpisodeCard(
                         episode = episode,
                         onClick = { onAction(SeasonAction.NavigateToItem(episode)) },
+                        downloadEntry = downloadEntries[episode.id],
                         modifier = Modifier.padding(start = paddingStart, end = paddingEnd),
                     )
                 }
@@ -204,5 +251,13 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
 @PreviewScreenSizes
 @Composable
 private fun SeasonScreenLayoutPreview() {
-    FindroidTheme { SeasonScreenLayout(state = SeasonState(season = dummySeason), onAction = {}) }
+    FindroidTheme {
+        SeasonScreenLayout(
+            state = SeasonState(season = dummySeason),
+            downloaderState = DownloaderState(),
+            downloadEntries = emptyMap(),
+            onAction = {},
+            onDownloaderAction = {},
+        )
+    }
 }

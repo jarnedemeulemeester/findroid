@@ -643,6 +643,15 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     backendPreference =
                                                         appPreferences.downloadWhenRoaming,
                                                 ),
+                                                PreferenceSwitch(
+                                                    nameStringResource =
+                                                        R.string.download_sequential,
+                                                    descriptionStringRes =
+                                                        R.string.download_sequential_summary,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                                    backendPreference =
+                                                        appPreferences.downloadSequential,
+                                                ),
                                             )
                                     )
                                 ),

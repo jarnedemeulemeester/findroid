@@ -23,6 +23,7 @@ import coil3.svg.SvgDecoder
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.utils.DownloadQueue
 import dev.jdtech.jellyfin.work.MpvCleanupWorker
 import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
@@ -35,6 +36,8 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
     @Inject lateinit var appPreferences: AppPreferences
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject lateinit var downloadQueue: DownloadQueue
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
@@ -62,6 +65,10 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
         }
 
         val workManager = WorkManager.getInstance(applicationContext)
+
+        // Picks a queue left by a previous run back up. Cheap when there is nothing queued: it
+        // reads one empty table and stops.
+        downloadQueue.resume()
 
         scheduleUserDataSync(workManager)
 

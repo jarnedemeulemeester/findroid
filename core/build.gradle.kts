@@ -27,6 +27,10 @@ android {
     }
 
     buildFeatures { compose = true }
+
+    // The queue is exercised with fakes rather than a device, so the android.* calls it makes
+    // need to return defaults instead of throwing.
+    testOptions { unitTests { isReturnDefaultValues = true } }
 }
 
 dependencies {
@@ -50,4 +54,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.slf4j.api)
     implementation(libs.slf4j.android)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

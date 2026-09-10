@@ -6,11 +6,19 @@ import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.isDownloading
+import dev.jdtech.jellyfin.utils.DownloadEntry
+import dev.jdtech.jellyfin.utils.DownloadEntryStatus
+import dev.jdtech.jellyfin.utils.DownloadQueue
+import dev.jdtech.jellyfin.utils.DownloadRequest
 import dev.jdtech.jellyfin.utils.Downloader
+import dev.jdtech.jellyfin.utils.SubmitOutcome
+import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,16 +27,25 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DownloaderViewModel @Inject constructor(private val downloader: Downloader) : ViewModel() {
+class DownloaderViewModel
+@Inject
+constructor(private val downloader: Downloader, private val downloadQueue: DownloadQueue) :
+    ViewModel() {
     private val _state = MutableStateFlow(DownloaderState())
     val state = _state.asStateFlow()
 
     private val eventsChannel = Channel<DownloaderEvent>()
     val events = eventsChannel.receiveAsFlow()
 
+    /** For lists showing many items. A screen showing one item wants [state] instead. */
+    val queue = downloadQueue.state
+
     var downloadId: Long? = null
 
     private val handler = Handler(Looper.getMainLooper())
+
+    /** Set while this view model is following a queued item instead of polling one itself. */
+    private var queueJob: Job? = null
 
     fun update(item: FindroidItem) {
         viewModelScope.launch {
@@ -44,11 +61,29 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
 
     private fun download(item: FindroidItem, storageIndex: Int = 0) {
         viewModelScope.launch {
+            val sourceId = item.sources.firstOrNull()?.id ?: return@launch
+
+            // Hands back Bypassed when the preference is off, leaving the old path untouched.
+            val outcome =
+                downloadQueue.submit(
+                    listOf(
+                        DownloadRequest(
+                            item = item,
+                            sourceId = sourceId,
+                            storageIndex = storageIndex,
+                        )
+                    )
+                )
+            if (outcome is SubmitOutcome.Queued) {
+                follow(item.id)
+                return@launch
+            }
+
             _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
             val (downloadId, uiText) =
                 downloader.downloadItem(
                     item = item,
-                    sourceId = item.sources.first().id,
+                    sourceId = sourceId,
                     storageIndex = storageIndex,
                 )
             if (downloadId != -1L) {
@@ -62,13 +97,137 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
         }
     }
 
+    /**
+     * Follows the queue rather than polling DownloadManager, which cannot report an item waiting
+     * its turn because it has not been handed the download yet.
+     */
+    private fun follow(itemId: UUID) {
+        handler.removeCallbacksAndMessages(null)
+        queueJob?.cancel()
+        queueJob =
+            viewModelScope.launch {
+                downloadQueue.state.collect { snapshot ->
+                    val entry = snapshot.entries.firstOrNull { it.itemId == itemId }
+                    if (entry == null) {
+                        // Cancelled, or pruned after finishing.
+                        _state.emit(DownloaderState())
+                        return@collect
+                    }
+                    _state.emit(entry.toDownloaderState(snapshot.entries))
+                    if (entry.status == DownloadEntryStatus.SUCCEEDED) {
+                        eventsChannel.trySend(DownloaderEvent.Successful)
+                    }
+                }
+            }
+    }
+
+    /** Submits a season as one batch in episode order, so the earliest episodes finish first. */
+    private fun downloadMany(items: List<FindroidItem>, storageIndex: Int = 0) {
+        viewModelScope.launch {
+            val pending =
+                items
+                    .filterNot { item -> item.sources.any { it.type == FindroidSourceType.LOCAL } }
+                    .sortedWith(
+                        compareBy(
+                            { (it as? FindroidEpisode)?.parentIndexNumber ?: 0 },
+                            { (it as? FindroidEpisode)?.indexNumber ?: 0 },
+                        )
+                    )
+            val requests =
+                pending.mapNotNull { item ->
+                    item.sources.firstOrNull()?.let { source ->
+                        DownloadRequest(
+                            item = item,
+                            sourceId = source.id,
+                            storageIndex = storageIndex,
+                        )
+                    }
+                }
+            if (requests.isEmpty()) return@launch
+
+            val outcome = downloadQueue.submit(requests)
+            if (outcome is SubmitOutcome.Queued) {
+                followBatch(outcome.batchId)
+                return@launch
+            }
+
+            // Off, so this matches asking for each separately: they all share the connection.
+            _state.emit(DownloaderState(status = DownloadManager.STATUS_PENDING))
+            for (request in requests) {
+                downloader.downloadItem(
+                    item = request.item,
+                    sourceId = request.sourceId,
+                    storageIndex = request.storageIndex,
+                )
+            }
+            eventsChannel.trySend(DownloaderEvent.Successful)
+            _state.emit(DownloaderState())
+        }
+    }
+
+    /** Reports the item the batch is working on now, with how far through the batch it is. */
+    private fun followBatch(batchId: UUID) {
+        handler.removeCallbacksAndMessages(null)
+        queueJob?.cancel()
+        queueJob =
+            viewModelScope.launch {
+                downloadQueue.state.collect { snapshot ->
+                    val batch = snapshot.entries.filter { it.batchId == batchId }
+                    if (batch.isEmpty()) {
+                        _state.emit(DownloaderState())
+                        return@collect
+                    }
+                    val active = batch.firstOrNull { !it.status.isTerminal }
+                    if (active == null) {
+                        eventsChannel.trySend(DownloaderEvent.Successful)
+                        _state.emit(DownloaderState())
+                        return@collect
+                    }
+                    _state.emit(active.toDownloaderState(batch))
+                }
+            }
+    }
+
+    private fun deleteDownloadMany(items: List<FindroidItem>) {
+        viewModelScope.launch {
+            items
+                .filter { item -> item.sources.any { it.type == FindroidSourceType.LOCAL } }
+                .forEach { item ->
+                    downloader.deleteItem(
+                        item = item,
+                        source = item.sources.first { it.type == FindroidSourceType.LOCAL },
+                    )
+                }
+            eventsChannel.send(DownloaderEvent.Deleted)
+        }
+    }
+
+    /** Drops the whole batch, including the episodes still waiting behind the one in flight. */
+    private fun cancelDownloadMany() {
+        viewModelScope.launch {
+            handler.removeCallbacksAndMessages(null)
+            queueJob?.cancel()
+            val batchId = downloadQueue.state.value.entries.firstOrNull()?.batchId
+            if (batchId != null) {
+                downloadQueue.cancelBatch(batchId)
+            }
+            _state.emit(DownloaderState())
+        }
+    }
+
     private fun cancelDownload(item: FindroidItem) {
         viewModelScope.launch {
             // Stop progress polling
             handler.removeCallbacksAndMessages(null)
+            queueJob?.cancel()
 
-            // Cancel the download
-            downloadId?.let { downloader.cancelDownload(item = item, downloadId = it) }
+            // The queue owns the download when it accepted the item, and cancelling through it
+            // also drops whatever is still waiting behind it.
+            if (downloadQueue.state.value.entries.any { it.itemId == item.id }) {
+                downloadQueue.cancel(setOf(item.id))
+            } else {
+                downloadId?.let { downloader.cancelDownload(item = item, downloadId = it) }
+            }
 
             // Emit empty DownloadState
             _state.emit(DownloaderState())
@@ -95,7 +254,9 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
                         _state.emit(
                             DownloaderState(
                                 status = status,
-                                progress = progress.coerceAtLeast(0) / 100f,
+                                // takeIf, not coerceAtLeast: clamping the unknown size to 0 draws
+                                // a moving download as one stuck at 0%.
+                                progress = progress.takeIf { it >= 0 }?.div(100f),
                             )
                         )
                     }
@@ -115,13 +276,42 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
     fun onAction(action: DownloaderAction) {
         when (action) {
             is DownloaderAction.Download -> download(action.item, action.storageIndex)
+            is DownloaderAction.DownloadMany -> downloadMany(action.items, action.storageIndex)
             is DownloaderAction.DeleteDownload -> deleteDownload(action.item)
+            is DownloaderAction.DeleteDownloadMany -> deleteDownloadMany(action.items)
             is DownloaderAction.CancelDownload -> cancelDownload(action.item)
+            is DownloaderAction.CancelDownloadMany -> cancelDownloadMany()
         }
     }
 
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
+        queueJob?.cancel()
     }
+}
+
+/** One queued item, with a count of what is outstanding to explain why it is waiting. */
+internal fun DownloadEntry.toDownloaderState(all: List<DownloadEntry>): DownloaderState {
+    val status =
+        when (status) {
+            DownloadEntryStatus.RUNNING -> DownloadManager.STATUS_RUNNING
+            DownloadEntryStatus.PAUSED -> DownloadManager.STATUS_PAUSED
+            DownloadEntryStatus.SUCCEEDED -> DownloadManager.STATUS_SUCCESSFUL
+            DownloadEntryStatus.FAILED -> DownloadManager.STATUS_FAILED
+            // QUEUED or PREPARING: accepted, but no bytes are moving for it yet.
+            else -> DownloadManager.STATUS_PENDING
+        }
+    val outstanding = all.count { !it.status.isTerminal }
+    val done = all.count { it.status == DownloadEntryStatus.SUCCEEDED }
+    val counted = all.size > 1
+    return DownloaderState(
+        status = status,
+        // -1 means the total size is unknown, which is not the same as no progress.
+        progress = progress.takeIf { it >= 0 }?.div(100f)?.coerceIn(0f, 1f),
+        bytesDownloaded = bytesDownloaded,
+        errorText = errorText,
+        itemsCompleted = (done + 1).coerceAtMost(all.size).takeIf { counted && outstanding > 0 },
+        itemsTotal = all.size.takeIf { counted && outstanding > 0 },
+    )
 }
