@@ -58,6 +58,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import dev.jdtech.jellyfin.utils.ObserveAsEvents
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
 
@@ -155,6 +156,7 @@ private fun MovieScreenLayout(
                         ) {
                             Text(
                                 text = movie.name,
+                                modifier = Modifier.copyOnLongClick(movie.name),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 3,
                                 style = MaterialTheme.typography.headlineMedium,
@@ -163,6 +165,7 @@ private fun MovieScreenLayout(
                                 if (originalTitle != movie.name) {
                                     Text(
                                         text = originalTitle,
+                                        modifier = Modifier.copyOnLongClick(originalTitle),
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
                                         style = MaterialTheme.typography.bodyMedium,
@@ -180,24 +183,35 @@ private fun MovieScreenLayout(
                         verticalAlignment = Alignment.Bottom,
                     ) {
                         movie.premiereDate?.let { premiereDate ->
+                            val premiereDateText = premiereDate.year.toString()
                             Text(
-                                text = premiereDate.year.toString(),
+                                text = premiereDateText,
+                                modifier = Modifier.copyOnLongClick(premiereDateText),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
+                        val runtimeText = stringResource(
+                            CoreR.string.runtime_minutes,
+                            movie.runtimeTicks.div(600000000),
+                        )
                         Text(
-                            text =
-                                stringResource(
-                                    CoreR.string.runtime_minutes,
-                                    movie.runtimeTicks.div(600000000),
-                                ),
+                            text = runtimeText,
+                            modifier = Modifier.copyOnLongClick(runtimeText),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         movie.officialRating?.let { officialRating ->
-                            Text(text = officialRating, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                text = officialRating,
+                                modifier = Modifier.copyOnLongClick(officialRating),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                         movie.communityRating?.let { communityRating ->
-                            Row(verticalAlignment = Alignment.Bottom) {
+                            val ratingText = "%.1f".format(communityRating)
+                            Row(
+                                modifier = Modifier.copyOnLongClick(ratingText),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),
                                     contentDescription = null,
