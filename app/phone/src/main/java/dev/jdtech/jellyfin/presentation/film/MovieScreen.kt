@@ -244,6 +244,7 @@ private fun MovieScreenLayout(
                         onDownloadDeleteClick = {
                             onDownloaderAction(DownloaderAction.DeleteDownload(movie))
                         },
+                        onShuffleClick = {},
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))

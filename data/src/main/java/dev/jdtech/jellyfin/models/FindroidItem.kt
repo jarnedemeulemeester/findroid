@@ -15,6 +15,7 @@ interface FindroidItem {
     val favorite: Boolean
     val canPlay: Boolean
     val canDownload: Boolean
+    val canShuffle: Boolean
     val sources: List<FindroidSource>
     val runtimeTicks: Long
     val playbackPositionTicks: Long
