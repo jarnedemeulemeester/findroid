@@ -29,6 +29,7 @@ import dev.jdtech.jellyfin.models.toFindroidSource
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.io.File
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -61,6 +62,8 @@ class JellyfinRepositoryImpl(
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
 ) : JellyfinRepository {
+    private val episodeSeasonIdFallbacks = ConcurrentHashMap<UUID, UUID>()
+
     override suspend fun getPublicSystemInfo(): PublicSystemInfo =
         withContext(Dispatchers.IO) { jellyfinApi.systemApi.getPublicSystemInfo().content }
 
@@ -74,7 +77,11 @@ class JellyfinRepositoryImpl(
             jellyfinApi.userLibraryApi
                 .getItem(itemId, jellyfinApi.userId!!)
                 .content
-                .toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
+                .withFallbackSeasonId(episodeSeasonIdFallbacks[itemId])
+                .toFindroidEpisode(
+                    jellyfinRepository = this@JellyfinRepositoryImpl,
+                    database = database,
+                )!!
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
@@ -284,24 +291,41 @@ class JellyfinRepositoryImpl(
     ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
             if (!offline) {
-                jellyfinApi.showsApi
-                    .getEpisodes(
-                        seriesId,
-                        jellyfinApi.userId!!,
-                        seasonId = seasonId,
-                        fields = fields,
-                        startItemId = startItemId,
-                        limit = limit,
-                    )
+                val episodes =
+                    jellyfinApi.showsApi
+                        .getEpisodes(
+                            seriesId,
+                            jellyfinApi.userId!!,
+                            seasonId = seasonId,
+                            fields = fields,
+                            startItemId = startItemId,
+                            limit = limit,
+                        )
                     .content
                     .items
-                    .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
+
+                episodes.forEach { episode -> episodeSeasonIdFallbacks[episode.id] = seasonId }
+
+                episodes.mapNotNull {
+                    it.withFallbackSeasonId(seasonId).toFindroidEpisode(
+                        jellyfinRepository = this@JellyfinRepositoryImpl,
+                        database = database,
+                    )
+                }
             } else {
                 database.getEpisodesBySeasonId(seasonId).map {
                     it.toFindroidEpisode(database, jellyfinApi.userId!!)
                 }
             }
         }
+
+    private fun BaseItemDto.withFallbackSeasonId(fallbackSeasonId: UUID?): BaseItemDto {
+        return if (seasonId == null && fallbackSeasonId != null) {
+            copy(seasonId = fallbackSeasonId)
+        } else {
+            this
+        }
+    }
 
     override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
         withContext(Dispatchers.IO) {
