@@ -38,6 +38,7 @@ import dev.jdtech.jellyfin.film.presentation.library.LibraryAction
 import dev.jdtech.jellyfin.film.presentation.library.LibraryState
 import dev.jdtech.jellyfin.film.presentation.library.LibraryViewModel
 import dev.jdtech.jellyfin.models.CollectionType
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidFolder
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
@@ -59,6 +60,7 @@ fun LibraryScreen(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
+    navigateToEpisode: (itemId: UUID) -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -75,6 +77,7 @@ fun LibraryScreen(
 
     LibraryScreenLayout(
         libraryName = libraryName,
+        libraryType = libraryType,
         state = state,
         onAction = { action ->
             when (action) {
@@ -82,6 +85,7 @@ fun LibraryScreen(
                     when (action.item) {
                         is FindroidMovie -> navigateToMovie(action.item.id)
                         is FindroidShow -> navigateToShow(action.item.id)
+                        is FindroidEpisode -> navigateToEpisode(action.item.id)
                         is FindroidFolder ->
                             navigateToLibrary(action.item.id, action.item.name, libraryType)
                     }
@@ -96,6 +100,7 @@ fun LibraryScreen(
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,
+    libraryType: CollectionType,
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
 ) {
@@ -138,7 +143,12 @@ private fun LibraryScreenLayout(
             item?.let {
                 ItemCard(
                     item = item,
-                    direction = Direction.VERTICAL,
+                    direction =
+                        if (state.sortBy.displaysEpisodes) {
+                            Direction.HORIZONTAL
+                        } else {
+                            Direction.VERTICAL
+                        },
                     onClick = { onAction(LibraryAction.OnItemClick(item)) },
                     modifier = Modifier.animateItem(),
                 )
@@ -150,6 +160,7 @@ private fun LibraryScreenLayout(
         SortByDialog(
             currentSortBy = state.sortBy,
             currentSortOrder = state.sortOrder,
+            includeEpisodeSortOptions = libraryType == CollectionType.TvShows,
             onUpdate = { sortBy, sortOrder ->
                 onAction(LibraryAction.ChangeSorting(sortBy, sortOrder))
             },
@@ -171,6 +182,7 @@ private fun LibraryScreenLayoutPreview() {
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
+            libraryType = CollectionType.Movies,
             state = LibraryState(items = items),
             onAction = {},
         )
