@@ -109,6 +109,7 @@ fun EpisodeScreen(
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", episodeId.toString())
                     intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
+                    intent.putExtra("mediaSourceId", action.mediaSourceId)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)
                 }
@@ -222,8 +223,8 @@ private fun EpisodeScreenLayout(
                     ItemButtonsBar(
                         item = episode,
                         downloaderState = downloaderState,
-                        onPlayClick = { startFromBeginning ->
-                            onAction(EpisodeAction.Play(startFromBeginning = startFromBeginning))
+                        onPlayClick = { playOptions ->
+                            onAction(EpisodeAction.Play(playOptions.first, playOptions.second))
                         },
                         onMarkAsPlayedClick = {
                             when (episode.played) {
@@ -238,8 +239,14 @@ private fun EpisodeScreenLayout(
                             }
                         },
                         onTrailerClick = {},
-                        onDownloadClick = { storageIndex ->
-                            onDownloaderAction(DownloaderAction.Download(episode, storageIndex))
+                        onDownloadClick = { downloadOptions ->
+                            onDownloaderAction(
+                                DownloaderAction.Download(
+                                    episode,
+                                    downloadOptions.first,
+                                    downloadOptions.second,
+                                )
+                            )
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(DownloaderAction.CancelDownload(episode))
