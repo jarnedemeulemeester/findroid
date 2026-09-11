@@ -41,6 +41,7 @@ data class FindroidEpisodeDto(
     val premiereDate: LocalDateTime?,
     val communityRating: Float?,
     val chapters: List<FindroidChapter>?,
+    val additionalPartIds: List<UUID>? = emptyList(),
 )
 
 fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpisodeDto {
@@ -59,5 +60,6 @@ fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpis
         premiereDate = premiereDate,
         communityRating = communityRating,
         chapters = chapters,
+        additionalPartIds = additionalParts.map { it.id },
     )
 }
