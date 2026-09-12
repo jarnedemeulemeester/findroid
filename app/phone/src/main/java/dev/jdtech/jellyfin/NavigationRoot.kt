@@ -226,6 +226,8 @@ fun NavigationRoot(
             startDestination = startDestination,
             enterTransition = { fadeIn(tween(300)) },
             exitTransition = { fadeOut(tween(300)) },
+            predictivePopEnterTransition = { fadeIn(tween(300)) },
+            predictivePopExitTransition = { fadeOut(tween(300)) },
         ) {
             composable<WelcomeRoute> {
                 WelcomeScreen(onContinueClick = { navController.safeNavigate(ServersRoute) })
