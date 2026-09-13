@@ -25,6 +25,7 @@ data class FindroidSeason(
     override val unplayedItemCount: Int?,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter> = emptyList(),
+    override val additionalParts: List<FindroidPart> = emptyList(),
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidSeason(jellyfinRepository: JellyfinRepository): FindroidSeason {

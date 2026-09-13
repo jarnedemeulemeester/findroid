@@ -1,7 +1,9 @@
 package dev.jdtech.jellyfin.models
 
+import kotlinx.serialization.Serializable
 import org.jellyfin.sdk.model.api.TrickplayInfoDto
 
+@Serializable
 data class FindroidTrickplayInfo(
     val width: Int,
     val height: Int,

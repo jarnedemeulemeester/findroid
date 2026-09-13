@@ -44,6 +44,7 @@
     <string name="view_details">View details</string>
     <string name="view_details_underlined"><u>View details</u></string>
     <string name="unknown_error">Unknown error</string>
+    <string name="info">Extra info</string>
   	<string name="search_hint">Search movies, shows, episodes…</string>
     <string name="download_button_description">Download</string>
     <string name="person_detail_title">Details</string>
@@ -109,4 +110,8 @@
     <string name="download_paused">Paused</string>
     <string name="download_downloading">Downloading…</string>
     <string name="download_failed">Failed to download</string>
+    <string name="part_name">Part %1$s</string>
+    <string name="cd_name">CD %1$s</string>
+    <string name="dvd_name">DVD %1$s</string>
+    <string name="disc_name">Disc %1$s</string>
 </resources>

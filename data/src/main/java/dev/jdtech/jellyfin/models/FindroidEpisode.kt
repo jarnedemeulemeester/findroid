@@ -35,6 +35,7 @@ data class FindroidEpisode(
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>,
     override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
+    override val additionalParts: List<FindroidPart> = emptyList(),
 ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidEpisode(
@@ -74,6 +75,18 @@ suspend fun BaseItemDto.toFindroidEpisode(
             chapters = toFindroidChapters(),
             trickplayInfo =
                 trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
+            additionalParts = if ((partCount ?: 0) > 1) {
+                jellyfinRepository.getAdditionalParts(id).map {
+                    it.copy(
+                        parentName = name.orEmpty(),
+                        parentIndexNumber = parentIndexNumber,
+                        indexNumber = indexNumber,
+                        indexNumberEnd = indexNumberEnd
+                    )
+                }
+            } else {
+                emptyList()
+            },
         )
     } catch (_: NullPointerException) {
         null
@@ -117,5 +130,13 @@ fun FindroidEpisodeDto.toFindroidEpisode(
         images = toLocalFindroidImages(itemId = id),
         chapters = chapters ?: emptyList(),
         trickplayInfo = trickplayInfos,
+        additionalParts = additionalPartIds?.takeIf { it.isNotEmpty() }?.let { database.getParts(it) }?.map {
+            it.toFindroidPart(database, userId).copy(
+                parentName = name,
+                parentIndexNumber = parentIndexNumber,
+                indexNumber = indexNumber,
+                indexNumberEnd = indexNumberEnd
+            )
+        } ?: emptyList(),
     )
 }

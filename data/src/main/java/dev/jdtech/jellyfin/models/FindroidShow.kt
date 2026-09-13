@@ -31,6 +31,7 @@ data class FindroidShow(
     val trailer: String?,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter> = emptyList(),
+    override val additionalParts: List<FindroidPart> = emptyList(),
 ) : FindroidItem
 
 fun BaseItemDto.toFindroidShow(jellyfinRepository: JellyfinRepository): FindroidShow {

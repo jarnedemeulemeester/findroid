@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import dev.jdtech.jellyfin.player.local.R
+import dev.jdtech.jellyfin.utils.getTranslatablePartName
 import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
 import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class PlayerViewModel
@@ -234,11 +236,19 @@ constructor(
             }
 
         Timber.d("Stream url: $streamUrl")
+
+        val partName = this.partName
+        val title = if (partName != null) {
+            "$name - ${partName.getTranslatablePartName(application)}"
+        } else {
+            name
+        }
+
         val mediaItem =
             MediaItem.Builder()
                 .setMediaId(itemId.toString())
                 .setUri(streamUrl)
-                .setMediaMetadata(MediaMetadata.Builder().setTitle(name).build())
+                .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build())
                 .setSubtitleConfigurations(mediaSubtitles)
                 .build()
 
@@ -251,7 +261,7 @@ constructor(
         val position = player.currentPosition
         val duration = player.duration
         GlobalScope.launch {
-            delay(200L)
+            delay(200L.milliseconds)
             try {
                 if (mediaId != null && duration != C.TIME_UNSET) {
                     Timber.d("Sending playback stop")
@@ -351,13 +361,24 @@ constructor(
                     .let { item ->
                         val itemTitle =
                             if (item.parentIndexNumber != null && item.indexNumber != null) {
-                                if (item.indexNumberEnd == null) {
-                                    "S${item.parentIndexNumber}:E${item.indexNumber} - ${item.name}"
+                                val baseStr = if (item.indexNumberEnd == null) {
+                                    "S${item.parentIndexNumber}:E${item.indexNumber}"
                                 } else {
-                                    "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd} - ${item.name}"
+                                    "S${item.parentIndexNumber}:E${item.indexNumber}-${item.indexNumberEnd}"
+                                }
+                                val partName = item.partName
+                                if (partName != null) {
+                                    "$baseStr - ${partName.getTranslatablePartName(application)} - ${item.name}"
+                                } else {
+                                    "$baseStr - ${item.name}"
                                 }
                             } else {
-                                item.name
+                                val partName = item.partName
+                                if (partName != null) {
+                                    "${item.name} - ${partName.getTranslatablePartName(application)}"
+                                } else {
+                                    item.name
+                                }
                             }
                         _uiState.update {
                             it.copy(
@@ -454,7 +475,6 @@ constructor(
     }
 
     override fun onCleared() {
-        super.onCleared()
         Timber.d("Clearing Player ViewModel")
         releasePlayer()
     }

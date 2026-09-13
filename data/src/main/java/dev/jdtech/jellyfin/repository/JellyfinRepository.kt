@@ -20,7 +20,11 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
 
+import dev.jdtech.jellyfin.models.FindroidPart
+
 interface JellyfinRepository {
+    suspend fun getAdditionalParts(itemId: UUID): List<FindroidPart>
+
     suspend fun getPublicSystemInfo(): PublicSystemInfo
 
     suspend fun getUserViews(): List<BaseItemDto>
