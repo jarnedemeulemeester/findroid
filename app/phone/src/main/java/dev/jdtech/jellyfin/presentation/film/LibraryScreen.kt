@@ -82,6 +82,7 @@ fun LibraryScreen(
 
     LibraryScreenLayout(
         libraryName = libraryName,
+        libraryType = libraryType,
         state = state,
         onAction = { action ->
             when (action) {
@@ -98,6 +99,7 @@ fun LibraryScreen(
 @Composable
 private fun LibraryScreenLayout(
     libraryName: String,
+    libraryType: CollectionType,
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
 ) {
@@ -156,9 +158,14 @@ private fun LibraryScreenLayout(
                     item?.let { item ->
                         ItemCard(
                             item = item,
-                            direction = Direction.VERTICAL,
+                            direction =
+                                if (state.sortBy.displaysEpisodes) {
+                                    Direction.HORIZONTAL
+                                } else {
+                                    Direction.VERTICAL
+                                },
                             onClick = { onAction(LibraryAction.OnItemClick(item)) },
-                            modifier = Modifier.animateItem(),
+                            modifier = Modifier.fillMaxWidth().animateItem(),
                         )
                     }
                 }
@@ -170,6 +177,7 @@ private fun LibraryScreenLayout(
         SortByDialog(
             currentSortBy = state.sortBy,
             currentSortOrder = state.sortOrder,
+            includeEpisodeSortOptions = libraryType == CollectionType.TvShows,
             onUpdate = { sortBy, sortOrder ->
                 onAction(LibraryAction.ChangeSorting(sortBy, sortOrder))
             },
@@ -219,6 +227,7 @@ private fun LibraryScreenLayoutPreview() {
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
+            libraryType = CollectionType.Movies,
             state = LibraryState(items = items),
             onAction = {},
         )
