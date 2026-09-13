@@ -34,6 +34,7 @@ dependencies {
     implementation(projects.player.core)
     implementation(projects.settings)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
