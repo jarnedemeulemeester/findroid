@@ -60,18 +60,18 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
         }
     }
 
-    private fun checkHasServers(): Boolean {
+    private suspend fun checkHasServers(): Boolean {
         val nServers = database.getServersCount()
         return nServers > 0
     }
 
-    private fun checkHasCurrentServer(): Boolean {
+    private suspend fun checkHasCurrentServer(): Boolean {
         return appPreferences.getValue(appPreferences.currentServer)?.let {
-            database.get(it) != null
+            database.getServer(it) != null
         } == true
     }
 
-    private fun checkHasCurrentUser(): Boolean {
+    private suspend fun checkHasCurrentUser(): Boolean {
         return appPreferences.getValue(appPreferences.currentServer)?.let {
             database.getServerCurrentUser(it) != null
         } == true

@@ -37,7 +37,7 @@ constructor(
             )
 
         return withContext(Dispatchers.IO) {
-            val servers = database.getAllServersSync()
+            val servers = database.getServers()
 
             for (server in servers) {
                 val serverWithAddressesAndUsers =

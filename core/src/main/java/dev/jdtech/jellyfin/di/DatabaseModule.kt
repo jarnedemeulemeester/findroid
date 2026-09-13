@@ -21,7 +21,6 @@ object DatabaseModule {
         return Room.databaseBuilder(app.applicationContext, ServerDatabase::class.java, "servers")
             .addMigrations(MIGRATION_6_7)
             .fallbackToDestructiveMigration(dropAllTables = true)
-            .allowMainThreadQueries()
             .build()
             .getServerDatabaseDao()
     }

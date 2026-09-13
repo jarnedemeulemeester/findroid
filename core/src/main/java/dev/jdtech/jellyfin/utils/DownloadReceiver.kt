@@ -15,7 +15,7 @@ import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 
 @AndroidEntryPoint
 class DownloadReceiver : BroadcastReceiver() {
@@ -26,50 +26,51 @@ class DownloadReceiver : BroadcastReceiver() {
 
     @Inject lateinit var repository: JellyfinRepository
 
-    override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == "android.intent.action.DOWNLOAD_COMPLETE") {
-            val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            if (id != -1L) {
-                val source = database.getSourceByDownloadId(id)
-                if (source != null) {
-                    val path = source.path.replace(".download", "")
-                    val successfulRename = File(source.path).renameTo(File(path))
-                    if (successfulRename) {
-                        database.setSourcePath(source.id, path)
-                    } else {
-                        val items = mutableListOf<FindroidItem>()
-                        items.addAll(
-                            database.getMovies().map {
-                                it.toFindroidMovie(database, repository.getUserId())
-                            }
-                        )
-                        items.addAll(
-                            database.getEpisodes().map {
-                                it.toFindroidEpisode(database, repository.getUserId())
-                            }
-                        )
+    private val ioScope: CoroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
-                        items
-                            .firstOrNull { it.id == source.itemId }
-                            ?.let {
-                                CoroutineScope(Dispatchers.IO).launch {
+    override fun onReceive(context: Context, intent: Intent) =
+        launchAsync(ioScope) {
+            if (intent.action == "android.intent.action.DOWNLOAD_COMPLETE") {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                if (id != -1L) {
+                    val source = database.getSourceByDownloadId(id)
+                    if (source != null) {
+                        val path = source.path.replace(".download", "")
+                        val successfulRename = File(source.path).renameTo(File(path))
+                        if (successfulRename) {
+                            database.setSourcePath(source.id, path)
+                        } else {
+                            val items = mutableListOf<FindroidItem>()
+                            items.addAll(
+                                database.getMovies().map {
+                                    it.toFindroidMovie(database, repository.getUserId())
+                                }
+                            )
+                            items.addAll(
+                                database.getEpisodes().map {
+                                    it.toFindroidEpisode(database, repository.getUserId())
+                                }
+                            )
+
+                            items
+                                .firstOrNull { it.id == source.itemId }
+                                ?.let {
                                     downloader.deleteItem(it, source.toFindroidSource(database))
                                 }
+                        }
+                    } else {
+                        val mediaStream = database.getMediaStreamByDownloadId(id)
+                        if (mediaStream != null) {
+                            val path = mediaStream.path.replace(".download", "")
+                            val successfulRename = File(mediaStream.path).renameTo(File(path))
+                            if (successfulRename) {
+                                database.setMediaStreamPath(mediaStream.id, path)
+                            } else {
+                                database.deleteMediaStream(mediaStream.id)
                             }
-                    }
-                } else {
-                    val mediaStream = database.getMediaStreamByDownloadId(id)
-                    if (mediaStream != null) {
-                        val path = mediaStream.path.replace(".download", "")
-                        val successfulRename = File(mediaStream.path).renameTo(File(path))
-                        if (successfulRename) {
-                            database.setMediaStreamPath(mediaStream.id, path)
-                        } else {
-                            database.deleteMediaStream(mediaStream.id)
                         }
                     }
                 }
             }
         }
-    }
 }

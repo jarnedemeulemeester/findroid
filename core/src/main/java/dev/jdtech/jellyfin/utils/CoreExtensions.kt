@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.utils
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.res.Resources
 import android.util.Base64
@@ -11,6 +12,8 @@ import java.nio.charset.StandardCharsets
 import java.text.DateFormat
 import java.time.ZoneOffset
 import java.util.Date
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.DateTime
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -43,4 +46,12 @@ fun DateTime.format(): String {
     val instant = this.toInstant(ZoneOffset.UTC)
     val date = Date.from(instant)
     return DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+}
+
+fun BroadcastReceiver.launchAsync(
+    coroutineScope: CoroutineScope,
+    block: suspend CoroutineScope.() -> Unit,
+) {
+    val pendingResult = goAsync()
+    coroutineScope.launch(block = block).invokeOnCompletion { pendingResult.finish() }
 }
