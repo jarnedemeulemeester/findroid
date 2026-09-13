@@ -132,44 +132,46 @@ constructor(
                 )
         )
 
-
         val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
-        player = when (playerBackend) {
-            "exoplayer" -> {
-                val renderersFactory =
-                    DefaultRenderersFactory(application)
-                        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-                ExoPlayer.Builder(application, renderersFactory)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelector(trackSelector)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .build()
-            }
-            "mpv" -> {
-                MPVPlayer.Builder(application)
-                    .setAudioAttributes(audioAttributes, true)
-                    .setTrackSelectionParameters(trackSelector.parameters)
-                    .setSeekBackIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekBackInc)
-                    )
-                    .setSeekForwardIncrementMs(
-                        appPreferences.getValue(appPreferences.playerSeekForwardInc)
-                    )
-                    .setPauseAtEndOfMediaItems(true)
-                    .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
-                    .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
-                    .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
-                    .build()
-            }
+        player =
+            when (playerBackend) {
+                "exoplayer" -> {
+                    val renderersFactory =
+                        DefaultRenderersFactory(application)
+                            .setExtensionRendererMode(
+                                DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+                            )
+                    ExoPlayer.Builder(application, renderersFactory)
+                        .setAudioAttributes(audioAttributes, true)
+                        .setTrackSelector(trackSelector)
+                        .setSeekBackIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekBackInc)
+                        )
+                        .setSeekForwardIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                        )
+                        .setPauseAtEndOfMediaItems(true)
+                        .build()
+                }
+                "mpv" -> {
+                    MPVPlayer.Builder(application)
+                        .setAudioAttributes(audioAttributes, true)
+                        .setTrackSelectionParameters(trackSelector.parameters)
+                        .setSeekBackIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekBackInc)
+                        )
+                        .setSeekForwardIncrementMs(
+                            appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                        )
+                        .setPauseAtEndOfMediaItems(true)
+                        .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
+                        .setAudioOutput(appPreferences.getValue(appPreferences.playerMpvAo))
+                        .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
+                        .build()
+                }
 
-            else -> throw RuntimeException("$playerBackend is not a valid player backend")
-        }
+                else -> throw RuntimeException("$playerBackend is not a valid player backend")
+            }
     }
 
     fun initializePlayer(itemId: UUID, itemKind: String, startFromBeginning: Boolean) {
@@ -222,16 +224,15 @@ constructor(
 
     private fun PlayerItem.toMediaItem(): MediaItem {
         val streamUrl = mediaSourceUri
-        val mediaSubtitles =
-            externalSubtitles.map { externalSubtitle ->
-                MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
-                    .setLabel(
-                        externalSubtitle.title.ifBlank { application.getString(R.string.external) }
-                    )
-                    .setMimeType(externalSubtitle.mimeType)
-                    .setLanguage(externalSubtitle.language)
-                    .build()
-            }
+        val mediaSubtitles = externalSubtitles.map { externalSubtitle ->
+            MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
+                .setLabel(
+                    externalSubtitle.title.ifBlank { application.getString(R.string.external) }
+                )
+                .setMimeType(externalSubtitle.mimeType)
+                .setLanguage(externalSubtitle.language)
+                .build()
+        }
 
         Timber.d("Stream url: $streamUrl")
         val mediaItem =
@@ -303,10 +304,9 @@ constructor(
             val milliSeconds = player.currentPosition
 
             // Get current segment, - 100 milliseconds to avoid showing button after segment ends
-            val currentSegment =
-                currentMediaItemSegments.find { segment ->
-                    milliSeconds in segment.startTicks..<(segment.endTicks - 100L)
-                }
+            val currentSegment = currentMediaItemSegments.find { segment ->
+                milliSeconds in segment.startTicks..<(segment.endTicks - 100L)
+            }
 
             if (currentSegment == null) {
                 // Remove button if not pressed and there is no current segment

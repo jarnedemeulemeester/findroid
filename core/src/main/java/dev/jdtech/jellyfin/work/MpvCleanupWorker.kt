@@ -9,9 +9,7 @@ import dagger.assisted.AssistedInject
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.io.File
 
-/**
- * Clean up any files from before the mpv config and cache directories were changed.
- */
+/** Clean up any files from before the mpv config and cache directories were changed. */
 @HiltWorker
 class MpvCleanupWorker
 @AssistedInject
@@ -52,11 +50,9 @@ constructor(
         val oldConfigDir = File(context.filesDir, "mpv")
         if (oldConfigDir.exists()) {
             File(oldConfigDir, "subfont.ttf").delete()
-            oldConfigDir.listFiles { _, name ->
-                name.startsWith("shader_")
-            }?.forEach {
-                it.delete()
-            }
+            oldConfigDir
+                .listFiles { _, name -> name.startsWith("shader_") }
+                ?.forEach { it.delete() }
         }
     }
 }

@@ -1,4 +1,4 @@
-name: Lint
+name: Format
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
       - '**.kts'
 
 jobs:
-  lint:
-    name: Lint
+  format:
+    name: Format
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository

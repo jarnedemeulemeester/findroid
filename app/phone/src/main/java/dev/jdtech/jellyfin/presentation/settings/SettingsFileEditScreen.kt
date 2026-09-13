@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.AlertDialog
@@ -26,6 +24,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,9 +49,7 @@ fun SettingsFileEditScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(filePath) {
-        viewModel.loadFile(filePath = filePath)
-    }
+    LaunchedEffect(filePath) { viewModel.loadFile(filePath = filePath) }
 
     SettingsFileEditScreenLayout(
         fileName = filePath.split("/").last(),
@@ -83,9 +81,7 @@ private fun SettingsFileEditScreenLayout(
     }
 
     var showDiscardDialog by remember { mutableStateOf(false) }
-    BackHandler(isModified) {
-        showDiscardDialog = true
-    }
+    BackHandler(isModified) { showDiscardDialog = true }
 
     Scaffold(
         modifier = Modifier.imePadding(),
@@ -124,10 +120,7 @@ private fun SettingsFileEditScreenLayout(
     ) { innerPadding ->
         TextField(
             state = textFieldState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .focusRequester(focusRequester),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).focusRequester(focusRequester),
             textStyle =
                 TextStyle(
                     fontSize = 14.sp,

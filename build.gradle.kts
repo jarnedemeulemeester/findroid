@@ -18,7 +18,7 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "com.ncorti.ktfmt.gradle")
+    plugins.apply("com.ncorti.ktfmt.gradle")
 
     configure<com.ncorti.ktfmt.gradle.KtfmtExtension> {
         kotlinLangStyle()
@@ -26,5 +26,6 @@ subprojects {
 }
 
 tasks.register<Delete>("clean") {
+    description = "Deletes all build artifacts."
     delete(rootProject.layout.buildDirectory)
 }

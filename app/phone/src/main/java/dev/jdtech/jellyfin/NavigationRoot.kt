@@ -105,9 +105,7 @@ data class LibraryRoute(
 
 @Serializable data class SettingsRoute(val indexes: IntArray)
 
-@Serializable data class SettingsFileEditRoute(
-    val filePath: String,
-)
+@Serializable data class SettingsFileEditRoute(val filePath: String)
 
 @Serializable data object AboutRoute
 
@@ -460,7 +458,8 @@ fun NavigationRoot(
                 val route: SettingsFileEditRoute = backStackEntry.toRoute()
                 SettingsFileEditScreen(
                     filePath = route.filePath,
-                    navigateBack = { navController.safePopBackStack() })
+                    navigateBack = { navController.safePopBackStack() },
+                )
             }
             composable<AboutRoute> {
                 AboutScreen(navigateBack = { navController.safePopBackStack() })

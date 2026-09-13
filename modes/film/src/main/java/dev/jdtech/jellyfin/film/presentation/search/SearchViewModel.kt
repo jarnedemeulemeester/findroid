@@ -22,23 +22,22 @@ class SearchViewModel @Inject constructor(private val repository: JellyfinReposi
 
     private fun search(query: String) {
         currentJob?.cancel()
-        currentJob =
-            viewModelScope.launch {
-                try {
-                    if (query.isBlank()) {
-                        _state.emit(SearchState(items = emptyList(), loading = false))
-                        return@launch
-                    }
-
-                    _state.emit(_state.value.copy(loading = true))
-                    val items = repository.getSearchItems(query)
-
-                    _state.emit(SearchState(items = items, loading = false))
-                } catch (_: CancellationException) {} catch (e: Exception) {
-                    Timber.e(e)
-                    _state.emit(_state.value.copy(loading = false))
+        currentJob = viewModelScope.launch {
+            try {
+                if (query.isBlank()) {
+                    _state.emit(SearchState(items = emptyList(), loading = false))
+                    return@launch
                 }
+
+                _state.emit(_state.value.copy(loading = true))
+                val items = repository.getSearchItems(query)
+
+                _state.emit(SearchState(items = items, loading = false))
+            } catch (_: CancellationException) {} catch (e: Exception) {
+                Timber.e(e)
+                _state.emit(_state.value.copy(loading = false))
             }
+        }
     }
 
     fun onAction(action: SearchAction) {

@@ -71,7 +71,8 @@ fun SettingsScreen(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is SettingsEvent.NavigateToSettings -> navigateToSettings(event.indexes)
-            is SettingsEvent.NavigateToSettingsFileEdit -> navigateToSettingsFileEdit(event.filePath)
+            is SettingsEvent.NavigateToSettingsFileEdit ->
+                navigateToSettingsFileEdit(event.filePath)
             is SettingsEvent.NavigateToUsers -> navigateToUsers()
             is SettingsEvent.NavigateToServers -> navigateToServers()
             is SettingsEvent.NavigateToAbout -> navigateToAbout()

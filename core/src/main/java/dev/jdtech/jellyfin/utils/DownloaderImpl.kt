@@ -225,7 +225,9 @@ class DownloaderImpl(
                     DownloadManager.STATUS_RUNNING -> {
                         val totalBytes =
                             cursor.getLong(
-                                cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+                                cursor.getColumnIndexOrThrow(
+                                    DownloadManager.COLUMN_TOTAL_SIZE_BYTES
+                                )
                             )
                         if (totalBytes > 0) {
                             val downloadedBytes =

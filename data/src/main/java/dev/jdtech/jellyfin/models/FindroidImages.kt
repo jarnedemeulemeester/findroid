@@ -41,30 +41,27 @@ fun BaseItemDto.toFindroidImages(jellyfinRepository: JellyfinRepository): Findro
                 .appendQueryParameter("tag", tag)
                 .build()
         }
-    val showPrimary =
-        seriesPrimaryImageTag?.let { tag ->
-            baseUrl
-                .buildUpon()
-                .appendEncodedPath("items/$seriesId/Images/${ImageType.PRIMARY}")
-                .appendQueryParameter("tag", tag)
-                .build()
-        }
-    val showBackdrop =
-        seriesPrimaryImageTag?.let { tag ->
-            baseUrl
-                .buildUpon()
-                .appendEncodedPath("items/$seriesId/Images/${ImageType.BACKDROP}/0")
-                .appendQueryParameter("tag", tag)
-                .build()
-        }
-    val showLogo =
-        seriesPrimaryImageTag?.let { tag ->
-            baseUrl
-                .buildUpon()
-                .appendEncodedPath("items/$seriesId/Images/${ImageType.LOGO}")
-                .appendQueryParameter("tag", tag)
-                .build()
-        }
+    val showPrimary = seriesPrimaryImageTag?.let { tag ->
+        baseUrl
+            .buildUpon()
+            .appendEncodedPath("items/$seriesId/Images/${ImageType.PRIMARY}")
+            .appendQueryParameter("tag", tag)
+            .build()
+    }
+    val showBackdrop = seriesPrimaryImageTag?.let { tag ->
+        baseUrl
+            .buildUpon()
+            .appendEncodedPath("items/$seriesId/Images/${ImageType.BACKDROP}/0")
+            .appendQueryParameter("tag", tag)
+            .build()
+    }
+    val showLogo = seriesPrimaryImageTag?.let { tag ->
+        baseUrl
+            .buildUpon()
+            .appendEncodedPath("items/$seriesId/Images/${ImageType.LOGO}")
+            .appendQueryParameter("tag", tag)
+            .build()
+    }
 
     return FindroidImages(
         primary = primary,
