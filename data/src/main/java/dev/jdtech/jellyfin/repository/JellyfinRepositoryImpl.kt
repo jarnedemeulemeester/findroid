@@ -84,12 +84,12 @@ class JellyfinRepositoryImpl(
         apiCall { jellyfinApi.systemApi.getPublicSystemInfo().content }
 
     override suspend fun getUserViews(): List<BaseItemDto> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.viewsApi.getUserViews(jellyfinApi.userId!!).content.items
         }
 
     override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.userLibraryApi
                 .getItem(itemId, jellyfinApi.userId!!)
                 .content
@@ -97,7 +97,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.userLibraryApi
                 .getItem(itemId, jellyfinApi.userId!!)
                 .content
@@ -105,7 +105,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.userLibraryApi
                 .getItem(itemId, jellyfinApi.userId!!)
                 .content
@@ -113,7 +113,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getSeason(itemId: UUID): FindroidSeason =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.userLibraryApi
                 .getItem(itemId, jellyfinApi.userId!!)
                 .content
@@ -121,14 +121,14 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.itemsApi.getItems(jellyfinApi.userId!!).content.items.mapNotNull {
                 it.toFindroidCollection(this@JellyfinRepositoryImpl)
             }
         }
 
     override suspend fun getItem(itemId: UUID): FindroidItem? =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.userLibraryApi
                 .getItem(itemId = itemId, userId = jellyfinApi.userId!!)
                 .content
@@ -144,7 +144,7 @@ class JellyfinRepositoryImpl(
         startIndex: Int?,
         limit: Int?,
     ): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.itemsApi
                 .getItems(
                     jellyfinApi.userId!!,
@@ -178,7 +178,7 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun getPerson(personId: UUID): FindroidPerson =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.userLibraryApi
                 .getItem(personId, jellyfinApi.userId!!)
                 .content
@@ -190,7 +190,7 @@ class JellyfinRepositoryImpl(
         includeTypes: List<BaseItemKind>?,
         recursive: Boolean,
     ): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.itemsApi
                 .getItems(
                     jellyfinApi.userId!!,
@@ -204,7 +204,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getFavoriteItems(): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.itemsApi
                 .getItems(
                     jellyfinApi.userId!!,
@@ -219,7 +219,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getSearchItems(query: String): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.itemsApi
                 .getItems(
                     jellyfinApi.userId!!,
@@ -233,7 +233,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getSuggestions(): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.suggestionsApi
                 .getSuggestions(
                     jellyfinApi.userId!!,
@@ -246,7 +246,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getResumeItems(): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.itemsApi
                 .getResumeItems(
                     jellyfinApi.userId!!,
@@ -259,7 +259,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.userLibraryApi
                 .getLatestMedia(jellyfinApi.userId!!, parentId = parentId, limit = 16)
                 .content
@@ -267,7 +267,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getSeasons(seriesId: UUID, offline: Boolean): List<FindroidSeason> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             if (!offline) {
                 jellyfinApi.showsApi.getSeasons(seriesId, jellyfinApi.userId!!).content.items.map {
                     it.toFindroidSeason(this@JellyfinRepositoryImpl)
@@ -280,7 +280,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.showsApi
                 .getNextUp(
                     jellyfinApi.userId!!,
@@ -301,7 +301,7 @@ class JellyfinRepositoryImpl(
         limit: Int?,
         offline: Boolean,
     ): List<FindroidEpisode> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             if (!offline) {
                 jellyfinApi.showsApi
                     .getEpisodes(
@@ -323,7 +323,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             val sources = mutableListOf<FindroidSource>()
             sources.addAll(
                 jellyfinApi.mediaInfoApi
@@ -358,7 +358,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =
-        withContext(Dispatchers.IO) {
+        apiCall {
             try {
                 jellyfinApi.videosApi.getVideoStreamUrl(
                     itemId,
@@ -372,7 +372,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             val databaseSegments = database.getSegments(itemId).map { it.toFindroidSegment() }
 
             if (databaseSegments.isNotEmpty()) {
@@ -393,7 +393,7 @@ class JellyfinRepositoryImpl(
         }
 
     override suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray? =
-        withContext(Dispatchers.IO) {
+        apiCall {
             try {
                 try {
                     val sources = File(context.filesDir, "trickplay/$itemId").listFiles()
@@ -412,7 +412,7 @@ class JellyfinRepositoryImpl(
 
     override suspend fun postCapabilities() {
         Timber.d("Sending capabilities")
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.sessionApi.postCapabilities(
                 playableMediaTypes = listOf(MediaType.VIDEO),
                 supportedCommands =
@@ -438,7 +438,7 @@ class JellyfinRepositoryImpl(
 
     override suspend fun postPlaybackStart(itemId: UUID) {
         Timber.d("Sending start $itemId")
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.playStateApi.reportPlaybackStart(
                 PlaybackStartInfo(
                     itemId = itemId,
@@ -459,7 +459,7 @@ class JellyfinRepositoryImpl(
         playedPercentage: Int,
     ) {
         Timber.d("Sending stop $itemId")
-        withContext(Dispatchers.IO) {
+        apiCall {
             when {
                 playedPercentage < 10 -> {
                     database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, 0)
@@ -490,7 +490,7 @@ class JellyfinRepositoryImpl(
         isPaused: Boolean,
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
-        withContext(Dispatchers.IO) {
+        apiCall {
             database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
             try {
                 jellyfinApi.playStateApi.reportPlaybackProgress(
@@ -512,7 +512,7 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun markAsFavorite(itemId: UUID) {
-        withContext(Dispatchers.IO) {
+        apiCall {
             database.setFavorite(jellyfinApi.userId!!, itemId, true)
             try {
                 jellyfinApi.userLibraryApi.markFavoriteItem(itemId)
@@ -523,7 +523,7 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun unmarkAsFavorite(itemId: UUID) {
-        withContext(Dispatchers.IO) {
+        apiCall {
             database.setFavorite(jellyfinApi.userId!!, itemId, false)
             try {
                 jellyfinApi.userLibraryApi.unmarkFavoriteItem(itemId)
@@ -534,7 +534,7 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun markAsPlayed(itemId: UUID) {
-        withContext(Dispatchers.IO) {
+        apiCall {
             database.setPlayed(jellyfinApi.userId!!, itemId, true)
             try {
                 jellyfinApi.playStateApi.markPlayedItem(itemId)
@@ -545,7 +545,7 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun markAsUnplayed(itemId: UUID) {
-        withContext(Dispatchers.IO) {
+        apiCall {
             database.setPlayed(jellyfinApi.userId!!, itemId, false)
             try {
                 jellyfinApi.playStateApi.markUnplayedItem(itemId)
@@ -558,7 +558,7 @@ class JellyfinRepositoryImpl(
     override fun getBaseUrl() = jellyfinApi.api.baseUrl.orEmpty()
 
     override suspend fun updateDeviceName(name: String) {
-        withContext(Dispatchers.IO) {
+        apiCall {
             jellyfinApi.jellyfin.deviceInfo?.id?.let { id ->
                 jellyfinApi.devicesApi.updateDeviceOptions(
                     id,
@@ -569,10 +569,10 @@ class JellyfinRepositoryImpl(
     }
 
     override suspend fun getUserConfiguration(): UserConfiguration =
-        withContext(Dispatchers.IO) { jellyfinApi.userApi.getCurrentUser().content.configuration!! }
+        apiCall { jellyfinApi.userApi.getCurrentUser().content.configuration!! }
 
     override suspend fun getDownloads(): List<FindroidItem> =
-        withContext(Dispatchers.IO) {
+        apiCall {
             val items = mutableListOf<FindroidItem>()
             items.addAll(
                 database
