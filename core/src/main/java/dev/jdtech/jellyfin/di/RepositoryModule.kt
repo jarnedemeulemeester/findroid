@@ -67,9 +67,7 @@ object RepositoryModule {
             jellyfinRepositoryImpl,
             jellyfinRepositoryOfflineImpl,
             connectivityMonitor,
-            isManuallyOffline = {
-                appPreferences.getValue(appPreferences.offlineMode)
-            },
+            isManuallyOffline = { appPreferences.getValue(appPreferences.offlineMode) },
         )
     }
 }

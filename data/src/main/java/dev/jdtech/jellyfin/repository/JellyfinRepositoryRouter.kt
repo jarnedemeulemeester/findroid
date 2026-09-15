@@ -29,16 +29,14 @@ class JellyfinRepositoryRouter(
     private val isManuallyOffline: () -> Boolean,
 ) : JellyfinRepository {
     private fun repository(): JellyfinRepository =
-        if (
-            isManuallyOffline() ||
-                connectivityMonitor.state.value != ConnectivityState.Online
-        ) {
+        if (isManuallyOffline() || connectivityMonitor.state.value != ConnectivityState.Online) {
             offlineRepository
         } else {
             onlineRepository
         }
 
-    override suspend fun getPublicSystemInfo(): PublicSystemInfo = repository().getPublicSystemInfo()
+    override suspend fun getPublicSystemInfo(): PublicSystemInfo =
+        repository().getPublicSystemInfo()
 
     override suspend fun getUserViews(): List<BaseItemDto> = repository().getUserViews()
 
@@ -63,7 +61,8 @@ class JellyfinRepositoryRouter(
         startIndex: Int?,
         limit: Int?,
     ): List<FindroidItem> =
-        repository().getItems(parentId, includeTypes, recursive, sortBy, sortOrder, startIndex, limit)
+        repository()
+            .getItems(parentId, includeTypes, recursive, sortBy, sortOrder, startIndex, limit)
 
     override suspend fun getItemsPaging(
         parentId: UUID?,
@@ -74,7 +73,8 @@ class JellyfinRepositoryRouter(
     ): Flow<PagingData<FindroidItem>> =
         repository().getItemsPaging(parentId, includeTypes, recursive, sortBy, sortOrder)
 
-    override suspend fun getPerson(personId: UUID): FindroidPerson = repository().getPerson(personId)
+    override suspend fun getPerson(personId: UUID): FindroidPerson =
+        repository().getPerson(personId)
 
     override suspend fun getPersonItems(
         personIds: List<UUID>,
@@ -84,18 +84,21 @@ class JellyfinRepositoryRouter(
 
     override suspend fun getFavoriteItems(): List<FindroidItem> = repository().getFavoriteItems()
 
-    override suspend fun getSearchItems(query: String): List<FindroidItem> = repository().getSearchItems(query)
+    override suspend fun getSearchItems(query: String): List<FindroidItem> =
+        repository().getSearchItems(query)
 
     override suspend fun getSuggestions(): List<FindroidItem> = repository().getSuggestions()
 
     override suspend fun getResumeItems(): List<FindroidItem> = repository().getResumeItems()
 
-    override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> = repository().getLatestMedia(parentId)
+    override suspend fun getLatestMedia(parentId: UUID): List<FindroidItem> =
+        repository().getLatestMedia(parentId)
 
     override suspend fun getSeasons(seriesId: UUID, offline: Boolean): List<FindroidSeason> =
         repository().getSeasons(seriesId, offline)
 
-    override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> = repository().getNextUp(seriesId)
+    override suspend fun getNextUp(seriesId: UUID?): List<FindroidEpisode> =
+        repository().getNextUp(seriesId)
 
     override suspend fun getEpisodes(
         seriesId: UUID,
@@ -113,7 +116,8 @@ class JellyfinRepositoryRouter(
     override suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String =
         repository().getStreamUrl(itemId, mediaSourceId)
 
-    override suspend fun getSegments(itemId: UUID): List<FindroidSegment> = repository().getSegments(itemId)
+    override suspend fun getSegments(itemId: UUID): List<FindroidSegment> =
+        repository().getSegments(itemId)
 
     override suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray? =
         repository().getTrickplayData(itemId, width, index)
@@ -122,11 +126,17 @@ class JellyfinRepositoryRouter(
 
     override suspend fun postPlaybackStart(itemId: UUID) = repository().postPlaybackStart(itemId)
 
-    override suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int) =
-        repository().postPlaybackStop(itemId, positionTicks, playedPercentage)
+    override suspend fun postPlaybackStop(
+        itemId: UUID,
+        positionTicks: Long,
+        playedPercentage: Int,
+    ) = repository().postPlaybackStop(itemId, positionTicks, playedPercentage)
 
-    override suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean) =
-        repository().postPlaybackProgress(itemId, positionTicks, isPaused)
+    override suspend fun postPlaybackProgress(
+        itemId: UUID,
+        positionTicks: Long,
+        isPaused: Boolean,
+    ) = repository().postPlaybackProgress(itemId, positionTicks, isPaused)
 
     override suspend fun markAsFavorite(itemId: UUID) = repository().markAsFavorite(itemId)
 
@@ -140,7 +150,8 @@ class JellyfinRepositoryRouter(
 
     override suspend fun updateDeviceName(name: String) = repository().updateDeviceName(name)
 
-    override suspend fun getUserConfiguration(): UserConfiguration? = repository().getUserConfiguration()
+    override suspend fun getUserConfiguration(): UserConfiguration? =
+        repository().getUserConfiguration()
 
     override suspend fun getDownloads(): List<FindroidItem> = repository().getDownloads()
 

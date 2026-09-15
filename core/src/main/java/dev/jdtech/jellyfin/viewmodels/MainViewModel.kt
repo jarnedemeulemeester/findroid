@@ -22,8 +22,7 @@ constructor(
     private val appPreferences: AppPreferences,
     private val database: ServerDatabaseDao,
     private val connectivityMonitor: ConnectivityMonitor,
-) :
-    ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
 
@@ -45,8 +44,10 @@ constructor(
         viewModelScope.launch {
             connectivityMonitor.state.collect { connectivityState ->
                 _state.update {
-                    it.copy(isOfflineMode = checkIsOfflineMode()
-                        || connectivityState != ConnectivityState.Online)
+                    it.copy(
+                        isOfflineMode =
+                            checkIsOfflineMode() || connectivityState != ConnectivityState.Online
+                    )
                 }
             }
         }

@@ -14,7 +14,6 @@ import javax.inject.Singleton
 object ConnectivityModule {
     @Provides
     @Singleton
-    fun provideConnectivityMonitor(
-        @ApplicationContext context: Context,
-    ): ConnectivityMonitor = ConnectivityMonitor(context)
+    fun provideConnectivityMonitor(@ApplicationContext context: Context): ConnectivityMonitor =
+        ConnectivityMonitor(context)
 }
