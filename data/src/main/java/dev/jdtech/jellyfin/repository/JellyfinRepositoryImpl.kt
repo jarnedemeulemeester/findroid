@@ -376,7 +376,7 @@ class JellyfinRepositoryImpl(
             val databaseSegments = database.getSegments(itemId).map { it.toFindroidSegment() }
 
             if (databaseSegments.isNotEmpty()) {
-                return@withContext databaseSegments
+                return@apiCall databaseSegments
             }
 
             try {
@@ -385,10 +385,10 @@ class JellyfinRepositoryImpl(
                         it.toFindroidSegment()
                     }
 
-                return@withContext apiSegments
+                return@apiCall apiSegments
             } catch (e: Exception) {
                 Timber.e(e)
-                return@withContext emptyList()
+                return@apiCall emptyList()
             }
         }
 
@@ -398,15 +398,15 @@ class JellyfinRepositoryImpl(
                 try {
                     val sources = File(context.filesDir, "trickplay/$itemId").listFiles()
                     if (sources != null) {
-                        return@withContext File(sources.first(), index.toString()).readBytes()
+                        return@apiCall File(sources.first(), index.toString()).readBytes()
                     }
                 } catch (_: Exception) {}
 
-                return@withContext jellyfinApi.trickplayApi
+                return@apiCall jellyfinApi.trickplayApi
                     .getTrickplayTileImage(itemId, width, index)
                     .content
             } catch (_: Exception) {
-                return@withContext null
+                return@apiCall null
             }
         }
 
