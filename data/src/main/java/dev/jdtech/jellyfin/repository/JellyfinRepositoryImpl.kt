@@ -5,6 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.connectivity.ConnectivityMonitor
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.FindroidCollection
 import dev.jdtech.jellyfin.models.FindroidEpisode
@@ -54,15 +55,33 @@ import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
 import timber.log.Timber
+import dev.jdtech.jellyfin.connectivity.ConnectivityState
+import java.io.IOException
+import org.jellyfin.sdk.api.client.exception.TimeoutException
 
 class JellyfinRepositoryImpl(
     private val context: Context,
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
     private val appPreferences: AppPreferences,
+    private val connectivityMonitor: ConnectivityMonitor,
 ) : JellyfinRepository {
+    private suspend fun <T> apiCall(block: suspend () -> T): T =
+    withContext(Dispatchers.IO) {
+        try {
+            val result = block()
+            connectivityMonitor.updateState(ConnectivityState.Online)
+            result
+        } catch (exception: TimeoutException) {
+            connectivityMonitor.updateState(ConnectivityState.Offline)
+            throw exception
+        } catch (exception: IOException) {
+            connectivityMonitor.updateState(ConnectivityState.Offline)
+            throw exception
+        }
+    }
     override suspend fun getPublicSystemInfo(): PublicSystemInfo =
-        withContext(Dispatchers.IO) { jellyfinApi.systemApi.getPublicSystemInfo().content }
+        apiCall { jellyfinApi.systemApi.getPublicSystemInfo().content }
 
     override suspend fun getUserViews(): List<BaseItemDto> =
         withContext(Dispatchers.IO) {

@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.connectivity.ConnectivityMonitor
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
@@ -24,9 +25,16 @@ object RepositoryModule {
         jellyfinApi: JellyfinApi,
         serverDatabase: ServerDatabaseDao,
         appPreferences: AppPreferences,
+        connectivityMonitor: ConnectivityMonitor,
     ): JellyfinRepositoryImpl {
         println("Creating new jellyfinRepositoryImpl")
-        return JellyfinRepositoryImpl(application, jellyfinApi, serverDatabase, appPreferences)
+        return JellyfinRepositoryImpl(
+            application,
+            jellyfinApi,
+            serverDatabase,
+            appPreferences,
+            connectivityMonitor,
+        )
     }
 
     @Singleton
