@@ -36,7 +36,7 @@ class ConnectivityMonitor(context: Context) {
             }
 
             override fun onLost(network: Network) {
-                updateState(currentState())
+                updateState(ConnectivityState.Offline)
             }
         }
 

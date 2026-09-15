@@ -60,12 +60,16 @@ object RepositoryModule {
         jellyfinRepositoryImpl: JellyfinRepositoryImpl,
         jellyfinRepositoryOfflineImpl: JellyfinRepositoryOfflineImpl,
         connectivityMonitor: ConnectivityMonitor,
+        appPreferences: AppPreferences,
     ): JellyfinRepository {
         println("Creating new JellyfinRepository")
         return JellyfinRepositoryRouter(
             jellyfinRepositoryImpl,
             jellyfinRepositoryOfflineImpl,
             connectivityMonitor,
+            isManuallyOffline = {
+                appPreferences.getValue(appPreferences.offlineMode)
+            },
         )
     }
 }

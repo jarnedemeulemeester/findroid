@@ -26,9 +26,13 @@ class JellyfinRepositoryRouter(
     private val onlineRepository: JellyfinRepository,
     private val offlineRepository: JellyfinRepository,
     private val connectivityMonitor: ConnectivityMonitor,
+    private val isManuallyOffline: () -> Boolean,
 ) : JellyfinRepository {
     private fun repository(): JellyfinRepository =
-        if (connectivityMonitor.state.value != ConnectivityState.Online) {
+        if (
+            isManuallyOffline() ||
+                connectivityMonitor.state.value != ConnectivityState.Online
+        ) {
             offlineRepository
         } else {
             onlineRepository

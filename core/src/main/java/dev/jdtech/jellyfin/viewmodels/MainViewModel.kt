@@ -45,10 +45,8 @@ constructor(
         viewModelScope.launch {
             connectivityMonitor.state.collect { connectivityState ->
                 _state.update {
-                    it.copy(
-                        isOfflineMode =
-                            checkIsOfflineMode() || connectivityState != ConnectivityState.Online
-                    )
+                    it.copy(isOfflineMode = checkIsOfflineMode()
+                        || connectivityState != ConnectivityState.Online)
                 }
             }
         }
@@ -64,7 +62,9 @@ constructor(
                     hasServers = checkHasServers(),
                     hasCurrentServer = checkHasCurrentServer(),
                     hasCurrentUser = checkHasCurrentUser(),
-                    isOfflineMode = checkIsOfflineMode(),
+                    isOfflineMode =
+                        checkIsOfflineMode() ||
+                            connectivityMonitor.state.value != ConnectivityState.Online,
                 )
             _state.emit(mainState)
         }
