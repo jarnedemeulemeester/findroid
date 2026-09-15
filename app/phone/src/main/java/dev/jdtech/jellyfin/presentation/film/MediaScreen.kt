@@ -41,6 +41,7 @@ import dev.jdtech.jellyfin.presentation.film.components.FilmSearchBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemCard
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 
 @Composable
@@ -54,8 +55,9 @@ fun MediaScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val searchState by searchViewModel.state.collectAsStateWithLifecycle()
+    val isOfflineMode = LocalOfflineMode.current
 
-    LaunchedEffect(true) { viewModel.loadData() }
+    LaunchedEffect(isOfflineMode) { viewModel.loadData() }
 
     MediaScreenLayout(
         state = state,
