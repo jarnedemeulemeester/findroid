@@ -11,6 +11,7 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryOfflineImpl
+import dev.jdtech.jellyfin.repository.JellyfinRepositoryRouter
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Singleton
 
@@ -58,12 +59,13 @@ object RepositoryModule {
     fun provideJellyfinRepository(
         jellyfinRepositoryImpl: JellyfinRepositoryImpl,
         jellyfinRepositoryOfflineImpl: JellyfinRepositoryOfflineImpl,
-        appPreferences: AppPreferences,
+        connectivityMonitor: ConnectivityMonitor,
     ): JellyfinRepository {
         println("Creating new JellyfinRepository")
-        return when (appPreferences.getValue(appPreferences.offlineMode)) {
-            true -> jellyfinRepositoryOfflineImpl
-            false -> jellyfinRepositoryImpl
-        }
+        return JellyfinRepositoryRouter(
+            jellyfinRepositoryImpl,
+            jellyfinRepositoryOfflineImpl,
+            connectivityMonitor,
+        )
     }
 }

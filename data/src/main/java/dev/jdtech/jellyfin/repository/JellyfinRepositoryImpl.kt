@@ -376,38 +376,38 @@ class JellyfinRepositoryImpl(
             val databaseSegments = database.getSegments(itemId).map { it.toFindroidSegment() }
 
             if (databaseSegments.isNotEmpty()) {
-                return@apiCall databaseSegments
-            }
-
-            try {
-                val apiSegments =
+                databaseSegments
+            } else {
+                try {
                     jellyfinApi.mediaSegmentsApi.getItemSegments(itemId).content.items.map {
                         it.toFindroidSegment()
                     }
-
-                return@apiCall apiSegments
-            } catch (e: Exception) {
-                Timber.e(e)
-                return@apiCall emptyList()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    emptyList()
+                }
             }
         }
 
     override suspend fun getTrickplayData(itemId: UUID, width: Int, index: Int): ByteArray? =
         apiCall {
-            try {
-                try {
-                    val sources = File(context.filesDir, "trickplay/$itemId").listFiles()
-                    if (sources != null) {
-                        return@apiCall File(sources.first(), index.toString()).readBytes()
-                    }
-                } catch (_: Exception) {}
-
-                return@apiCall jellyfinApi.trickplayApi
-                    .getTrickplayTileImage(itemId, width, index)
-                    .content
+            val localTile = try {
+                File(context.filesDir, "trickplay/$itemId")
+                    .listFiles()
+                    ?.first()
+                    ?.let { File(it, index.toString()).readBytes() }
             } catch (_: Exception) {
-                return@apiCall null
+                null
             }
+
+            localTile
+                ?: try {
+                    jellyfinApi.trickplayApi
+                        .getTrickplayTileImage(itemId, width, index)
+                        .content
+                } catch (_: Exception) {
+                    null
+                }
         }
 
     override suspend fun postCapabilities() {

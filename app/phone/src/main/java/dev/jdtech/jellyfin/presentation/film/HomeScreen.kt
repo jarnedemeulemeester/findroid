@@ -44,6 +44,7 @@ import dev.jdtech.jellyfin.presentation.film.components.HomeView
 import dev.jdtech.jellyfin.presentation.film.components.ServerSelectionBottomSheet
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 import kotlinx.coroutines.launch
 
@@ -57,8 +58,9 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val isOfflineMode = LocalOfflineMode.current
 
-    LaunchedEffect(true) { viewModel.loadData() }
+    LaunchedEffect(isOfflineMode) { viewModel.loadData() }
 
     HomeScreenLayout(
         state = state,

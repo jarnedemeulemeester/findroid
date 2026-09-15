@@ -3,6 +3,8 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.connectivity.ConnectivityMonitor
+import dev.jdtech.jellyfin.connectivity.ConnectivityState
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
@@ -10,12 +12,17 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel
 @Inject
-constructor(private val appPreferences: AppPreferences, private val database: ServerDatabaseDao) :
+constructor(
+    private val appPreferences: AppPreferences,
+    private val database: ServerDatabaseDao,
+    private val connectivityMonitor: ConnectivityMonitor,
+) :
     ViewModel() {
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
@@ -31,6 +38,20 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
 
     init {
         check()
+        observeConnectivity()
+    }
+
+    private fun observeConnectivity() {
+        viewModelScope.launch {
+            connectivityMonitor.state.collect { connectivityState ->
+                _state.update {
+                    it.copy(
+                        isOfflineMode =
+                            checkIsOfflineMode() || connectivityState != ConnectivityState.Online
+                    )
+                }
+            }
+        }
     }
 
     private fun check() {
