@@ -13,8 +13,6 @@ import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.UpdateUserItemDataDto
 
 @HiltWorker
@@ -36,37 +34,35 @@ constructor(
                 socketTimeout = appPreferences.getValue(appPreferences.socketTimeout),
             )
 
-        return withContext(Dispatchers.IO) {
-            val servers = database.getServers()
+        val servers = database.getServers()
 
-            for (server in servers) {
-                val serverWithAddressesAndUsers =
-                    database.getServerWithAddressesAndUsers(server.id) ?: continue
-                val serverAddress =
-                    serverWithAddressesAndUsers.addresses.firstOrNull {
-                        it.id == server.currentServerAddressId
-                    } ?: continue
-                for (user in serverWithAddressesAndUsers.users) {
-                    jellyfinApi.apply {
-                        api.update(baseUrl = serverAddress.address, accessToken = user.accessToken)
-                        userId = user.id
-                    }
-                    val movies =
-                        database.getMoviesByServerId(server.id).map {
-                            it.toFindroidMovie(database, user.id)
-                        }
-                    val episodes =
-                        database.getEpisodesByServerId(server.id).map {
-                            it.toFindroidEpisode(database, user.id)
-                        }
-
-                    syncUserData(jellyfinApi, user, movies)
-                    syncUserData(jellyfinApi, user, episodes)
+        for (server in servers) {
+            val serverWithAddressesAndUsers =
+                database.getServerWithAddressesAndUsers(server.id) ?: continue
+            val serverAddress =
+                serverWithAddressesAndUsers.addresses.firstOrNull {
+                    it.id == server.currentServerAddressId
+                } ?: continue
+            for (user in serverWithAddressesAndUsers.users) {
+                jellyfinApi.apply {
+                    api.update(baseUrl = serverAddress.address, accessToken = user.accessToken)
+                    userId = user.id
                 }
-            }
+                val movies =
+                    database.getMoviesByServerId(server.id).map {
+                        it.toFindroidMovie(database, user.id)
+                    }
+                val episodes =
+                    database.getEpisodesByServerId(server.id).map {
+                        it.toFindroidEpisode(database, user.id)
+                    }
 
-            Result.success()
+                syncUserData(jellyfinApi, user, movies)
+                syncUserData(jellyfinApi, user, episodes)
+            }
         }
+
+        return Result.success()
     }
 
     private suspend fun syncUserData(

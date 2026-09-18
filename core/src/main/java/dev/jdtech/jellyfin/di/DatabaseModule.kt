@@ -1,7 +1,7 @@
 package dev.jdtech.jellyfin.di
 
 import android.content.Context
-import androidx.room.Room
+import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
 import dagger.Module
 import dagger.Provides
