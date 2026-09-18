@@ -6,10 +6,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.connectivity.ConnectivityMonitor
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryOfflineImpl
+import dev.jdtech.jellyfin.repository.JellyfinRepositoryRouter
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Singleton
 
@@ -24,9 +26,16 @@ object RepositoryModule {
         jellyfinApi: JellyfinApi,
         serverDatabase: ServerDatabaseDao,
         appPreferences: AppPreferences,
+        connectivityMonitor: ConnectivityMonitor,
     ): JellyfinRepositoryImpl {
         println("Creating new jellyfinRepositoryImpl")
-        return JellyfinRepositoryImpl(application, jellyfinApi, serverDatabase, appPreferences)
+        return JellyfinRepositoryImpl(
+            application,
+            jellyfinApi,
+            serverDatabase,
+            appPreferences,
+            connectivityMonitor,
+        )
     }
 
     @Singleton
@@ -50,12 +59,15 @@ object RepositoryModule {
     fun provideJellyfinRepository(
         jellyfinRepositoryImpl: JellyfinRepositoryImpl,
         jellyfinRepositoryOfflineImpl: JellyfinRepositoryOfflineImpl,
+        connectivityMonitor: ConnectivityMonitor,
         appPreferences: AppPreferences,
     ): JellyfinRepository {
         println("Creating new JellyfinRepository")
-        return when (appPreferences.getValue(appPreferences.offlineMode)) {
-            true -> jellyfinRepositoryOfflineImpl
-            false -> jellyfinRepositoryImpl
-        }
+        return JellyfinRepositoryRouter(
+            jellyfinRepositoryImpl,
+            jellyfinRepositoryOfflineImpl,
+            connectivityMonitor,
+            isManuallyOffline = { appPreferences.getValue(appPreferences.offlineMode) },
+        )
     }
 }
