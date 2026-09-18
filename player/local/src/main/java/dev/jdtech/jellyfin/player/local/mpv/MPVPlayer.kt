@@ -9,6 +9,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
 import androidx.core.content.getSystemService
+import androidx.media3.common.AdPlaybackState
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.BasePlayer
 import androidx.media3.common.C
@@ -583,11 +584,13 @@ class MPVPlayer(
              */
             override fun getPeriod(periodIndex: Int, period: Period, setIds: Boolean): Period {
                 return period.set(
-                    /* id = */ periodIndex,
-                    /* uid = */ periodIndex,
-                    /* windowIndex = */ periodIndex,
-                    /* durationUs = */ Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
-                    /* positionInWindowUs = */ 0,
+                    periodIndex,
+                    periodIndex,
+                    periodIndex,
+                    Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
+                    0,
+                    AdPlaybackState.NONE,
+                    false
                 )
             }
 
