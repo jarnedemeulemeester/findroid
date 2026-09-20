@@ -115,7 +115,8 @@ data class CollectionRoute(val collectionId: String, val collectionName: String)
 
 @Serializable data object AboutRoute : NavKey
 
-private val TOP_LEVEL_ROUTES = setOf<NavKey>(HomeRoute, MediaRoute, DownloadsRoute)
+private val TOP_LEVEL_ROUTES = setOf(HomeRoute, MediaRoute, DownloadsRoute)
+private val GLOBAL_TRANSITION_SPEC = fadeIn(tween(300)) togetherWith fadeOut(tween(300))
 
 data class TabBarItem(
     @param:StringRes val title: Int,
@@ -254,18 +255,17 @@ private fun MainNavigation(
             }
         }
 
-    val entryProvider =
-        entryProvider<NavKey> {
-            mainEntries(
-                navigator = navigator,
-                onSearchClick = {
-                    onSearchExpandedChange(true)
-                    navigator.navigate(MediaRoute)
-                },
-                searchExpanded = searchExpanded,
-                onSearchExpandedChange = onSearchExpandedChange,
-            )
-        }
+    val entryProvider = entryProvider {
+        mainEntries(
+            navigator = navigator,
+            onSearchClick = {
+                onSearchExpandedChange(true)
+                navigator.navigate(MediaRoute)
+            },
+            searchExpanded = searchExpanded,
+            onSearchExpandedChange = onSearchExpandedChange,
+        )
+    }
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -296,11 +296,9 @@ private fun MainNavigation(
         NavDisplay(
             entries = navigationState.toDecoratedEntries(entryDecorators, entryProvider),
             onBack = { navigator.goBack() },
-            transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-            popTransitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-            predictivePopTransitionSpec = { _ ->
-                fadeIn(tween(300)) togetherWith fadeOut(tween(300))
-            },
+            transitionSpec = { GLOBAL_TRANSITION_SPEC },
+            popTransitionSpec = { GLOBAL_TRANSITION_SPEC },
+            predictivePopTransitionSpec = { _ -> GLOBAL_TRANSITION_SPEC },
         )
     }
 }
@@ -323,24 +321,23 @@ private fun SetupNavigation(
         }
     }
 
-    val entryProvider =
-        entryProvider<NavKey> {
-            setupEntries(
-                navigate = navigate,
-                goBack = goBack,
-                navigateOrReuse = navigateOrReuse,
-                showBack = backStack.size > 1,
-            )
-        }
+    val entryProvider = entryProvider {
+        setupEntries(
+            navigate = navigate,
+            goBack = goBack,
+            navigateOrReuse = navigateOrReuse,
+            showBack = backStack.size > 1,
+        )
+    }
 
     NavDisplay(
         backStack = backStack,
         onBack = goBack,
         entryDecorators = entryDecorators,
         entryProvider = entryProvider,
-        transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-        popTransitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-        predictivePopTransitionSpec = { _ -> fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+        transitionSpec = { GLOBAL_TRANSITION_SPEC },
+        popTransitionSpec = { GLOBAL_TRANSITION_SPEC },
+        predictivePopTransitionSpec = { _ -> GLOBAL_TRANSITION_SPEC },
     )
 }
 
