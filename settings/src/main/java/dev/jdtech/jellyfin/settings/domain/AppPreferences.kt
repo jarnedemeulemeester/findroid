@@ -3,6 +3,9 @@ package dev.jdtech.jellyfin.settings.domain
 import android.content.SharedPreferences
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import javax.inject.Inject
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
 class AppPreferences @Inject constructor(val sharedPreferences: SharedPreferences) {
@@ -135,6 +138,19 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
             setValue(preference, preference.defaultValue)
             preference.defaultValue
         }
+    }
+
+    /** Emits the current value of [preference] and then emits a new value every time it changes. */
+    inline fun <reified T> observe(preference: Preference<T>): Flow<T> = callbackFlow {
+        trySend(getValue(preference))
+
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, changedKey ->
+            if (changedKey == preference.backendName) {
+                trySend(getValue(preference))
+            }
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+        awaitClose { sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener) }
     }
 
     inline fun <reified T> setValue(preference: Preference<T>, value: T) {
