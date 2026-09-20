@@ -134,6 +134,7 @@ dependencies {
 
     coreLibraryDesugaring(libs.android.desugar.jdk)
 
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
