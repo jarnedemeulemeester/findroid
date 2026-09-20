@@ -32,9 +32,7 @@ android {
     buildFeatures { buildConfig = true }
 }
 
-room3 {
-    schemaDirectory("$projectDir/schemas")
-}
+room3 { schemaDirectory("$projectDir/schemas") }
 
 dependencies {
     implementation(projects.settings)

@@ -590,7 +590,7 @@ class MPVPlayer(
                     Util.msToUs(currentDurationMs ?: C.TIME_UNSET),
                     0,
                     AdPlaybackState.NONE,
-                    false
+                    false,
                 )
             }
 
