@@ -7,6 +7,7 @@ import dev.jdtech.jellyfin.models.SortBy
 import dev.jdtech.jellyfin.models.SortOrder
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.ItemFilter
 import timber.log.Timber
 
 class ItemsPagingSource(
@@ -16,6 +17,7 @@ class ItemsPagingSource(
     private val recursive: Boolean,
     private val sortBy: SortBy,
     private val sortOrder: SortOrder,
+    private val filters: List<ItemFilter>?,
 ) : PagingSource<Int, FindroidItem>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, FindroidItem> {
         val position = params.key ?: 0
@@ -30,6 +32,7 @@ class ItemsPagingSource(
                     recursive = recursive,
                     sortBy = sortBy,
                     sortOrder = sortOrder,
+                    filters = filters,
                     startIndex = position,
                     limit = params.loadSize,
                 )
