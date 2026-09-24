@@ -174,7 +174,7 @@ constructor(
             }
     }
 
-    fun initializePlayer(itemId: UUID, itemKind: String, startFromBeginning: Boolean) {
+    fun initializePlayer(itemId: UUID, itemKind: String, startFromBeginning: Boolean, shuffle: Boolean) {
         player.addListener(this)
 
         viewModelScope.launch {
@@ -185,6 +185,7 @@ constructor(
                         itemKind = BaseItemKind.fromName(itemKind),
                         mediaSourceIndex = null,
                         startFromBeginning = startFromBeginning,
+                        shuffle = shuffle
                     )
                 } catch (e: Exception) {
                     Timber.e(e)
