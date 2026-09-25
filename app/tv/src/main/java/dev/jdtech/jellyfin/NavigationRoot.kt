@@ -183,6 +183,14 @@ fun NavigationRoot(
                     navController.navigate(MovieRoute(itemId.toString()))
                 },
                 navigateToShow = { itemId -> navController.navigate(ShowRoute(itemId.toString())) },
+                navigateToEpisode = { itemId ->
+                    navController.navigate(
+                        PlayerRoute(
+                            itemId = itemId.toString(),
+                            itemKind = BaseItemKind.EPISODE.serialName,
+                        )
+                    )
+                },
             )
         }
         composable<MovieRoute> { backStackEntry ->
