@@ -6,8 +6,11 @@ import android.net.Uri
 import android.os.Environment
 import android.os.StatFs
 import android.text.format.Formatter
-import androidx.core.net.toUri
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -32,11 +35,14 @@ import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.ImagesDownloaderWorker
+import dev.jdtech.jellyfin.work.MediaDownloadWorker
 import java.io.File
 import java.util.UUID
 import kotlin.Exception
 import kotlin.math.ceil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class DownloaderImpl(
@@ -46,8 +52,6 @@ class DownloaderImpl(
     private val appPreferences: AppPreferences,
     private val workManager: WorkManager,
 ) : Downloader {
-    private val downloadManager = context.getSystemService(DownloadManager::class.java)
-
     // TODO: We should probably move most (if not all) code to a worker.
     //  At this moment it is possible that some things are not downloaded due to the user leaving
     //  the current screen
@@ -90,20 +94,7 @@ class DownloaderImpl(
                     ),
                 )
             }
-            val request =
-                DownloadManager.Request(source.path.toUri())
-                    .setTitle(item.name)
-                    .setAllowedOverMetered(
-                        appPreferences.getValue(appPreferences.downloadOverMobileData)
-                    )
-                    .setAllowedOverRoaming(
-                        appPreferences.getValue(appPreferences.downloadWhenRoaming)
-                    )
-                    .setNotificationVisibility(
-                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
-                    )
-                    .setDestinationUri(path)
-            val downloadId = downloadManager.enqueue(request)
+            val downloadId = newDownloadId()
 
             when (item) {
                 is FindroidMovie -> {
@@ -136,6 +127,13 @@ class DownloaderImpl(
             val sourceDto = source.toFindroidSourceDto(item.id, path.path.orEmpty())
 
             database.insertSource(sourceDto.copy(downloadId = downloadId))
+            enqueueDownload(
+                downloadId = downloadId,
+                url = source.path,
+                path = path.path.orEmpty(),
+                title = item.name,
+                showNotification = true,
+            )
             database.insertUserData(item.toFindroidUserDataDto(jellyfinRepository.getUserId()))
 
             downloadExternalMediaStreams(item, source, storageIndex)
@@ -165,8 +163,9 @@ class DownloaderImpl(
     override suspend fun cancelDownload(item: FindroidItem, downloadId: Long) {
         val source =
             database.getSourceByDownloadId(downloadId)?.toFindroidSource(database) ?: return
-        if (source.downloadId != null) {
-            downloadManager.remove(source.downloadId!!)
+        source.downloadId?.let { cancelWork(it) }
+        database.getMediaStreamsBySourceId(source.id).forEach { mediaStream ->
+            mediaStream.downloadId?.let { cancelWork(it) }
         }
         deleteItem(item, source)
     }
@@ -216,35 +215,32 @@ class DownloaderImpl(
         if (downloadId == null) {
             return Pair(downloadStatus, progress)
         }
-        val query = DownloadManager.Query().setFilterById(downloadId)
-        downloadManager.query(query).use { cursor ->
-            if (cursor.moveToFirst()) {
-                downloadStatus =
-                    cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
-                when (downloadStatus) {
-                    DownloadManager.STATUS_RUNNING -> {
-                        val totalBytes =
-                            cursor.getLong(
-                                cursor.getColumnIndexOrThrow(
-                                    DownloadManager.COLUMN_TOTAL_SIZE_BYTES
-                                )
-                            )
-                        if (totalBytes > 0) {
-                            val downloadedBytes =
-                                cursor.getLong(
-                                    cursor.getColumnIndexOrThrow(
-                                        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
-                                    )
-                                )
-                            progress = downloadedBytes.times(100).div(totalBytes).toInt()
-                        }
-                    }
-
-                    DownloadManager.STATUS_SUCCESSFUL -> {
-                        progress = 100
-                    }
+        val workInfo =
+            withContext(Dispatchers.IO) {
+                workManager
+                    .getWorkInfosForUniqueWork(MediaDownloadWorker.uniqueWorkName(downloadId))
+                    .get()
+                    .lastOrNull()
+            }
+        when (workInfo?.state) {
+            WorkInfo.State.ENQUEUED,
+            WorkInfo.State.BLOCKED -> {
+                downloadStatus = DownloadManager.STATUS_PENDING
+            }
+            WorkInfo.State.RUNNING -> {
+                downloadStatus = DownloadManager.STATUS_RUNNING
+                val totalBytes = workInfo.progress.getLong(MediaDownloadWorker.KEY_TOTAL_BYTES, -1L)
+                if (totalBytes > 0) {
+                    val downloadedBytes =
+                        workInfo.progress.getLong(MediaDownloadWorker.KEY_DOWNLOADED_BYTES, 0L)
+                    progress = downloadedBytes.times(100).div(totalBytes).toInt()
                 }
-            } else {
+            }
+            WorkInfo.State.SUCCEEDED -> {
+                downloadStatus = DownloadManager.STATUS_SUCCESSFUL
+                progress = 100
+            }
+            else -> {
                 downloadStatus = DownloadManager.STATUS_FAILED
             }
         }
@@ -263,22 +259,19 @@ class DownloaderImpl(
                 Uri.fromFile(
                     File(storageLocation, "downloads/${item.id}.${source.id}.$id.download")
                 )
+            val downloadId = newDownloadId()
             database.insertMediaStream(
-                mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty())
+                mediaStream
+                    .toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty())
+                    .copy(downloadId = downloadId)
             )
-            val request =
-                DownloadManager.Request(mediaStream.path!!.toUri())
-                    .setTitle(mediaStream.title)
-                    .setAllowedOverMetered(
-                        appPreferences.getValue(appPreferences.downloadOverMobileData)
-                    )
-                    .setAllowedOverRoaming(
-                        appPreferences.getValue(appPreferences.downloadWhenRoaming)
-                    )
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
-                    .setDestinationUri(streamPath)
-            val downloadId = downloadManager.enqueue(request)
-            database.setMediaStreamDownloadId(id, downloadId)
+            enqueueDownload(
+                downloadId = downloadId,
+                url = mediaStream.path!!,
+                path = streamPath.path.orEmpty(),
+                title = mediaStream.title,
+                showNotification = false,
+            )
         }
     }
 
@@ -316,6 +309,50 @@ class DownloaderImpl(
             val file = File(context.filesDir, "$basePath/$i")
             file.writeBytes(byteArray)
         }
+    }
+
+    /** Positive random id, so it never collides with the -1 error value. */
+    private fun newDownloadId(): Long = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE
+
+    private fun enqueueDownload(
+        downloadId: Long,
+        url: String,
+        path: String,
+        title: String,
+        showNotification: Boolean,
+    ) {
+        val networkType =
+            when {
+                !appPreferences.getValue(appPreferences.downloadOverMobileData) ->
+                    NetworkType.UNMETERED
+                !appPreferences.getValue(appPreferences.downloadWhenRoaming) ->
+                    NetworkType.NOT_ROAMING
+                else -> NetworkType.CONNECTED
+            }
+
+        val request =
+            OneTimeWorkRequestBuilder<MediaDownloadWorker>()
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(networkType).build())
+                .setInputData(
+                    workDataOf(
+                        MediaDownloadWorker.KEY_URL to url,
+                        MediaDownloadWorker.KEY_PATH to path,
+                        MediaDownloadWorker.KEY_TITLE to title,
+                        MediaDownloadWorker.KEY_DOWNLOAD_ID to downloadId,
+                        MediaDownloadWorker.KEY_SHOW_NOTIFICATION to showNotification,
+                    )
+                )
+                .build()
+
+        workManager.enqueueUniqueWork(
+            uniqueWorkName = MediaDownloadWorker.uniqueWorkName(downloadId),
+            existingWorkPolicy = ExistingWorkPolicy.REPLACE,
+            request = request,
+        )
+    }
+
+    private fun cancelWork(downloadId: Long) {
+        workManager.cancelUniqueWork(MediaDownloadWorker.uniqueWorkName(downloadId))
     }
 
     private fun startImagesDownloader(item: FindroidItem) {
