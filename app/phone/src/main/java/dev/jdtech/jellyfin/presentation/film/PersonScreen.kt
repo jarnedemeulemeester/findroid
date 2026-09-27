@@ -49,6 +49,7 @@ import dev.jdtech.jellyfin.presentation.film.components.OverviewText
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 import java.util.UUID
 
 @Composable
@@ -107,6 +108,7 @@ private fun PersonScreenLayout(state: PersonState, onAction: (PersonAction) -> U
                             ) {
                                 Text(
                                     text = person.name,
+                                    modifier = Modifier.copyOnLongClick(person.name),
                                     style = MaterialTheme.typography.headlineMedium,
                                 )
                                 if (person.overview.isNotBlank()) {
@@ -125,6 +127,7 @@ private fun PersonScreenLayout(state: PersonState, onAction: (PersonAction) -> U
                             PersonImage(person)
                             Text(
                                 text = person.name,
+                                modifier = Modifier.copyOnLongClick(person.name),
                                 style = MaterialTheme.typography.headlineMedium,
                             )
                             if (person.overview.isNotBlank()) {
