@@ -280,6 +280,7 @@ private fun SetupNavigation(
             goBack = goBack,
             navigateOrReuse = navigateOrReuse,
             showBack = backStack.size > 1,
+            onSetupComplete = {},
         )
     }
 
@@ -309,11 +310,20 @@ private fun <T> resumedAction(calculation: (@DisallowComposableCalls (T) -> Unit
     }
 }
 
+/**
+ * Registers the setup flow entries.
+ *
+ * The same entries serve both the dedicated setup mode and the setup flow reached from the main UI
+ * (e.g. via "manage servers" in Settings). [onSetupComplete] captures the difference: in setup mode
+ * completing the flow flips the live condition to the main UI (a no-op), while in the main UI it
+ * navigates home. It is invoked through the nearest entry's RESUMED guard.
+ */
 private fun EntryProviderScope<NavKey>.setupEntries(
     navigate: (NavKey) -> Unit,
     goBack: () -> Unit,
     navigateOrReuse: (NavKey) -> Unit,
     showBack: Boolean,
+    onSetupComplete: () -> Unit,
 ) {
     entry<WelcomeRoute> {
         WelcomeScreen(onContinueClick = dropUnlessResumed { navigate(ServersRoute) })
@@ -342,8 +352,7 @@ private fun EntryProviderScope<NavKey>.setupEntries(
     }
     entry<UsersRoute> {
         UsersScreen(
-            // Selecting a user completes the setup: the live condition switches to the main UI.
-            navigateToHome = {},
+            navigateToHome = dropUnlessResumed { onSetupComplete() },
             onChangeServerClick = dropUnlessResumed { navigateOrReuse(ServersRoute) },
             onAddClick = dropUnlessResumed { navigate(LoginRoute()) },
             onBackClick = dropUnlessResumed { goBack() },
@@ -354,8 +363,7 @@ private fun EntryProviderScope<NavKey>.setupEntries(
     }
     entry<LoginRoute> { key ->
         LoginScreen(
-            // A successful login completes the setup: the live condition switches to the main UI.
-            onSuccess = {},
+            onSuccess = dropUnlessResumed { onSetupComplete() },
             onChangeServerClick = dropUnlessResumed { navigateOrReuse(ServersRoute) },
             onBackClick = dropUnlessResumed { goBack() },
             prefilledUsername = key.username,
@@ -369,50 +377,13 @@ private fun EntryProviderScope<NavKey>.mainEntries(
     searchExpanded: Boolean,
     onSearchExpandedChange: (Boolean) -> Unit,
 ) {
-    entry<WelcomeRoute> {
-        WelcomeScreen(onContinueClick = dropUnlessResumed { navigator.navigate(ServersRoute) })
-    }
-    entry<ServersRoute> {
-        ServersScreen(
-            navigateToUsers = dropUnlessResumed { navigator.navigate(UsersRoute) },
-            navigateToAddresses =
-                resumedAction { serverId -> navigator.navigate(ServerAddressesRoute(serverId)) },
-            onAddClick = dropUnlessResumed { navigator.navigate(AddServerRoute) },
-            onBackClick = dropUnlessResumed { navigator.goBack() },
-            showBack = true,
-        )
-    }
-    entry<AddServerRoute> {
-        AddServerScreen(
-            onSuccess = dropUnlessResumed { navigator.navigate(UsersRoute) },
-            onBackClick = dropUnlessResumed { navigator.goBack() },
-        )
-    }
-    entry<ServerAddressesRoute> { key ->
-        ServerAddressesScreen(
-            serverId = key.serverId,
-            navigateBack = dropUnlessResumed { navigator.goBack() },
-        )
-    }
-    entry<UsersRoute> {
-        UsersScreen(
-            navigateToHome = dropUnlessResumed { navigator.navigateHome() },
-            onChangeServerClick = dropUnlessResumed { navigator.navigateOrReuse(ServersRoute) },
-            onAddClick = dropUnlessResumed { navigator.navigate(LoginRoute()) },
-            onBackClick = dropUnlessResumed { navigator.goBack() },
-            onPublicUserClick =
-                resumedAction { username -> navigator.navigate(LoginRoute(username = username)) },
-            showBack = true,
-        )
-    }
-    entry<LoginRoute> { key ->
-        LoginScreen(
-            onSuccess = dropUnlessResumed { navigator.navigateHome() },
-            onChangeServerClick = dropUnlessResumed { navigator.navigateOrReuse(ServersRoute) },
-            onBackClick = dropUnlessResumed { navigator.goBack() },
-            prefilledUsername = key.username,
-        )
-    }
+    setupEntries(
+        navigate = navigator::navigate,
+        goBack = navigator::goBack,
+        navigateOrReuse = navigator::navigateOrReuse,
+        showBack = true,
+        onSetupComplete = { navigator.navigateHome() },
+    )
     entry<HomeRoute> {
         HomeScreen(
             onLibraryClick =
