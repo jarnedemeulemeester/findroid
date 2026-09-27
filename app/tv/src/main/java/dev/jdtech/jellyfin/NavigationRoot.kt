@@ -17,7 +17,6 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import dev.jdtech.jellyfin.models.CollectionType
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
@@ -33,39 +32,7 @@ import dev.jdtech.jellyfin.ui.MainScreen
 import dev.jdtech.jellyfin.ui.MovieScreen
 import dev.jdtech.jellyfin.ui.PlayerScreen
 import java.util.UUID
-import kotlinx.serialization.Serializable
 import org.jellyfin.sdk.model.api.BaseItemKind
-
-@Serializable data object WelcomeRoute : NavKey
-
-@Serializable data object ServersRoute : NavKey
-
-@Serializable data object AddServerRoute : NavKey
-
-@Serializable data object UsersRoute : NavKey
-
-@Serializable data class LoginRoute(val username: String? = null) : NavKey
-
-@Serializable data object MainRoute : NavKey
-
-@Serializable
-data class LibraryRoute(
-    val libraryId: String,
-    val libraryName: String,
-    val libraryType: CollectionType,
-) : NavKey
-
-@Serializable data class MovieRoute(val itemId: String) : NavKey
-
-@Serializable data class ShowRoute(val itemId: String) : NavKey
-
-@Serializable data class SeasonRoute(val seasonId: String) : NavKey
-
-@Serializable data class PlayerRoute(val itemId: String, val itemKind: String) : NavKey
-
-@Serializable data object SettingsRoute : NavKey
-
-@Serializable data class SettingsSubRoute(val indexes: IntArray) : NavKey
 
 @Composable
 fun NavigationRoot(
