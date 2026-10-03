@@ -16,6 +16,7 @@ import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -128,7 +129,9 @@ fun NavigationRoot(
             listOf(saveableStateHolderDecorator, viewModelStoreDecorator)
         }
 
-    var searchExpanded by remember { mutableStateOf(false) }
+    // Exposed as a state object (rather than a plain value) so the entry content closures, which
+    // nav3 caches per back stack snapshot, always read the current value.
+    val searchExpanded = remember { mutableStateOf(false) }
 
     // Live setup condition: keep the setup flow's back stack in a consistent state across mode
     // switches.
@@ -154,7 +157,6 @@ fun NavigationRoot(
             entryDecorators = entryDecorators,
             isOfflineMode = LocalOfflineMode.current,
             searchExpanded = searchExpanded,
-            onSearchExpandedChange = { searchExpanded = it },
         )
     } else {
         SetupNavigation(
@@ -170,8 +172,7 @@ private fun MainNavigation(
     navigator: Navigator,
     entryDecorators: List<NavEntryDecorator<NavKey>>,
     isOfflineMode: Boolean,
-    searchExpanded: Boolean,
-    onSearchExpandedChange: (Boolean) -> Unit,
+    searchExpanded: MutableState<Boolean>,
 ) {
     val navigationItems =
         when (isOfflineMode) {
@@ -182,7 +183,7 @@ private fun MainNavigation(
 
     val topLevelRoute = navigationState.topLevelRoute
     val atTabRoot = navigationState.currentBackStack().last() == topLevelRoute
-    val showBottomBar = atTabRoot && topLevelRoute in tabRoutes && !searchExpanded
+    val showBottomBar = atTabRoot && topLevelRoute in tabRoutes && !searchExpanded.value
 
     val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
 
@@ -212,11 +213,10 @@ private fun MainNavigation(
         mainEntries(
             navigator = navigator,
             onSearchClick = {
-                onSearchExpandedChange(true)
+                searchExpanded.value = true
                 navigator.navigate(MediaRoute)
             },
             searchExpanded = searchExpanded,
-            onSearchExpandedChange = onSearchExpandedChange,
         )
     }
 
@@ -227,7 +227,7 @@ private fun MainNavigation(
                     selected = topLevelRoute == item.route,
                     onClick = {
                         if (item.route == MediaRoute && topLevelRoute == MediaRoute) {
-                            onSearchExpandedChange(true)
+                            searchExpanded.value = true
                         }
 
                         navigator.navigate(item.route)
@@ -374,8 +374,7 @@ private fun EntryProviderScope<NavKey>.setupEntries(
 private fun EntryProviderScope<NavKey>.mainEntries(
     navigator: Navigator,
     onSearchClick: () -> Unit,
-    searchExpanded: Boolean,
-    onSearchExpandedChange: (Boolean) -> Unit,
+    searchExpanded: MutableState<Boolean>,
 ) {
     setupEntries(
         navigate = navigator::navigate,
@@ -411,8 +410,8 @@ private fun EntryProviderScope<NavKey>.mainEntries(
         MediaScreen(
             onItemClick = resumedAction { item -> navigateToItem(navigator, item) },
             onFavoritesClick = dropUnlessResumed { navigator.navigate(FavoritesRoute) },
-            searchExpanded = searchExpanded,
-            onSearchExpand = { onSearchExpandedChange(it) },
+            searchExpanded = searchExpanded.value,
+            onSearchExpand = { searchExpanded.value = it },
         )
     }
     entry<DownloadsRoute> {
