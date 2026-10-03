@@ -185,6 +185,15 @@ private fun MainNavigation(
     val atTabRoot = navigationState.currentBackStack().last() == topLevelRoute
     val showBottomBar = atTabRoot && topLevelRoute in tabRoutes && !searchExpanded.value
 
+    // The search bar belongs to the Media tab: collapse it when the active top level route
+    // changes away from Media (e.g. via the home button on a detail screen) so that the bottom
+    // bar is shown again.
+    LaunchedEffect(topLevelRoute) {
+        if (topLevelRoute != MediaRoute) {
+            searchExpanded.value = false
+        }
+    }
+
     val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
 
     LaunchedEffect(showBottomBar) {
