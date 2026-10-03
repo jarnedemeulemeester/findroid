@@ -137,6 +137,8 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
+    pendingItemRoute: Any? = null,
+    onPendingItemRouteHandled: () -> Unit = {},
 ) {
     val isOfflineMode = LocalOfflineMode.current
 
@@ -464,6 +466,16 @@ fun NavigationRoot(
             composable<AboutRoute> {
                 AboutScreen(navigateBack = { navController.safePopBackStack() })
             }
+        }
+    }
+
+    // After the NavHost, so the graph is set before navigating
+    LaunchedEffect(pendingItemRoute) {
+        if (pendingItemRoute != null) {
+            if (hasServers && hasCurrentServer && hasCurrentUser) {
+                navController.navigate(pendingItemRoute) { launchSingleTop = true }
+            }
+            onPendingItemRouteHandled()
         }
     }
 }

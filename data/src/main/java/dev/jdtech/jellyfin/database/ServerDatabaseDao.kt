@@ -117,9 +117,6 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM mediastreams WHERE downloadId = :downloadId")
     suspend fun getMediaStreamByDownloadId(downloadId: Long): FindroidMediaStreamDto?
 
-    @Query("UPDATE mediastreams SET downloadId = :downloadId WHERE id = :id")
-    suspend fun setMediaStreamDownloadId(id: UUID, downloadId: Long)
-
     @Query("UPDATE mediastreams SET path = :path WHERE id = :id")
     suspend fun setMediaStreamPath(id: UUID, path: String)
 
