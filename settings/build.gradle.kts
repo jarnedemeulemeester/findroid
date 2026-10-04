@@ -3,11 +3,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-java {
-    toolchain {
-        languageVersion = Versions.JAVA
-    }
-}
+java { toolchain { languageVersion = Versions.JAVA } }
 
 android {
     namespace = "dev.jdtech.jellyfin.settings"
