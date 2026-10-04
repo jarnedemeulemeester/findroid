@@ -9,6 +9,12 @@ plugins {
     alias(libs.plugins.aboutlibraries.android)
 }
 
+java {
+    toolchain {
+        languageVersion = Versions.JAVA
+    }
+}
+
 android {
     namespace = "dev.jdtech.jellyfin"
     compileSdk = Versions.COMPILE_SDK
@@ -62,13 +68,6 @@ android {
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
         }
-    }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = Versions.JAVA
-        targetCompatibility = Versions.JAVA
     }
 
     buildFeatures {
@@ -131,8 +130,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.media3.ffmpeg.decoder)
     implementation(libs.timber)
-
-    coreLibraryDesugaring(libs.android.desugar.jdk)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)

@@ -1,6 +1,5 @@
 [versions]
 aboutlibraries = "15.2.0"
-android-desugar-jdk-libs = "2.1.5"
 android-plugin = "9.4.1"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.8.0"
@@ -34,7 +33,6 @@ slf4j-android = "2.0.20-0"
 [libraries]
 aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
 aboutlibraries-compose-m3 = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
-android-desugar-jdk = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-jdk-libs" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }

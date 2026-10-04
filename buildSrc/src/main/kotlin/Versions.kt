@@ -1,4 +1,4 @@
-import org.gradle.api.JavaVersion
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 object Versions {
     const val APP_CODE = 33
@@ -9,5 +9,5 @@ object Versions {
     const val MIN_SDK = 28
     const val BUILD_TOOLS = "37.0.0"
 
-    val JAVA = JavaVersion.VERSION_21
+    val JAVA = JavaLanguageVersion.of(17)
 }

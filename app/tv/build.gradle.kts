@@ -7,6 +7,12 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+java {
+    toolchain {
+        languageVersion = Versions.JAVA
+    }
+}
+
 android {
     namespace = "dev.jdtech.jellyfin"
     compileSdk = Versions.COMPILE_SDK
@@ -60,13 +66,6 @@ android {
         }
     }
 
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = Versions.JAVA
-        targetCompatibility = Versions.JAVA
-    }
-
     buildFeatures {
         buildConfig = true
         compose = true
@@ -115,8 +114,6 @@ dependencies {
     implementation(libs.media3.ffmpeg.decoder)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
-
-    coreLibraryDesugaring(libs.android.desugar.jdk)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
