@@ -421,7 +421,7 @@ class PlayerActivity : BasePlayerActivity() {
         return builder.build()
     }
 
-    private fun pictureInPicture() {
+    fun pictureInPicture() {
         if (!isPipSupported) {
             return
         }
