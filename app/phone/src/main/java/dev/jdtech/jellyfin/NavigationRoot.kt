@@ -407,9 +407,7 @@ private fun EntryProviderScope<NavKey>.mainEntries(
             onSearchClick = dropUnlessResumed { onSearchClick() },
             onSettingsClick =
                 dropUnlessResumed {
-                    navigator.navigate(
-                        SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings))
-                    )
+                    navigator.navigate(SettingsRoute(indexes = listOf(CoreR.string.title_settings)))
                 },
             onManageServers = dropUnlessResumed { navigator.navigate(ServersRoute) },
             onItemClick = resumedAction { item -> navigateToItem(navigator, item) },

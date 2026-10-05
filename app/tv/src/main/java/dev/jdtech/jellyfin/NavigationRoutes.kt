@@ -33,4 +33,4 @@ data class LibraryRoute(
 
 @Serializable data object SettingsRoute : NavKey
 
-@Serializable data class SettingsSubRoute(val indexes: IntArray) : NavKey
+@Serializable data class SettingsSubRoute(val indexes: List<Int>) : NavKey
