@@ -60,6 +60,7 @@ class PlayerGestureHelper(
     private var swipeGestureVolumeOpen = false
     private var swipeGestureBrightnessOpen = false
     private var swipeGestureProgressOpen = false
+    private var swipeGesturePipTriggered = false
 
     private var lastScaleEvent: Long = 0
 
@@ -68,6 +69,41 @@ class PlayerGestureHelper(
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+
+    private fun isInPipGestureArea(event: MotionEvent): Boolean {
+        val viewWidth = playerView.measuredWidth.toFloat()
+        return event.x in (viewWidth * 0.35f)..(viewWidth * 0.65f)
+    }
+
+    private val pipGestureDetector =
+        GestureDetector(
+            playerView.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onScroll(
+                    firstEvent: MotionEvent?,
+                    currentEvent: MotionEvent,
+                    distanceX: Float,
+                    distanceY: Float,
+                ): Boolean {
+                    if (firstEvent == null) return false
+                    if (inExclusionArea(firstEvent)) return false
+                    if (isControlsLocked || swipeGesturePipTriggered) return false
+                    if (!isInPipGestureArea(firstEvent)) return false
+
+                    val deltaX = currentEvent.x - firstEvent.x
+                    val deltaY = currentEvent.y - firstEvent.y
+                    val threshold = playerView.resources.displayMetrics.density * 96f
+
+                    if (deltaY > threshold && abs(deltaY) > abs(deltaX) * 1.5f) {
+                        swipeGesturePipTriggered = true
+                        activity.pictureInPicture()
+                        return true
+                    }
+
+                    return false
+                }
+            },
+        )
 
     var currentTrickplay: Trickplay? = null
     private val trickplayRoundedCorners = RoundedCornersTransformation(10f)
@@ -316,6 +352,9 @@ class PlayerGestureHelper(
                     // Disables volume gestures when player is locked
                     if (isControlsLocked) return false
 
+                    // Reserve the center of the player for swipe-down-to-PiP.
+                    if (isInPipGestureArea(firstEvent)) return false
+
                     if (abs(distanceY / distanceX) < 2) return false
 
                     if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen) {
@@ -493,6 +532,7 @@ class PlayerGestureHelper(
                 }
             }
             currentNumberOfPointers = 0
+            swipeGesturePipTriggered = false
         }
         if (
             lastPlaybackSpeed > 0 &&
@@ -588,6 +628,7 @@ class PlayerGestureHelper(
                 when (event.pointerCount) {
                     1 -> {
                         tapGestureDetector.onTouchEvent(event)
+                        pipGestureDetector.onTouchEvent(event)
                         if (appPreferences.getValue(appPreferences.playerGesturesVB))
                             vbGestureDetector.onTouchEvent(event)
                         if (appPreferences.getValue(appPreferences.playerGesturesSeek))
