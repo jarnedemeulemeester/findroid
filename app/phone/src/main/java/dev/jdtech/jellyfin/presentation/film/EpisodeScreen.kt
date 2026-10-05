@@ -110,6 +110,7 @@ fun EpisodeScreen(
                     intent.putExtra("itemId", episodeId.toString())
                     intent.putExtra("itemKind", BaseItemKind.EPISODE.serialName)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
+                    navigateHome()
                     context.startActivity(intent)
                 }
                 is EpisodeAction.OnBackClick -> navigateBack()
