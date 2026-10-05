@@ -9,3 +9,9 @@ sealed interface MediaAction {
 
     data object OnRetryClick : MediaAction
 }
+
+enum class MediaActionKind {
+    NONE,
+    PLAY,
+    DOWNLOAD,
+}
