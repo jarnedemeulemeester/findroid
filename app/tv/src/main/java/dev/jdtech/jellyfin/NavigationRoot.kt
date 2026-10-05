@@ -1,14 +1,11 @@
 package dev.jdtech.jellyfin
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
@@ -18,6 +15,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.navigation.resumedAction
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
 import dev.jdtech.jellyfin.presentation.film.ShowScreen
@@ -91,7 +89,7 @@ fun NavigationRoot(
         onBack = { backStack.removeLastOrNull() },
         entryDecorators = entryDecorators,
         entryProvider =
-            entryProvider<NavKey> {
+            entryProvider {
                 tvEntries(
                     inMainMode = setupComplete,
                     navigate = navigate,
@@ -100,45 +98,6 @@ fun NavigationRoot(
                 )
             },
     )
-}
-
-/**
- * Returns an action that only runs [calculation] while the nearest entry's lifecycle is in the
- * RESUMED state. This mirrors the former Navigation 2 `safeNavigate` guard, preventing navigation
- * while a transition is still in progress.
- */
-@Composable
-private fun <T> resumedAction(calculation: (@DisallowComposableCalls (T) -> Unit)?): (T) -> Unit {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    return { argument ->
-        if (lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
-            calculation?.invoke(argument)
-        }
-    }
-}
-
-@Composable
-private fun <T, U> resumedAction(
-    calculation: (@DisallowComposableCalls (T, U) -> Unit)?
-): (T, U) -> Unit {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    return { t, u ->
-        if (lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
-            calculation?.invoke(t, u)
-        }
-    }
-}
-
-@Composable
-private fun <T, U, V> resumedAction(
-    calculation: (@DisallowComposableCalls (T, U, V) -> Unit)?
-): (T, U, V) -> Unit {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    return { t, u, v ->
-        if (lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
-            calculation?.invoke(t, u, v)
-        }
-    }
 }
 
 private fun EntryProviderScope<NavKey>.tvEntries(

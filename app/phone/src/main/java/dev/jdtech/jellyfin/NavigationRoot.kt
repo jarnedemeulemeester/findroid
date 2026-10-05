@@ -14,7 +14,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -23,8 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
@@ -46,6 +43,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.navigation.resumedAction
 import dev.jdtech.jellyfin.presentation.film.CollectionScreen
 import dev.jdtech.jellyfin.presentation.film.DownloadsScreen
 import dev.jdtech.jellyfin.presentation.film.EpisodeScreen
@@ -302,21 +300,6 @@ private fun SetupNavigation(
         popTransitionSpec = { GLOBAL_TRANSITION_SPEC },
         predictivePopTransitionSpec = { _ -> GLOBAL_TRANSITION_SPEC },
     )
-}
-
-/**
- * Returns an action that only runs [calculation] while the nearest entry's lifecycle is in the
- * RESUMED state. This mirrors the former Navigation 2 `safeNavigate` guard, preventing navigation
- * while a transition is still in progress.
- */
-@Composable
-private fun <T> resumedAction(calculation: (@DisallowComposableCalls (T) -> Unit)?): (T) -> Unit {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    return { argument ->
-        if (lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
-            calculation?.invoke(argument)
-        }
-    }
 }
 
 /**

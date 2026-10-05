@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.room3.runtime)
