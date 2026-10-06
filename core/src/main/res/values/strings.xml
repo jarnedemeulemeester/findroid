@@ -64,6 +64,8 @@
     <string name="sort_by_options_4">Date Played</string>
     <string name="sort_by_options_5">Release Date</string>
     <string name="sort_by_options_6">Random</string>
+    <string name="sort_by_episodes_date_added">Episodes by date added</string>
+    <string name="sort_by_episodes_air_date">Episodes by air date</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="runtime_minutes">%1$d mins</string>

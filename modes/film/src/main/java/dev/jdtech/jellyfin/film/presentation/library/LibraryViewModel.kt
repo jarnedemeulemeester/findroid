@@ -29,7 +29,7 @@ constructor(
     lateinit var parentId: UUID
     lateinit var libraryType: CollectionType
 
-    lateinit var sortBy: SortBy
+    lateinit var sortBy: LibrarySortBy
     lateinit var sortOrder: SortOrder
 
     fun setup(parentId: UUID, libraryType: CollectionType) {
@@ -38,23 +38,37 @@ constructor(
     }
 
     fun loadItems() {
-        val itemType =
-            when (libraryType) {
-                CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
-                CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
-                CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
-                CollectionType.Mixed,
-                CollectionType.Folders ->
-                    listOf(BaseItemKind.FOLDER, BaseItemKind.MOVIE, BaseItemKind.SERIES)
-                else -> null
-            }
-
-        val recursive = itemType == null || !itemType.contains(BaseItemKind.FOLDER)
-
         viewModelScope.launch {
             _state.emit(_state.value.copy(isLoading = true, error = null))
 
             initSorting()
+
+            val itemType =
+                when (libraryType) {
+                    CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
+                    CollectionType.TvShows ->
+                        if (sortBy.displaysEpisodes) {
+                            listOf(BaseItemKind.EPISODE)
+                        } else {
+                            listOf(BaseItemKind.SERIES)
+                        }
+                    CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
+                    CollectionType.Mixed,
+                    CollectionType.Folders ->
+                        listOf(BaseItemKind.FOLDER, BaseItemKind.MOVIE, BaseItemKind.SERIES)
+                    else -> null
+                }
+
+            val recursive = itemType == null || !itemType.contains(BaseItemKind.FOLDER)
+            val repositorySortBy =
+                if (
+                    libraryType == CollectionType.TvShows &&
+                        sortBy == LibrarySortBy.DATE_PLAYED
+                ) {
+                    SortBy.SERIES_DATE_PLAYED
+                } else {
+                    sortBy.repositorySortBy
+                }
 
             try {
                 val items =
@@ -63,14 +77,7 @@ constructor(
                             parentId = parentId,
                             includeTypes = itemType,
                             recursive = recursive,
-                            sortBy =
-                                if (
-                                    libraryType == CollectionType.TvShows &&
-                                        sortBy == SortBy.DATE_PLAYED
-                                )
-                                    SortBy.SERIES_DATE_PLAYED
-                                else sortBy, // Jellyfin uses a different enum for sorting series by
-                            // data played
+                            sortBy = repositorySortBy,
                             sortOrder = sortOrder,
                         )
                         .cachedIn(viewModelScope)
@@ -82,27 +89,49 @@ constructor(
     }
 
     private suspend fun initSorting() {
-        if (!::sortBy.isInitialized || !::sortOrder.isInitialized) {
-            sortBy = SortBy.fromString(appPreferences.getValue(appPreferences.sortBy))
-            sortOrder = SortOrder.fromString(appPreferences.getValue(appPreferences.sortOrder))
-            _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
+        if (::sortBy.isInitialized && ::sortOrder.isInitialized) return
+
+        val sortByPreference = appPreferences.librarySortBy(parentId)
+        val sortOrderPreference = appPreferences.librarySortOrder(parentId)
+        val savedSortBy = appPreferences.getValue(sortByPreference)
+        val savedSortOrder = appPreferences.getValue(sortOrderPreference)
+
+        sortBy =
+            LibrarySortBy.fromString(
+                savedSortBy ?: appPreferences.getValue(appPreferences.sortBy)
+            )
+        if (sortBy.displaysEpisodes && libraryType != CollectionType.TvShows) {
+            sortBy = LibrarySortBy.defaultValue
+        }
+        sortOrder =
+            SortOrder.fromString(
+                savedSortOrder ?: appPreferences.getValue(appPreferences.sortOrder)
+            )
+
+        _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
+
+        if (savedSortBy == null) {
+            appPreferences.setValue(sortByPreference, sortBy.toString())
+        }
+        if (savedSortOrder == null) {
+            appPreferences.setValue(sortOrderPreference, sortOrder.toString())
         }
     }
 
-    private fun setSorting(sortBy: SortBy, sortOrder: SortOrder) {
+    private fun setSorting(sortBy: LibrarySortBy, sortOrder: SortOrder) {
         this.sortBy = sortBy
         this.sortOrder = sortOrder
         viewModelScope.launch {
             _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
-            appPreferences.setValue(appPreferences.sortBy, sortBy.toString())
-            appPreferences.setValue(appPreferences.sortOrder, sortOrder.toString())
+            appPreferences.setValue(appPreferences.librarySortBy(parentId), sortBy.toString())
+            appPreferences.setValue(appPreferences.librarySortOrder(parentId), sortOrder.toString())
         }
     }
 
     fun onAction(action: LibraryAction) {
         when (action) {
             is LibraryAction.ChangeSorting -> {
-                if (action.sortBy != this.sortBy || action.sortOrder != this.sortOrder) {
+                if (action.sortBy != sortBy || action.sortOrder != sortOrder) {
                     setSorting(sortBy = action.sortBy, sortOrder = action.sortOrder)
                     loadItems()
                 }
