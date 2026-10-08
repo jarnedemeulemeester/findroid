@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.ItemFilter
 
 @HiltViewModel
 class LibraryViewModel
@@ -31,6 +32,7 @@ constructor(
 
     lateinit var sortBy: SortBy
     lateinit var sortOrder: SortOrder
+    private var filterWatched: Boolean = false
 
     fun setup(parentId: UUID, libraryType: CollectionType) {
         this.parentId = parentId
@@ -72,6 +74,8 @@ constructor(
                                 else sortBy, // Jellyfin uses a different enum for sorting series by
                             // data played
                             sortOrder = sortOrder,
+                            filters =
+                                if (filterWatched) listOf(ItemFilter.IS_UNPLAYED) else null,
                         )
                         .cachedIn(viewModelScope)
                 _state.emit(_state.value.copy(items = items))
@@ -85,7 +89,8 @@ constructor(
         if (!::sortBy.isInitialized || !::sortOrder.isInitialized) {
             sortBy = SortBy.fromString(appPreferences.getValue(appPreferences.sortBy))
             sortOrder = SortOrder.fromString(appPreferences.getValue(appPreferences.sortOrder))
-            _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
+            filterWatched = appPreferences.getValue(appPreferences.filterWatched)
+            _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder, filterWatched = filterWatched))
         }
     }
 
@@ -99,6 +104,15 @@ constructor(
         }
     }
 
+    private fun toggleWatchedFilter(enabled: Boolean) {
+        this.filterWatched = enabled
+        viewModelScope.launch {
+            _state.emit(_state.value.copy(filterWatched = enabled))
+            appPreferences.setValue(appPreferences.filterWatched, enabled)
+            loadItems()
+        }
+    }
+
     fun onAction(action: LibraryAction) {
         when (action) {
             is LibraryAction.ChangeSorting -> {
@@ -107,6 +121,7 @@ constructor(
                     loadItems()
                 }
             }
+            is LibraryAction.ToggleWatchedFilter -> toggleWatchedFilter(action.enabled)
             else -> Unit
         }
     }

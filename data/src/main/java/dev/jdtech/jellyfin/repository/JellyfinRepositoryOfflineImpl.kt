@@ -30,6 +30,7 @@ import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.ItemFilter
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
 
@@ -82,6 +83,7 @@ class JellyfinRepositoryOfflineImpl(
         recursive: Boolean,
         sortBy: SortBy,
         sortOrder: SortOrder,
+        filters: List<ItemFilter>?,
         startIndex: Int?,
         limit: Int?,
     ): List<FindroidItem> {
@@ -94,6 +96,7 @@ class JellyfinRepositoryOfflineImpl(
         recursive: Boolean,
         sortBy: SortBy,
         sortOrder: SortOrder,
+        filters: List<ItemFilter>?,
     ): Flow<PagingData<FindroidItem>> {
         TODO("Not yet implemented")
     }
