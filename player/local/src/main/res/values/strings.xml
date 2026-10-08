@@ -2,6 +2,10 @@
     <string name="select_audio_track">Select audio track</string>
     <string name="select_subtitle_track">Select subtitle track</string>
     <string name="select_playback_speed">Select playback speed</string>
+    <!--TODO: Add translations for custom playback speed strings.-->
+    <string name="custom_playback_speed">Playback speed</string>
+    <string name="custom_playback_speed_label">Custom</string>
+    <string name="custom_playback_speed_confirm_button_label">Set</string>
     <string name="select_a_version">"Select a version"</string>
     <string name="external">External</string>
     <string name="none">None</string>
