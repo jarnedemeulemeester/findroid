@@ -25,14 +25,17 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     private var items: List<FindroidItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
     var currentItemIndex: Int = 0
+    var shuffle: Boolean = false
 
     suspend fun getInitialItem(
         itemId: UUID,
         itemKind: BaseItemKind,
         mediaSourceIndex: Int? = null,
         startFromBeginning: Boolean = false,
+        shuffle: Boolean = false,
     ): PlayerItem? {
         Timber.d("Retrieving initial player item")
+        this.shuffle = shuffle
 
         val initialItem =
             when (itemKind) {
@@ -45,38 +48,46 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                 BaseItemKind.SERIES -> {
                     val nextUpEpisode = repository.getNextUp(itemId).firstOrNull()
 
-                    val season =
-                        if (nextUpEpisode != null) {
-                            repository.getSeason(nextUpEpisode.seasonId)
-                        } else {
-                            val seasons = repository.getSeasons(itemId)
-                            if (seasons.isEmpty()) {
-                                return null
-                            }
-                            seasons.first()
-                        }
-
-                    val episodes =
-                        repository
-                            .getEpisodes(
+                    if (shuffle) {
+                        val seasons = repository.getSeasons(itemId)
+                        var episodes = seasons.flatMap { season ->
+                            repository.getEpisodes(
                                 seriesId = itemId,
                                 seasonId = season.id,
                                 fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
                             )
-                            .filter { !it.missing }
+                        }.filter { !it.missing }
 
-                    if (episodes.isEmpty()) {
-                        return null
+                        if (episodes.isEmpty()) return null
+
+                        episodes = episodes.shuffled()
+                        items = episodes
+                        episodes.first()
+                    } else {
+                        val season = if (nextUpEpisode != null) {
+                            repository.getSeason(nextUpEpisode.seasonId)
+                        } else {
+                            val seasons = repository.getSeasons(itemId)
+                            if (seasons.isEmpty()) return null
+                            seasons.first()
+                        }
+
+                        val episodes = repository.getEpisodes(
+                            seriesId = itemId,
+                            seasonId = season.id,
+                            fields = listOf(ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
+                        ).filter { !it.missing }
+
+                        if (episodes.isEmpty()) return null
+
+                        val episode = nextUpEpisode ?: episodes.first()
+                        items = episodes
+                        episode
                     }
-
-                    val episode = nextUpEpisode ?: episodes.first()
-
-                    items = episodes
-                    episode
                 }
                 BaseItemKind.SEASON -> {
                     val season = repository.getSeason(itemId)
-                    val episodes =
+                    var episodes =
                         repository
                             .getEpisodes(
                                 seriesId = season.seriesId,
@@ -87,6 +98,9 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
 
                     if (episodes.isEmpty()) {
                         return null
+                    }
+                    if (shuffle){
+                        episodes = episodes.shuffled()
                     }
 
                     val episode = episodes.first()

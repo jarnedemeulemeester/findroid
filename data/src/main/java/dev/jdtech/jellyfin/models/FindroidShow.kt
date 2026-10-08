@@ -18,6 +18,7 @@ data class FindroidShow(
     override val favorite: Boolean,
     override val canPlay: Boolean,
     override val canDownload: Boolean,
+    override val canShuffle: Boolean = false,
     override val playbackPositionTicks: Long = 0L,
     override val unplayedItemCount: Int?,
     val genres: List<String>,
