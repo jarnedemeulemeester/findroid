@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -109,10 +110,18 @@ fun MovieScreen(
                     context.startActivity(intent)
                 }
                 is MovieAction.PlayTrailer -> {
-                    try {
-                        uriHandler.openUri(action.trailer)
-                    } catch (e: IllegalArgumentException) {
-                        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    if(Patterns.WEB_URL.matcher(action.trailer).matches()) {
+                        try {
+                            uriHandler.openUri(action.trailer)
+                        } catch (e: IllegalArgumentException) {
+                            Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        val intent = Intent(context, PlayerActivity::class.java)
+                        intent.putExtra("itemId", action.trailer)
+                        intent.putExtra("itemKind", BaseItemKind.TRAILER.serialName)
+                        intent.putExtra("startFromBeginning", true)
+                        context.startActivity(intent)
                     }
                 }
                 is MovieAction.OnBackClick -> navigateBack()
@@ -234,7 +243,9 @@ private fun MovieScreenLayout(
                                 false -> onAction(MovieAction.MarkAsFavorite)
                             }
                         },
-                        onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
+                        onTrailerClick = { trailer ->
+                            onAction(MovieAction.PlayTrailer(trailer))
+                        },
                         onDownloadClick = { storageIndex ->
                             onDownloaderAction(DownloaderAction.Download(movie, storageIndex))
                         },

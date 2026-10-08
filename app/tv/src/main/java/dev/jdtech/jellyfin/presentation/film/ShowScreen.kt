@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.presentation.film
 
+import android.util.Patterns
 import android.view.KeyEvent
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -69,13 +70,14 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.ui.components.Direction
 import dev.jdtech.jellyfin.ui.components.ItemCard
 import dev.jdtech.jellyfin.utils.getShowDateString
+import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 
 @Composable
 fun ShowScreen(
     showId: UUID,
     navigateToItem: (item: FindroidItem) -> Unit,
-    navigateToPlayer: (itemId: UUID) -> Unit,
+    navigateToPlayer: (itemId: UUID, itemKind: BaseItemKind, startFromBeginning: Boolean) -> Unit,
     viewModel: ShowViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -90,13 +92,21 @@ fun ShowScreen(
         onAction = { action ->
             when (action) {
                 is ShowAction.Play -> {
-                    navigateToPlayer(showId)
+                    navigateToPlayer(showId, BaseItemKind.SERIES, false)
                 }
                 is ShowAction.PlayTrailer -> {
-                    try {
-                        uriHandler.openUri(action.trailer)
-                    } catch (e: IllegalArgumentException) {
-                        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    if (Patterns.WEB_URL.matcher(action.trailer).matches()) {
+                        try {
+                            uriHandler.openUri(action.trailer)
+                        } catch (e: IllegalArgumentException) {
+                            Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        navigateToPlayer(
+                            UUID.fromString(action.trailer),
+                            BaseItemKind.TRAILER,
+                            true
+                        )
                     }
                 }
                 is ShowAction.NavigateToItem -> navigateToItem(action.item)
