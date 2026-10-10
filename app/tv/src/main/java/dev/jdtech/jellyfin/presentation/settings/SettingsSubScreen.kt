@@ -48,8 +48,8 @@ import timber.log.Timber
 
 @Composable
 fun SettingsSubScreen(
-    indexes: IntArray = intArrayOf(),
-    navigateToSubSettings: (indexes: IntArray) -> Unit,
+    indexes: List<Int> = emptyList(),
+    navigateToSubSettings: (indexes: List<Int>) -> Unit,
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
