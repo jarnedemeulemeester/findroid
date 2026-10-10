@@ -16,10 +16,8 @@ import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.dropUnlessResumed
@@ -131,21 +129,21 @@ fun NavigationRoot(
     // nav3 caches per back stack snapshot, always read the current value.
     val searchExpanded = remember { mutableStateOf(false) }
 
-    // Live setup condition: keep the setup flow's back stack in a consistent state across mode
-    // switches.
-    var wasSetupComplete by remember { mutableStateOf(setupComplete) }
-    LaunchedEffect(setupComplete) {
-        if (setupComplete != wasSetupComplete) {
-            if (setupComplete) {
-                // Setup completed: discard the setup flow and land on Home.
-                navigator.navigateHome()
-            } else {
-                // Setup became incomplete: restart the setup flow at the appropriate screen.
-                setupBackStack.clear()
-                setupBackStack.add(setupStartRoute)
-            }
-            wasSetupComplete = setupComplete
+    // Live setup condition: keep the back stacks in a consistent state across mode switches. The
+    // stacks are reconciled during composition (rather than in a LaunchedEffect, which only runs
+    // after the first frame has been composed) so the first frame of the new mode already shows
+    // the right screen.
+    val appliedSetupMode = remember { AppliedSetupMode(setupComplete) }
+    if (appliedSetupMode.setupComplete != setupComplete) {
+        if (setupComplete) {
+            // Setup completed: discard the setup flow and land on Home.
+            navigator.navigateHome()
+        } else {
+            // Setup became incomplete: restart the setup flow at the appropriate screen.
+            setupBackStack.clear()
+            setupBackStack.add(setupStartRoute)
         }
+        appliedSetupMode.setupComplete = setupComplete
     }
 
     if (setupComplete) {
@@ -163,6 +161,12 @@ fun NavigationRoot(
         )
     }
 }
+
+/**
+ * Remembers the setup mode that the back stacks were last reconciled for. Deliberately not
+ * observable state: it is written during composition, which must not schedule recompositions.
+ */
+private class AppliedSetupMode(var setupComplete: Boolean)
 
 @Composable
 private fun MainNavigation(

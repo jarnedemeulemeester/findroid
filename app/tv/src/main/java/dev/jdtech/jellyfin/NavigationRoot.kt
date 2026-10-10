@@ -1,11 +1,7 @@
 package dev.jdtech.jellyfin
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
@@ -58,14 +54,15 @@ fun NavigationRoot(
             listOf(saveableStateHolderDecorator, viewModelStoreDecorator)
         }
 
-    // Live setup condition: reset the stack when the app enters or leaves the setup flow.
-    var wasSetupComplete by remember { mutableStateOf(setupComplete) }
-    LaunchedEffect(setupComplete) {
-        if (setupComplete != wasSetupComplete) {
-            backStack.clear()
-            backStack.add(if (setupComplete) MainRoute else setupStartRoute)
-            wasSetupComplete = setupComplete
-        }
+    // Live setup condition: reset the stack when the app enters or leaves the setup flow. The
+    // reset happens during composition (rather than in a LaunchedEffect, which only runs after
+    // the first frame has been composed) so the first frame of the new mode already shows the
+    // right screen.
+    val appliedSetupMode = remember { AppliedSetupMode(setupComplete) }
+    if (appliedSetupMode.setupComplete != setupComplete) {
+        backStack.clear()
+        backStack.add(if (setupComplete) MainRoute else setupStartRoute)
+        appliedSetupMode.setupComplete = setupComplete
     }
 
     val navigate: (NavKey) -> Unit = backStack::add
@@ -99,6 +96,12 @@ fun NavigationRoot(
             },
     )
 }
+
+/**
+ * Remembers the setup mode that the back stack was last reconciled for. Deliberately not observable
+ * state: it is written during composition, which must not schedule recompositions.
+ */
+private class AppliedSetupMode(var setupComplete: Boolean)
 
 private fun EntryProviderScope<NavKey>.tvEntries(
     inMainMode: Boolean,
