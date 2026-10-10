@@ -11,6 +11,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.jdtech.jellyfin.models.FindroidSeason
+import dev.jdtech.jellyfin.navigation.navigateOrReuse
 import dev.jdtech.jellyfin.navigation.resumedAction
 import dev.jdtech.jellyfin.presentation.film.LibraryScreen
 import dev.jdtech.jellyfin.presentation.film.SeasonScreen
@@ -70,16 +71,7 @@ fun NavigationRoot(
         backStack.clear()
         backStack.add(MainRoute)
     }
-    val navigateOrReuse: (NavKey) -> Unit = { route ->
-        val index = backStack.indexOf(route)
-        if (index >= 0) {
-            while (backStack.size > index + 1) {
-                backStack.removeAt(backStack.lastIndex)
-            }
-        } else {
-            backStack.add(route)
-        }
-    }
+    val navigateOrReuse: (NavKey) -> Unit = backStack::navigateOrReuse
 
     NavDisplay(
         backStack = backStack,

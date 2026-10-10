@@ -1,7 +1,8 @@
 package dev.jdtech.jellyfin
 
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import dev.jdtech.jellyfin.navigation.navigateOrReuse
+import dev.jdtech.jellyfin.navigation.truncateTo
 
 /** Handles navigation events (forward and back) by updating the [NavigationState]. */
 class Navigator(private val state: NavigationState) {
@@ -48,17 +49,6 @@ class Navigator(private val state: NavigationState) {
         val currentStack =
             state.backStacks[state.topLevelRoute]
                 ?: error("Stack for ${state.topLevelRoute} not found")
-        val index = currentStack.indexOf(route)
-        if (index >= 0) {
-            currentStack.truncateTo(index + 1)
-        } else {
-            currentStack.add(route)
-        }
-    }
-
-    private fun NavBackStack<NavKey>.truncateTo(size: Int) {
-        while (this.size > size) {
-            removeAt(lastIndex)
-        }
+        currentStack.navigateOrReuse(route)
     }
 }

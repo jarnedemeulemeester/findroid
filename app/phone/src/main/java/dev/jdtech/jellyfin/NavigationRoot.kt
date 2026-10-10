@@ -41,6 +41,7 @@ import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.FindroidShow
+import dev.jdtech.jellyfin.navigation.navigateOrReuse
 import dev.jdtech.jellyfin.navigation.resumedAction
 import dev.jdtech.jellyfin.presentation.film.CollectionScreen
 import dev.jdtech.jellyfin.presentation.film.DownloadsScreen
@@ -274,16 +275,7 @@ private fun SetupNavigation(
 ) {
     val navigate: (NavKey) -> Unit = backStack::add
     val goBack: () -> Unit = { backStack.removeLastOrNull() }
-    val navigateOrReuse: (NavKey) -> Unit = { route ->
-        val index = backStack.indexOf(route)
-        if (index >= 0) {
-            while (backStack.size > index + 1) {
-                backStack.removeAt(backStack.lastIndex)
-            }
-        } else {
-            backStack.add(route)
-        }
-    }
+    val navigateOrReuse: (NavKey) -> Unit = backStack::navigateOrReuse
 
     val entryProvider = entryProvider {
         setupEntries(
