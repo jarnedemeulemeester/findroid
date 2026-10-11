@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_settings">Definições</string>
     <string name="title_download">Transferências</string>
@@ -63,4 +63,38 @@
     <string name="pref_player_chapter_markers">Marcadores de capítulo</string>
     <string name="pref_player_chapter_markers_summary">Exibir marcadores de capítulo na barra de tempo</string>
     <string name="player_gestures_chapter_skip_summary">Manter pressionado no Esquerdo / Direito para saltar capítulos (anula o gesto de velocidade x2)</string>
+    <string name="none">Nenhum</string>
+    <string name="pref_player_trickplay_summary">Exibir imagens de pré-visualização durante a navegação</string>
+    <string name="pref_player_gestures_seek_trickplay_summary">Exibir imagens de pré-visualização ao realizar o gesto de pesquisa</string>
+    <string name="trickplay">Trickplay</string>
+    <string name="users">Usuários</string>
+    <string name="home">Página inicial</string>
+    <string name="home_suggestions">Mostrar sugestões</string>
+    <string name="home_continue_watching">Mostrar continuar a assistir</string>
+    <string name="home_next_up">Mostrar a seguir</string>
+    <string name="home_latest">Mostrar itens mais recentes</string>
+    <string name="offline_mode_summary">Ver filmes e séries sem ligação ao servidor</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="media_segments">Segmentos de media</string>
+    <string name="pref_player_media_segments_skip_button">Mostrar botão de salto</string>
+    <string name="pref_player_media_segments_skip_button_summary">Incluir um botão para saltar partes facilmente</string>
+    <string name="settings_category_interface">Interface</string>
+    <string name="pref_player_trickplay">Trickplay</string>
+    <string name="pref_player_gestures_seek_trickplay">Trickplay com gesto de busca</string>
+    <string name="pref_player_media_segments_auto_skip_summary">Ativar avanço automatico para tipos de segmento selecionados</string>
+    <string name="pref_player_media_segments_auto_skip_mode">Quando avançar automaticamente</string>
+    <string name="pref_player_media_segments_auto_skip_type">Tipo de segmento para avançar automaticamente</string>
+    <string name="pref_player_media_segments_next_episode_threshold">Avançar para o próximo limite de episódio</string>
+    <string name="media_segments_auto_skip_pip">Apenas em modo pip</string>
+    <string name="media_segments_auto_skip_always">Sempre</string>
+    <string name="media_segments_type_unknown">Outros</string>
+    <string name="media_segments_type_commercial">Comercial</string>
+    <string name="media_segments_type_intro">Abertura</string>
+    <string name="edit_file_title">Editar %1$s</string>
+    <string name="mpv_options">Opções do mpv</string>
+    <string name="advanced">Avançado</string>
 </resources>

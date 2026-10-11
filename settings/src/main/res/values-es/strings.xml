@@ -100,4 +100,5 @@
     <string name="media_segments_type_outro">Outro</string>
     <string name="media_segments_type_intro">Intro</string>
     <string name="none">Ninguno</string>
+    <string name="edit_file_title">Editar %1$s</string>
 </resources>

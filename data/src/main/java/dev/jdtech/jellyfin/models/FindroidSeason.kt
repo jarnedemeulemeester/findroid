@@ -48,7 +48,10 @@ fun BaseItemDto.toFindroidSeason(jellyfinRepository: JellyfinRepository): Findro
     )
 }
 
-fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID): FindroidSeason {
+suspend fun FindroidSeasonDto.toFindroidSeason(
+    database: ServerDatabaseDao,
+    userId: UUID,
+): FindroidSeason {
     val userData = database.getUserDataOrCreateNew(id, userId)
     return FindroidSeason(
         id = id,

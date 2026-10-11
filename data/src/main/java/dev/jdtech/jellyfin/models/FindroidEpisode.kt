@@ -81,7 +81,7 @@ suspend fun BaseItemDto.toFindroidEpisode(
     }
 }
 
-fun FindroidEpisodeDto.toFindroidEpisode(
+suspend fun FindroidEpisodeDto.toFindroidEpisode(
     database: ServerDatabaseDao,
     userId: UUID,
 ): FindroidEpisode {

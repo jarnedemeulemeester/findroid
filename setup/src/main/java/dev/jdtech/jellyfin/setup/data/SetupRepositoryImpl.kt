@@ -41,11 +41,13 @@ class SetupRepositoryImpl(
     }
 
     override suspend fun getCurrentServer(): Server? {
-        return appPreferences.getValue(appPreferences.currentServer)?.let { id -> database.get(id) }
+        return appPreferences.getValue(appPreferences.currentServer)?.let { id ->
+            database.getServer(id)
+        }
     }
 
     override suspend fun deleteServer(serverId: String) {
-        database.delete(serverId)
+        database.deleteServer(serverId)
     }
 
     override suspend fun getIsQuickConnectEnabled(): Boolean =
@@ -114,7 +116,7 @@ class SetupRepositoryImpl(
         }
     }
 
-    private fun saveServerInDatabase(recommendedServerInfo: RecommendedServerInfo): Server {
+    private suspend fun saveServerInDatabase(recommendedServerInfo: RecommendedServerInfo): Server {
         val serverInfo =
             recommendedServerInfo.systemInfo.getOrNull()
                 ?: throw ExceptionUiText(
@@ -123,7 +125,7 @@ class SetupRepositoryImpl(
 
         Timber.d("Connecting to server: ${serverInfo.serverName}")
 
-        val serverInDatabase = database.get(serverInfo.id!!)
+        val serverInDatabase = database.getServer(serverInfo.id!!)
 
         // Check if server is already in the database
         // If so only add a new address to that server if it's different
@@ -228,7 +230,7 @@ class SetupRepositoryImpl(
         }
     }
 
-    private fun saveAuthenticationResult(authenticationResult: AuthenticationResult) {
+    private suspend fun saveAuthenticationResult(authenticationResult: AuthenticationResult) {
         val user =
             User(
                 id = authenticationResult.user!!.id,
@@ -276,7 +278,7 @@ class SetupRepositoryImpl(
         val server = getCurrentServer() ?: return
         val user = database.getUser(userId) ?: return
         server.currentUserId = user.id
-        database.update(server)
+        database.updateServer(server)
 
         jellyfinApi.apply {
             api.update(accessToken = user.accessToken)
@@ -291,7 +293,7 @@ class SetupRepositoryImpl(
             return
         }
         server.currentServerAddressId = address.id
-        database.update(server)
+        database.updateServer(server)
         jellyfinApi.apply { api.update(baseUrl = address.address) }
     }
 }

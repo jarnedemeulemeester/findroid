@@ -4,6 +4,7 @@
     <string name="jellyfin_banner">Jellyfin banner</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
+    <string name="discard">Discard</string>
     <string name="title_home">Home</string>
     <string name="title_media">My media</string>
     <string name="title_favorite">Favorites</string>

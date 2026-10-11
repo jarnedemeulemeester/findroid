@@ -16,7 +16,7 @@
     <string name="genres">ジャンル</string>
     <string name="director">監督</string>
     <string name="writers">脚本家</string>
-    <string name="cast_amp_crew">キャスト＆クルー</string>
+    <string name="cast_amp_crew"><![CDATA[キャスト＆クルー]]></string>
     <string name="seasons">シーズン</string>
     <string name="play_button_description">メディアを再生</string>
     <string name="trailer_button_description">予告編を視聴</string>
@@ -108,4 +108,5 @@
     <string name="download_paused">一時停止中</string>
     <string name="download_downloading">ダウンロード中…</string>
     <string name="download_failed">ダウンロードに失敗しました</string>
+    <string name="discard">破棄</string>
 </resources>
