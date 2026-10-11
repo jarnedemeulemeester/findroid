@@ -1,0 +1,10 @@
+Features:
+- Separated mpv settings.
+- Added editor for mpv.conf and input.conf.
+- Updated mpv and use system fonts.
+
+Fixes:
+- Fixed mpv seeking with milliseconds precision.
+- Fixed a resource leak in the downloader.
+
+Plus a bunch of new translations.

@@ -1,7 +1,8 @@
 package dev.jdtech.jellyfin.di
 
 import android.content.Context
-import androidx.room.Room
+import androidx.room3.Room
+import androidx.sqlite.driver.AndroidSQLiteDriver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,9 +20,9 @@ object DatabaseModule {
     @Provides
     fun provideServerDatabaseDao(@ApplicationContext app: Context): ServerDatabaseDao {
         return Room.databaseBuilder(app.applicationContext, ServerDatabase::class.java, "servers")
+            .setDriver(AndroidSQLiteDriver())
             .addMigrations(MIGRATION_6_7)
             .fallbackToDestructiveMigration(dropAllTables = true)
-            .allowMainThreadQueries()
             .build()
             .getServerDatabaseDao()
     }

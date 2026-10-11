@@ -245,7 +245,8 @@ private fun LoginScreenLayout(
                                 if (state.quickConnectCode != null) {
                                     CircularProgressIndicator(
                                         color = LocalContentColor.current,
-                                        modifier = Modifier.size(24.dp).align(Alignment.CenterStart),
+                                        modifier =
+                                            Modifier.size(24.dp).align(Alignment.CenterStart),
                                     )
                                 }
                                 Text(

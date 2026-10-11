@@ -48,7 +48,7 @@
     <string name="sort_by_options_5">Data de Lançamento</string>
     <string name="genres">Género</string>
     <string name="director">Diretor</string>
-    <string name="cast_amp_crew">Elenco &amp; Equipa</string>
+    <string name="cast_amp_crew"><![CDATA[Elenco & Equipa]]></string>
     <string name="trailer_button_description">Ver o trailer</string>
     <string name="episode_watched_indicator">Indicador de episódio visto</string>
     <string name="error_preparing_player_items">Erro na preparação de itens do reprodutor.</string>
@@ -99,4 +99,14 @@
     <string name="title_download">Downloads</string>
     <string name="not_set">Não Definido</string>
     <string name="sort_by_options_6">Randômico</string>
+    <string name="discard">Descartar</string>
+    <string name="runtime_minutes_left">Faltam %1$d mins</string>
+    <string name="delete_download">Apagar download</string>
+    <string name="delete_download_message">Tem a certeza de que pretende apagar este download do seu dispositivo?</string>
+    <string name="none">Nenhum</string>
+    <string name="manage_servers">Gerir servidores</string>
+    <string name="download_pending">Pendente…</string>
+    <string name="download_paused">Pausado</string>
+    <string name="download_downloading">Baixando…</string>
+    <string name="download_failed">Falha ao descarregar</string>
 </resources>

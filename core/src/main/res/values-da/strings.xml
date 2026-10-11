@@ -66,7 +66,7 @@
     <string name="title_media">Mine medier</string>
     <string name="director">Instruktør</string>
     <string name="writers">Forfattere</string>
-    <string name="cast_amp_crew">Medvirkende</string>
+    <string name="cast_amp_crew"><![CDATA[Medvirkende]]></string>
     <string name="play_button_description">Afspil mediet</string>
     <string name="check_button_description">Marker som afspillet eller ikke-afspillet</string>
     <string name="episode_watched_indicator">Indikator for set episode</string>

@@ -1,4 +1,4 @@
-name: Lint
+name: Format
 
 on:
   push:
@@ -11,16 +11,16 @@ on:
       - '**.kts'
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-24.04
+  format:
+    name: Format
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/checkout@v7
+      - name: Set up JDK
+        uses: actions/setup-java@v6
         with:
-          java-version: 21
+          java-version: 17
           distribution: temurin
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6

@@ -27,4 +27,5 @@
     <string name="add_server_address">Добавить адрес сервера</string>
     <string name="remove_server_address">Удалить адрес сервера</string>
     <string name="remove_server_address_dialog_text">Вы уверены, что хотите удалить адрес %1$s</string>
+    <string name="cancel">Отмена</string>
 </resources>
