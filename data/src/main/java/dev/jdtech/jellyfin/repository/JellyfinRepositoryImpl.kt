@@ -71,34 +71,52 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getEpisode(itemId: UUID): FindroidEpisode =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
+            try {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId!!)
+                    .content
+                    .toFindroidEpisode(this@JellyfinRepositoryImpl, database)!!
+            } catch (e: Exception) {
+                // Downloaded, but the server no longer has it. Without this the screen never
+                // loads, and since delete lives on that screen the copy on disk is stranded.
+                downloadedEpisode(itemId) ?: throw e
+            }
         }
 
     override suspend fun getMovie(itemId: UUID): FindroidMovie =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            try {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId!!)
+                    .content
+                    .toFindroidMovie(this@JellyfinRepositoryImpl, database)
+            } catch (e: Exception) {
+                downloadedMovie(itemId) ?: throw e
+            }
         }
 
     override suspend fun getShow(itemId: UUID): FindroidShow =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidShow(this@JellyfinRepositoryImpl)
+            try {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId!!)
+                    .content
+                    .toFindroidShow(this@JellyfinRepositoryImpl)
+            } catch (e: Exception) {
+                downloadedShow(itemId) ?: throw e
+            }
         }
 
     override suspend fun getSeason(itemId: UUID): FindroidSeason =
         withContext(Dispatchers.IO) {
-            jellyfinApi.userLibraryApi
-                .getItem(itemId, jellyfinApi.userId!!)
-                .content
-                .toFindroidSeason(this@JellyfinRepositoryImpl)
+            try {
+                jellyfinApi.userLibraryApi
+                    .getItem(itemId, jellyfinApi.userId!!)
+                    .content
+                    .toFindroidSeason(this@JellyfinRepositoryImpl)
+            } catch (e: Exception) {
+                downloadedSeason(itemId) ?: throw e
+            }
         }
 
     override suspend fun getLibraries(): List<FindroidCollection> =
@@ -284,18 +302,43 @@ class JellyfinRepositoryImpl(
     ): List<FindroidEpisode> =
         withContext(Dispatchers.IO) {
             if (!offline) {
-                jellyfinApi.showsApi
-                    .getEpisodes(
-                        seriesId,
-                        jellyfinApi.userId!!,
-                        seasonId = seasonId,
-                        fields = fields,
-                        startItemId = startItemId,
-                        limit = limit,
-                    )
-                    .content
-                    .items
-                    .mapNotNull { it.toFindroidEpisode(this@JellyfinRepositoryImpl, database) }
+                // Anything downloaded from this season that the server no longer lists: the
+                // season being gone entirely, or just one episode removed from it. Without
+                // these the copy on disk cannot be reached, and delete lives on its screen.
+                val downloaded =
+                    database.getEpisodesBySeasonId(seasonId).map {
+                        it.toFindroidEpisode(database, jellyfinApi.userId!!)
+                    }
+                val fromServer =
+                    try {
+                        jellyfinApi.showsApi
+                            .getEpisodes(
+                                seriesId,
+                                jellyfinApi.userId!!,
+                                seasonId = seasonId,
+                                fields = fields,
+                                startItemId = startItemId,
+                                limit = limit,
+                            )
+                            .content
+                            .items
+                            .mapNotNull {
+                                it.toFindroidEpisode(this@JellyfinRepositoryImpl, database)
+                            }
+                    } catch (e: Exception) {
+                        // The whole season is gone from the server. Fall back to what was
+                        // downloaded from it, but only when there is something: with nothing to
+                        // show, the error is the honest answer, and swallowing it would turn an
+                        // outage into a season that looks empty rather than unreachable.
+                        //
+                        // Deliberately not narrowed by status code. The server answers 404 for an
+                        // item it deleted but 500 for an id it has no record of, and which one a
+                        // removed season produces depends on how it was removed.
+                        if (downloaded.isEmpty()) throw e
+                        emptyList()
+                    }
+                val known = fromServer.mapTo(mutableSetOf()) { it.id }
+                (fromServer + downloaded.filterNot { it.id in known }).sortedBy { it.indexNumber }
             } else {
                 database.getEpisodesBySeasonId(seasonId).map {
                     it.toFindroidEpisode(database, jellyfinApi.userId!!)
@@ -567,6 +610,24 @@ class JellyfinRepositoryImpl(
             )
             items
         }
+
+    /**
+     * The downloaded copy of an item the server has since lost, or null if there is none. Room
+     * throws rather than returning null for a missing row, hence the catch.
+     */
+    private fun downloadedEpisode(itemId: UUID): FindroidEpisode? =
+        runCatching { database.getEpisode(itemId).toFindroidEpisode(database, getUserId()) }
+            .getOrNull()
+
+    private fun downloadedMovie(itemId: UUID): FindroidMovie? =
+        runCatching { database.getMovie(itemId).toFindroidMovie(database, getUserId()) }.getOrNull()
+
+    private fun downloadedShow(itemId: UUID): FindroidShow? =
+        runCatching { database.getShow(itemId).toFindroidShow(database, getUserId()) }.getOrNull()
+
+    private fun downloadedSeason(itemId: UUID): FindroidSeason? =
+        runCatching { database.getSeason(itemId).toFindroidSeason(database, getUserId()) }
+            .getOrNull()
 
     override fun getUserId(): UUID {
         return jellyfinApi.userId!!
