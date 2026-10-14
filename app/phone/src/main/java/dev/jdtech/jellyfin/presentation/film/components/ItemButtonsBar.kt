@@ -1,8 +1,13 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
+import android.Manifest
 import android.app.DownloadManager
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Environment
 import android.os.StatFs
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.window.core.layout.WindowSizeClass
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderState
@@ -73,6 +79,27 @@ fun ItemButtonsBar(
 
     var selectedStorageIndex by remember { mutableIntStateOf(0) }
     var storageLocations = remember { context.getExternalFilesDirs(null) }
+
+    // The download itself does not depend on the permission, so start it whatever the answer is
+    val notificationPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            onDownloadClick(selectedStorageIndex)
+        }
+
+    // Ask to show the progress and result of the download as a notification first
+    val startDownload = {
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS,
+                ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            onDownloadClick(selectedStorageIndex)
+        }
+    }
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         Column(
@@ -169,7 +196,7 @@ fun ItemButtonsBar(
                                     storageSelectionDialogOpen = true
                                 } else {
                                     selectedStorageIndex = 0
-                                    onDownloadClick(selectedStorageIndex)
+                                    startDownload()
                                 }
                             }
                         ) {
@@ -187,7 +214,7 @@ fun ItemButtonsBar(
                         DownloaderCard(
                             state = downloaderState,
                             onCancelClick = { cancelDownloadDialogOpen = true },
-                            onRetryClick = { onDownloadClick(selectedStorageIndex) },
+                            onRetryClick = { startDownload() },
                         )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
@@ -211,7 +238,7 @@ fun ItemButtonsBar(
                 storageLocations = locations,
                 onSelect = { storageIndex ->
                     selectedStorageIndex = storageIndex
-                    onDownloadClick(selectedStorageIndex)
+                    startDownload()
                     storageSelectionDialogOpen = false
                 },
                 onDismiss = { storageSelectionDialogOpen = false },

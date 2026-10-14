@@ -98,6 +98,8 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
+    pendingItemRoute: Any? = null,
+    onPendingItemRouteHandled: () -> Unit = {},
 ) {
     val setupComplete = hasServers && hasCurrentServer && hasCurrentUser
 
@@ -265,6 +267,16 @@ private fun MainNavigation(
             popTransitionSpec = { GLOBAL_TRANSITION_SPEC },
             predictivePopTransitionSpec = { _ -> GLOBAL_TRANSITION_SPEC },
         )
+    }
+
+    // After the NavHost, so the graph is set before navigating
+    LaunchedEffect(pendingItemRoute) {
+        if (pendingItemRoute != null) {
+            if (hasServers && hasCurrentServer && hasCurrentUser) {
+                navController.navigate(pendingItemRoute) { launchSingleTop = true }
+            }
+            onPendingItemRouteHandled()
+        }
     }
 }
 
