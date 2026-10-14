@@ -24,7 +24,6 @@ import org.jellyfin.sdk.api.client.extensions.userViewApi
 import org.jellyfin.sdk.api.client.extensions.videoApi
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
-import org.jellyfin.sdk.model.DeviceInfo
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-core
