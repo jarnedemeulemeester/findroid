@@ -35,7 +35,7 @@ fun ActorsRow(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
     ) {
-        items(items = actors, key = { person -> person.id }) { person ->
+        items(items = actors, key = { person -> "${person.id}:${person.role}" }) { person ->
             PersonItem(person = person, onClick = { onActorClick(person.id) })
         }
     }
