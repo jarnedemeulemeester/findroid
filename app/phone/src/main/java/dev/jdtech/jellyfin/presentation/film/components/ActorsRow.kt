@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -25,24 +24,6 @@ fun ActorsRow(
     onActorClick: (personId: UUID) -> Unit,
     contentPadding: PaddingValues,
 ) {
-    // Jellyfin 12+ returns a person once per role. Merge them so LazyRow keys stay unique.
-    val uniqueActors =
-        remember(actors) {
-            actors
-                .groupBy { it.id }
-                .map { (_, entries) ->
-                    entries
-                        .first()
-                        .copy(
-                            role =
-                                entries
-                                    .map { it.role }
-                                    .filter { it.isNotBlank() }
-                                    .distinct()
-                                    .joinToString(" / ")
-                        )
-                }
-        }
     Column(modifier = Modifier.padding(contentPadding)) {
         Text(
             text = stringResource(CoreR.string.cast_amp_crew),
@@ -54,7 +35,7 @@ fun ActorsRow(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
     ) {
-        items(items = uniqueActors, key = { person -> person.id }) { person ->
+        items(items = actors, key = { person -> "${person.id}:${person.role}" }) { person ->
             PersonItem(person = person, onClick = { onActorClick(person.id) })
         }
     }
