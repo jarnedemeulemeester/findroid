@@ -543,6 +543,29 @@ constructor(
 
     fun skipSegment(segment: FindroidSegment) {
         if (shouldSkipToNextEpisode(segment)) {
+            val currentMediaItem = player.currentMediaItem
+            if (currentMediaItem != null) {
+                val itemId = UUID.fromString(currentMediaItem.mediaId)
+                val duration = player.duration
+
+                viewModelScope.launch {
+                    // Force mark as played since we're skipping the outro
+                    repository.markAsPlayed(itemId)
+
+                    // Also report playback stop to close the session on the server
+                    try {
+                        if (duration != C.TIME_UNSET){
+                            repository.postPlaybackStop(
+                                itemId,
+                                duration.times(10000),
+                                100 // Force 100%
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+                }
+            }
             player.seekToNextMediaItem()
         } else {
             player.seekTo(segment.endTicks)
