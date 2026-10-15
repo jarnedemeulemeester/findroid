@@ -23,10 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSection
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeSuggestions
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyHomeView
@@ -56,12 +58,15 @@ fun HomeScreen(
     onItemClick: (item: FindroidItem) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val baseUrl = JellyfinApi.getInstance(context).api.baseUrl ?: ""
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.loadData() }
 
     HomeScreenLayout(
         state = state,
+        baseUrl = baseUrl,
         onAction = { action ->
             when (action) {
                 is HomeAction.OnItemClick -> onItemClick(action.item)
@@ -78,7 +83,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeScreenLayout(state: HomeState, onAction: (HomeAction) -> Unit) {
+private fun HomeScreenLayout(state: HomeState, baseUrl: String = "", onAction: (HomeAction) -> Unit) {
     val scope = rememberCoroutineScope()
     val safePadding = rememberSafePadding(handleStartInsets = false)
 
@@ -157,6 +162,8 @@ private fun HomeScreenLayout(state: HomeState, onAction: (HomeAction) -> Unit) {
         onSearchClick = { onAction(HomeAction.OnSearchClick) },
         onUserClick = { onAction(HomeAction.OnSettingsClick) },
         modifier = Modifier.padding(start = paddingStart, top = paddingTop, end = paddingEnd),
+        user = state.user,
+        baseUrl = baseUrl,
     )
 
     if (showServerSelectionBottomSheet) {
