@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
@@ -16,6 +18,7 @@ import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
+import dev.jdtech.jellyfin.settings.presentation.models.PreferencePermission
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import javax.inject.Inject
@@ -33,6 +36,38 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
 
     private val eventsChannel = Channel<SettingsEvent>()
     val events = eventsChannel.receiveAsFlow()
+
+    @SuppressLint("InlinedApi")
+    private val permissionPreferences =
+        listOf(
+            PreferencePermission(
+                nameStringResource = R.string.permission_local_network,
+                descriptionStringRes = R.string.permission_local_network_summary,
+                iconDrawableId = R.drawable.ic_network,
+                permission = Manifest.permission.ACCESS_LOCAL_NETWORK,
+                minSdk = Build.VERSION_CODES.CINNAMON_BUN,
+            )
+        )
+
+    private val permissionsPreferenceGroup =
+        PreferenceGroup(
+            preferences =
+                listOf(
+                    PreferenceCategory(
+                        nameStringResource = R.string.settings_category_permissions,
+                        iconDrawableId = R.drawable.ic_shield_check,
+                        onClick = {
+                            viewModelScope.launch {
+                                eventsChannel.send(
+                                    SettingsEvent.NavigateToSettings(listOf(it.nameStringResource))
+                                )
+                            }
+                        },
+                        nestedPreferenceGroups =
+                            listOf(PreferenceGroup(preferences = permissionPreferences)),
+                    )
+                )
+        )
 
     private val topLevelPreferences =
         listOf(
@@ -781,21 +816,31 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                         )
                     )
             ),
-            PreferenceGroup(
-                preferences =
-                    listOf(
-                        PreferenceCategory(
-                            nameStringResource = R.string.about,
-                            iconDrawableId = R.drawable.ic_info,
-                            onClick = {
-                                viewModelScope.launch {
-                                    eventsChannel.send(SettingsEvent.NavigateToAbout)
-                                }
-                            },
+        ) +
+            // Show the Permissions category only if at least one of its permissions applies on
+            // this Android version. Each row is additionally filtered in loadPreferences, so
+            // permissions with different minSdk levels can coexist in this category.
+            (if (permissionPreferences.any { Build.VERSION.SDK_INT >= it.minSdk }) {
+                listOf(permissionsPreferenceGroup)
+            } else {
+                emptyList()
+            }) +
+            listOf(
+                PreferenceGroup(
+                    preferences =
+                        listOf(
+                            PreferenceCategory(
+                                nameStringResource = R.string.about,
+                                iconDrawableId = R.drawable.ic_info,
+                                onClick = {
+                                    viewModelScope.launch {
+                                        eventsChannel.send(SettingsEvent.NavigateToAbout)
+                                    }
+                                },
+                            )
                         )
-                    )
-            ),
-        )
+                )
+            )
 
     fun loadPreferences(indexes: List<Int> = emptyList(), deviceType: DeviceType) {
         viewModelScope.launch {
@@ -825,6 +870,11 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                             preferences =
                                 preferenceGroup.preferences
                                     .filter { it.supportedDeviceTypes.contains(deviceType) }
+                                    .filter { preference ->
+                                        preference.minSdk?.let { sdk ->
+                                            Build.VERSION.SDK_INT >= sdk
+                                        } ?: true
+                                    }
                                     .map { preference ->
                                         when (preference) {
                                             is PreferenceSwitch -> {
