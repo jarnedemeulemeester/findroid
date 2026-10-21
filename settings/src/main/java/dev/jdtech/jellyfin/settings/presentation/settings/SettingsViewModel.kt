@@ -684,6 +684,35 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     backendPreference =
                                                         appPreferences.downloadWhenRoaming,
                                                 ),
+                                                PreferenceSwitch(
+                                                    nameStringResource = R.string.smart_downloads,
+                                                    descriptionStringRes =
+                                                        R.string.smart_downloads_summary,
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                                    backendPreference =
+                                                        appPreferences.smartDownloads,
+                                                ),
+                                                PreferenceIntInput(
+                                                    nameStringResource =
+                                                        R.string.smart_downloads_episode_count,
+                                                    dependencies =
+                                                        listOf(appPreferences.smartDownloads),
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                                    backendPreference =
+                                                        appPreferences.smartDownloadsEpisodeCount,
+                                                ),
+                                                PreferenceIntInput(
+                                                    nameStringResource =
+                                                        R.string.smart_downloads_movie_count,
+                                                    descriptionStringRes =
+                                                        R.string
+                                                            .smart_downloads_movie_count_summary,
+                                                    dependencies =
+                                                        listOf(appPreferences.smartDownloads),
+                                                    supportedDeviceTypes = listOf(DeviceType.PHONE),
+                                                    backendPreference =
+                                                        appPreferences.smartDownloadsMovieCount,
+                                                ),
                                             )
                                     )
                                 ),

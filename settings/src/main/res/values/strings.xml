@@ -30,6 +30,11 @@
     <string name="mpv_player">mpv player</string>
     <string name="download_mobile_data">Download using mobile data</string>
     <string name="download_roaming">Download when roaming</string>
+    <string name="smart_downloads">Smart downloads</string>
+    <string name="smart_downloads_summary">On Wi-Fi, keep the next unwatched episodes of every show you have started and a few movies downloaded, and remove them once they are watched</string>
+    <string name="smart_downloads_episode_count">Episodes to keep ahead</string>
+    <string name="smart_downloads_movie_count_summary">Movies in progress first, then favorites, then the latest additions</string>
+    <string name="smart_downloads_movie_count">Movies to keep</string>
     <string name="mpv_player_summary">Use the experimental mpv player to play videos. mpv has support for more video, audio and subtitle codecs.</string>
     <string name="gestures">Gestures</string>
     <string name="player_gestures">Player gestures</string>
