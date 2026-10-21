@@ -85,6 +85,11 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     // Downloads
     val downloadOverMobileData = Preference("pref_downloads_mobile_data", false)
     val downloadWhenRoaming = Preference("pref_downloads_roaming", false)
+    val smartDownloads = Preference("pref_downloads_smart", false)
+    val smartDownloadsEpisodeCount = Preference("pref_downloads_smart_episode_count", 3)
+    val smartDownloadsMovieCount = Preference("pref_downloads_smart_movie_count", 2)
+    val smartDownloadedMovieIds =
+        Preference<Set<String>>("pref_downloads_smart_movie_ids", emptySet())
 
     // Network
     val requestTimeout =
