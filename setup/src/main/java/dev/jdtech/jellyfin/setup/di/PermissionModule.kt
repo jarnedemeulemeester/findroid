@@ -23,7 +23,6 @@ object PermissionModule {
     fun providePermissionRequest(appPreferences: AppPreferences): PermissionRequest =
         PermissionRequest(
             permission = PermissionDefinitions.localNetwork,
-            title = SetupR.string.permission_local_network_title,
             rationale = SetupR.string.permission_local_network_rationale,
             decidedPreference = appPreferences.localNetworkPermissionDecided,
         )

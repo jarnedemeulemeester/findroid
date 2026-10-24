@@ -5,9 +5,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import dev.jdtech.jellyfin.settings.R
 
-/**
- * The runtime permissions this app declares, each declared exactly once.
- */
+/** The runtime permissions this app declares, each declared exactly once. */
 object PermissionDefinitions {
     @SuppressLint("InlinedApi")
     val localNetwork =

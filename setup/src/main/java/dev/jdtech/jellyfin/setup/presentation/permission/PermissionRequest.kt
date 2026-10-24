@@ -9,13 +9,12 @@ import dev.jdtech.jellyfin.settings.domain.models.Preference
  * needed to display a rationale screen for it.
  *
  * Wraps the permission's [Permission] declaration from the settings module — the single source of
- * truth for its identity, applicable API level, labels and icon — and adds only what the asking
- * flow itself needs: a screen title, a rationale and the preference storing whether the user
- * decided (granted or skipped) this permission.
+ * truth for its identity, applicable API level, name and icon — and adds only what the asking flow
+ * itself needs: a rationale and the preference storing whether the user decided (granted or
+ * skipped) this permission.
  */
 data class PermissionRequest(
     val permission: Permission,
-    @param:StringRes val title: Int,
     @param:StringRes val rationale: Int,
     val decidedPreference: Preference<Boolean>,
 )

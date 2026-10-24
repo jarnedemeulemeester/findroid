@@ -95,7 +95,7 @@ fun PermissionScreen(
         }
 
     PermissionScreenLayout(
-        title = viewModel.request.title,
+        title = viewModel.request.permission.nameStringResource,
         rationale = viewModel.request.rationale,
         icon = viewModel.request.permission.iconDrawableId,
         permanentlyDenied = state.permanentlyDenied,
@@ -175,7 +175,7 @@ private fun PermissionScreenLayout(
 private fun PermissionScreenLayoutPreview() {
     FindroidTheme {
         PermissionScreenLayout(
-            title = SetupR.string.permission_local_network_title,
+            title = SettingsR.string.permission_local_network,
             rationale = SetupR.string.permission_local_network_rationale,
             icon = SettingsR.drawable.ic_network,
             permanentlyDenied = false,

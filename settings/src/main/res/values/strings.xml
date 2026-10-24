@@ -19,7 +19,7 @@
     <string name="settings_connect_timeout">Connect timeout</string>
     <string name="settings_socket_timeout">Socket timeout</string>
     <string name="settings_category_permissions">Permissions</string>
-    <string name="permission_local_network">Local network</string>
+    <string name="permission_local_network">Local network access</string>
     <string name="permission_local_network_summary">Required to find and connect to servers on your local network</string>
     <string name="permission_status_granted">Granted</string>
     <string name="permission_status_denied">Denied</string>
