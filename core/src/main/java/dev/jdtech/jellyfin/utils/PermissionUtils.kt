@@ -6,10 +6,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import dev.jdtech.jellyfin.settings.domain.models.Permission
 
 /** Returns whether the given runtime permission is currently granted. */
-fun isPermissionGranted(context: Context, permission: String): Boolean =
-    context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+fun isPermissionGranted(context: Context, permission: Permission): Boolean =
+    context.checkSelfPermission(permission.id) == PackageManager.PERMISSION_GRANTED
 
 /**
  * Returns whether the system would show a permission rationale dialog for the given permission.

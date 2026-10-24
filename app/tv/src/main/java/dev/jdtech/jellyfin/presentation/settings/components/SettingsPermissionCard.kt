@@ -1,7 +1,6 @@
 package dev.jdtech.jellyfin.presentation.settings.components
 
 import android.app.Activity
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -42,6 +41,7 @@ import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.R as SettingsR
+import dev.jdtech.jellyfin.settings.domain.models.PermissionDefinitions
 import dev.jdtech.jellyfin.settings.presentation.models.PreferencePermission
 import dev.jdtech.jellyfin.utils.isPermissionGranted
 import dev.jdtech.jellyfin.utils.openAppSettings
@@ -76,7 +76,7 @@ fun SettingsPermissionCard(
                 val activity = context as? Activity
                 if (
                     activity != null &&
-                        !shouldShowPermissionRationale(activity, preference.permission)
+                        !shouldShowPermissionRationale(activity, preference.permission.id)
                 ) {
                     // The system dialog is suppressed ("don't ask again").
                     openAppSettings(context)
@@ -87,7 +87,7 @@ fun SettingsPermissionCard(
     Surface(
         onClick = {
             if (!isGranted) {
-                launcher.launch(preference.permission)
+                launcher.launch(preference.permission.id)
             }
         },
         enabled = preference.enabled,
@@ -111,13 +111,11 @@ fun SettingsPermissionCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
         ) {
-            if (preference.iconDrawableId != null) {
-                Icon(
-                    painter = painterResource(id = preference.iconDrawableId!!),
-                    contentDescription = null,
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-            }
+            Icon(
+                painter = painterResource(id = preference.iconDrawableId),
+                contentDescription = null,
+            )
+            Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(id = preference.nameStringResource),
@@ -164,14 +162,7 @@ fun SettingsPermissionCard(
 private fun SettingsPermissionCardPreview() {
     FindroidTheme {
         SettingsPermissionCard(
-            preference =
-                PreferencePermission(
-                    nameStringResource = SettingsR.string.permission_local_network,
-                    descriptionStringRes = SettingsR.string.permission_local_network_summary,
-                    iconDrawableId = SettingsR.drawable.ic_network,
-                    permission = "android.permission.ACCESS_LOCAL_NETWORK",
-                    minSdk = Build.VERSION_CODES.CINNAMON_BUN,
-                )
+            preference = PreferencePermission(permission = PermissionDefinitions.localNetwork)
         )
     }
 }

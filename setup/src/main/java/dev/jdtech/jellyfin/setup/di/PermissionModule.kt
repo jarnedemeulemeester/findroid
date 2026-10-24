@@ -1,13 +1,11 @@
 package dev.jdtech.jellyfin.setup.di
 
-import android.Manifest
-import android.os.Build
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.models.PermissionDefinitions
 import dev.jdtech.jellyfin.setup.R as SetupR
 import dev.jdtech.jellyfin.setup.presentation.permission.PermissionRequest
 import javax.inject.Singleton
@@ -24,11 +22,9 @@ object PermissionModule {
     @Singleton
     fun providePermissionRequest(appPreferences: AppPreferences): PermissionRequest =
         PermissionRequest(
-            permission = Manifest.permission.ACCESS_LOCAL_NETWORK,
-            applicableSince = Build.VERSION_CODES.CINNAMON_BUN,
+            permission = PermissionDefinitions.localNetwork,
             title = SetupR.string.permission_local_network_title,
             rationale = SetupR.string.permission_local_network_rationale,
-            icon = SettingsR.drawable.ic_network,
             decidedPreference = appPreferences.localNetworkPermissionDecided,
         )
 }

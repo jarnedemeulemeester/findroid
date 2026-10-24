@@ -1,7 +1,5 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
-import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
@@ -10,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.models.PermissionDefinitions
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
@@ -37,17 +36,10 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
     private val eventsChannel = Channel<SettingsEvent>()
     val events = eventsChannel.receiveAsFlow()
 
-    @SuppressLint("InlinedApi")
     private val permissionPreferences =
-        listOf(
-            PreferencePermission(
-                nameStringResource = R.string.permission_local_network,
-                descriptionStringRes = R.string.permission_local_network_summary,
-                iconDrawableId = R.drawable.ic_network,
-                permission = Manifest.permission.ACCESS_LOCAL_NETWORK,
-                minSdk = Build.VERSION_CODES.CINNAMON_BUN,
-            )
-        )
+        PermissionDefinitions.all.map { permission ->
+            PreferencePermission(permission = permission)
+        }
 
     private val permissionsPreferenceGroup =
         PreferenceGroup(

@@ -86,7 +86,7 @@ fun PermissionScreen(
                 val activity = context as? Activity
                 if (
                     activity != null &&
-                        !shouldShowPermissionRationale(activity, viewModel.request.permission)
+                        !shouldShowPermissionRationale(activity, viewModel.request.permission.id)
                 ) {
                     // The system dialog is suppressed ("don't ask again").
                     viewModel.onAction(PermissionAction.OnPermanentlyDenied)
@@ -97,9 +97,9 @@ fun PermissionScreen(
     PermissionScreenLayout(
         title = viewModel.request.title,
         rationale = viewModel.request.rationale,
-        icon = viewModel.request.icon,
+        icon = viewModel.request.permission.iconDrawableId,
         permanentlyDenied = state.permanentlyDenied,
-        onGrantClick = { launcher.launch(viewModel.request.permission) },
+        onGrantClick = { launcher.launch(viewModel.request.permission.id) },
         onOpenSettingsClick = { openAppSettings(context) },
         onSkipClick = { viewModel.onAction(PermissionAction.OnSkipClick) },
     )

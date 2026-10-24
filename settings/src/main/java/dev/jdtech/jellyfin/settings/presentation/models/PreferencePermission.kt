@@ -1,17 +1,29 @@
 package dev.jdtech.jellyfin.settings.presentation.models
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import dev.jdtech.jellyfin.settings.domain.models.Permission
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 
+/**
+ * A [Permission] presented as a row in the settings Permissions category. The permission's
+ * identity, labels, icon and applicable API level come from the wrapped [Permission]; this class
+ * adds only the settings row mechanics.
+ */
 data class PreferencePermission(
-    @param:StringRes override val nameStringResource: Int,
-    @param:StringRes override val descriptionStringRes: Int? = null,
-    @param:DrawableRes override val iconDrawableId: Int? = null,
     override val enabled: Boolean = true,
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),
     override val supportedDeviceTypes: List<DeviceType> = listOf(DeviceType.PHONE, DeviceType.TV),
-    override val minSdk: Int,
-    val permission: String,
-) : Preference
+    val permission: Permission,
+) : Preference {
+    override val nameStringResource: Int
+        get() = permission.nameStringResource
+
+    override val descriptionStringRes: Int?
+        get() = permission.descriptionStringRes
+
+    override val iconDrawableId: Int
+        get() = permission.iconDrawableId
+
+    override val minSdk: Int
+        get() = permission.minSdk
+}

@@ -49,12 +49,12 @@ constructor(
     }
 
     /**
-     * Re-reads the permission state. No-op below [PermissionRequest.applicableSince]: the
-     * permission is unknown to the OS there and the decided flag must not be set, so that users
-     * whose device later upgrades still get the prompt once.
+     * Re-reads the permission state. No-op below the permission's minSdk: the permission is unknown
+     * to the OS there and the decided flag must not be set, so that users whose device later
+     * upgrades still get the prompt once.
      */
     private fun check() {
-        val isApplicable = Build.VERSION.SDK_INT >= request.applicableSince
+        val isApplicable = Build.VERSION.SDK_INT >= request.permission.minSdk
         val isGranted = isPermissionGranted(context, request.permission)
         var isDecided = appPreferences.getValue(request.decidedPreference)
 
