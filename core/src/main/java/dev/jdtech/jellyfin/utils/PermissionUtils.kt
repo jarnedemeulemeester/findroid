@@ -12,11 +12,7 @@ import dev.jdtech.jellyfin.settings.domain.models.Permission
 fun isPermissionGranted(context: Context, permission: Permission): Boolean =
     context.checkSelfPermission(permission.id) == PackageManager.PERMISSION_GRANTED
 
-/**
- * Returns whether the system would show a permission rationale dialog for the given permission.
- * Only meaningful after the permission was denied at least once: before the first request this
- * returns `false` as well.
- */
+/** Returns whether the system would show a rationale dialog; only meaningful after a denial. */
 fun shouldShowPermissionRationale(activity: Activity, permission: String): Boolean =
     activity.shouldShowRequestPermissionRationale(permission)
 

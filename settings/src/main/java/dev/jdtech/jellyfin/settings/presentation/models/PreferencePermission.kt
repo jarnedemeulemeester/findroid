@@ -4,11 +4,7 @@ import dev.jdtech.jellyfin.settings.domain.models.Permission
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 
-/**
- * A [Permission] presented as a row in the settings Permissions category. The permission's
- * identity, labels, icon and applicable API level come from the wrapped [Permission]; this class
- * adds only the settings row mechanics.
- */
+/** A [Permission] presented as a row in the settings Permissions category. */
 data class PreferencePermission(
     override val enabled: Boolean = true,
     override val dependencies: List<PreferenceBackend<Boolean>> = emptyList(),

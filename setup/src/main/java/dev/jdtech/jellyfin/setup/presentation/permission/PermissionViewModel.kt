@@ -29,8 +29,7 @@ constructor(
     init {
         onAction(PermissionAction.Check)
 
-        // The decided flag is the single source of truth connecting the instances of this
-        // ViewModel used by the interstitial gate and the permission screen.
+        // The decided flag connects the interstitial gate and the permission screen.
         appPreferences
             .observe(request.decidedPreference)
             .onEach { decided -> _state.update { it.copy(isDecided = decided) } }
@@ -49,17 +48,16 @@ constructor(
     }
 
     /**
-     * Re-reads the permission state. No-op below the permission's minSdk: the permission is unknown
-     * to the OS there and the decided flag must not be set, so that users whose device later
-     * upgrades still get the prompt once.
+     * No-op below the permission's minSdk: the permission is unknown to the OS there, and the
+     * decided flag must not be set so that devices upgrading later still get the prompt once.
      */
     private fun check() {
         val isApplicable = Build.VERSION.SDK_INT >= request.permission.minSdk
         val isGranted = isPermissionGranted(context, request.permission)
         var isDecided = appPreferences.getValue(request.decidedPreference)
 
-        // If the permission is already granted, e.g. carried over from the NEARBY_DEVICES
-        // permission group, mark it as decided without ever showing the screen.
+        // Already granted, e.g. carried over from the NEARBY_DEVICES group: mark decided
+        // without prompting.
         if (isApplicable && isGranted && !isDecided) {
             appPreferences.setValue(request.decidedPreference, true)
             isDecided = true

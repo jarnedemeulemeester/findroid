@@ -809,9 +809,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                     )
             ),
         ) +
-            // Show the Permissions category only if at least one of its permissions applies on
-            // this Android version. Each row is additionally filtered in loadPreferences, so
-            // permissions with different minSdk levels can coexist in this category.
+            // Show the Permissions category only if at least one permission applies on this Android
+            // version.
             (if (permissionPreferences.any { Build.VERSION.SDK_INT >= it.minSdk }) {
                 listOf(permissionsPreferenceGroup)
             } else {

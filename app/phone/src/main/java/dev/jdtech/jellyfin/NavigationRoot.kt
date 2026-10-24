@@ -153,14 +153,13 @@ fun NavigationRoot(
         appliedSetupMode.setupComplete = setupComplete
     }
 
-    // The activity-scoped permission ViewModel drives the upgrader interstitial and is shared
-    // with the permission screen in the setup flow.
+    // The activity-scoped permission ViewModel is shared by the interstitial and the setup screen.
     val permissionViewModel: PermissionViewModel = hiltViewModel()
     val permissionState by permissionViewModel.state.collectAsStateWithLifecycle()
 
     if (setupComplete) {
-        // Upgrader interstitial: shown once before the home screen until the user decides
-        // (grant or skip, recorded in the decided flag) or dismisses it for this session.
+        // Upgrader interstitial: shown before the home screen until the user decides or
+        // dismisses it for this session.
         if (permissionState.showInterstitial) {
             PermissionScreen(
                 viewModel = permissionViewModel,

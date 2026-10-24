@@ -67,12 +67,11 @@ fun PermissionScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    // Only set for the upgrader interstitial: back dismisses it for the current session without
-    // recording a decision. In the setup flow the default back behavior applies.
+    // Only set for the upgrader interstitial: back dismisses it for the session without
+    // recording a decision.
     onBackPressed?.let { BackHandler(onBack = it) }
 
-    // Advance as soon as the user decided (granted or skipped), or when the permission was
-    // already granted when the screen was entered.
+    // Advance as soon as the user decided (granted or skipped).
     LaunchedEffect(state.isDecided) {
         if (state.isDecided) {
             onDecided()
@@ -97,7 +96,7 @@ fun PermissionScreen(
 
     PermissionScreenLayout(
         title = viewModel.request.permission.nameStringResource,
-        rationale = viewModel.request.rationale,
+        rationale = viewModel.request.permission.rationaleStringRes,
         icon = viewModel.request.permission.iconDrawableId,
         permanentlyDenied = state.permanentlyDenied,
         onGrantClick = { launcher.launch(viewModel.request.permission.id) },
@@ -179,7 +178,7 @@ private fun PermissionScreenLayoutPreview() {
     FindroidTheme {
         PermissionScreenLayout(
             title = SettingsR.string.permission_local_network,
-            rationale = SetupR.string.permission_local_network_rationale,
+            rationale = SettingsR.string.permission_local_network_rationale,
             icon = SettingsR.drawable.ic_network,
             permanentlyDenied = false,
             onGrantClick = {},
