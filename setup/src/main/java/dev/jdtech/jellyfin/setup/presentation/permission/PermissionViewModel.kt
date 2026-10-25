@@ -27,20 +27,20 @@ constructor(
     val state = _state.asStateFlow()
 
     init {
-        onAction(PermissionAction.Check)
+        selectCurrentRequest()
 
-        // The decided flags connect the interstitial gate and the permission screen.
+        // Re-select when a decided flag changes, including writes from outside this VM.
         requests.forEach { request ->
             appPreferences
                 .observe(request.decidedPreference)
-                .onEach { check() }
+                .onEach { selectCurrentRequest() }
                 .launchIn(viewModelScope)
         }
     }
 
     fun onAction(action: PermissionAction) {
         when (action) {
-            is PermissionAction.Check -> check()
+            is PermissionAction.Check -> selectCurrentRequest()
             is PermissionAction.OnSkipClick -> decideCurrent()
             is PermissionAction.OnPermissionResult -> onPermissionResult(action.granted)
             is PermissionAction.OnPermanentlyDenied ->
@@ -50,24 +50,10 @@ constructor(
     }
 
     /**
-     * Re-evaluates all requests and selects the first one needing a prompt. Requests below their
-     * minSdk are skipped and their decided flags never set, so devices upgrading later still get
-     * the prompt once.
+     * Selects the first request needing a prompt: one that applies on this OS version, is not
+     * granted, and has not been decided. Only an explicit grant or skip persists the decided flag,
+     * so implicit system grants don't suppress the prompt.
      */
-    private fun check() {
-        for ((permission, decidedPreference) in requests) {
-            val isApplicable = Build.VERSION.SDK_INT >= permission.minSdk
-            val isGranted = isPermissionGranted(context, permission)
-
-            // Already granted, e.g. carried over from the NEARBY_DEVICES group: mark decided
-            // without prompting.
-            if (isApplicable && isGranted && !appPreferences.getValue(decidedPreference)) {
-                appPreferences.setValue(decidedPreference, true)
-            }
-        }
-        selectCurrentRequest()
-    }
-
     private fun selectCurrentRequest() {
         val current = requests.firstOrNull { request ->
             Build.VERSION.SDK_INT >= request.permission.minSdk &&
@@ -79,7 +65,7 @@ constructor(
             if (state.currentRequest == current) {
                 state
             } else {
-                // Reset the denial state when moving on to another request.
+                // Reset the denial state for the next request.
                 state.copy(currentRequest = current, permanentlyDenied = false)
             }
         }
@@ -95,6 +81,6 @@ constructor(
         _state.value.currentRequest?.let { request ->
             appPreferences.setValue(request.decidedPreference, true)
         }
-        check()
+        selectCurrentRequest()
     }
 }
