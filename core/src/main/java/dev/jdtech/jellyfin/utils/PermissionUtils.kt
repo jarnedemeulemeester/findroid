@@ -13,8 +13,8 @@ fun isPermissionGranted(context: Context, permission: Permission): Boolean =
     context.checkSelfPermission(permission.id) == PackageManager.PERMISSION_GRANTED
 
 /** Returns whether the system would show a rationale dialog; only meaningful after a denial. */
-fun shouldShowPermissionRationale(activity: Activity, permission: String): Boolean =
-    activity.shouldShowRequestPermissionRationale(permission)
+fun shouldShowPermissionRationale(activity: Activity, permission: Permission): Boolean =
+    activity.shouldShowRequestPermissionRationale(permission.id)
 
 /** Opens the system settings page of this app, e.g. to grant a permanently denied permission. */
 fun openAppSettings(context: Context) {

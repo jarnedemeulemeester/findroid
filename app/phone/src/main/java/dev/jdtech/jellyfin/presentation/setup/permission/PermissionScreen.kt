@@ -85,7 +85,7 @@ fun PermissionScreen(
                 val activity = context as? Activity
                 if (
                     activity != null &&
-                        !shouldShowPermissionRationale(activity, viewModel.request.permission.id)
+                        !shouldShowPermissionRationale(activity, viewModel.request.permission)
                 ) {
                     // The system dialog is suppressed ("don't ask again").
                     viewModel.onAction(PermissionAction.OnPermanentlyDenied)

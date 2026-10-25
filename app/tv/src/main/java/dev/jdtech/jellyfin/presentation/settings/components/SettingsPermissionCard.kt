@@ -76,7 +76,7 @@ fun SettingsPermissionCard(
                 val activity = context as? Activity
                 if (
                     activity != null &&
-                        !shouldShowPermissionRationale(activity, preference.permission.id)
+                        !shouldShowPermissionRationale(activity, preference.permission)
                 ) {
                     // The system dialog is suppressed ("don't ask again").
                     openAppSettings(context)
