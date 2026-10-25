@@ -1,7 +1,10 @@
 package dev.jdtech.jellyfin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
@@ -20,9 +23,12 @@ import dev.jdtech.jellyfin.presentation.settings.SettingsScreen
 import dev.jdtech.jellyfin.presentation.settings.SettingsSubScreen
 import dev.jdtech.jellyfin.presentation.setup.addserver.AddServerScreen
 import dev.jdtech.jellyfin.presentation.setup.login.LoginScreen
+import dev.jdtech.jellyfin.presentation.setup.permission.PermissionScreen
 import dev.jdtech.jellyfin.presentation.setup.servers.ServersScreen
 import dev.jdtech.jellyfin.presentation.setup.users.UsersScreen
 import dev.jdtech.jellyfin.presentation.setup.welcome.WelcomeScreen
+import dev.jdtech.jellyfin.setup.presentation.permission.PermissionAction
+import dev.jdtech.jellyfin.setup.presentation.permission.PermissionViewModel
 import dev.jdtech.jellyfin.ui.MainScreen
 import dev.jdtech.jellyfin.ui.MovieScreen
 import dev.jdtech.jellyfin.ui.PlayerScreen
@@ -72,21 +78,39 @@ fun NavigationRoot(
         backStack.add(MainRoute)
     }
     val navigateOrReuse: (NavKey) -> Unit = backStack::navigateOrReuse
+    val goBack: () -> Unit = { backStack.removeLastOrNull() }
 
-    NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryDecorators = entryDecorators,
-        entryProvider =
-            entryProvider {
-                tvEntries(
-                    inMainMode = setupComplete,
-                    navigate = navigate,
-                    navigateToMain = navigateToMain,
-                    navigateOrReuse = navigateOrReuse,
-                )
-            },
-    )
+    // The activity-scoped permission ViewModel is shared by the interstitial and the setup screen.
+    val permissionViewModel: PermissionViewModel = hiltViewModel()
+    val permissionState by permissionViewModel.state.collectAsStateWithLifecycle()
+
+    // Upgrader interstitial: shown before the home screen until the user decides or
+    // dismisses it for this session.
+    if (setupComplete && permissionState.showInterstitial) {
+        PermissionScreen(
+            viewModel = permissionViewModel,
+            onDecided = {},
+            onBackPressed = { permissionViewModel.onAction(PermissionAction.OnDismiss) },
+        )
+    } else {
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            entryDecorators = entryDecorators,
+            entryProvider =
+                entryProvider {
+                    tvEntries(
+                        inMainMode = setupComplete,
+                        navigate = navigate,
+                        navigateToMain = navigateToMain,
+                        navigateOrReuse = navigateOrReuse,
+                        goBack = goBack,
+                        permissionViewModel = permissionViewModel,
+                        permissionApplicable = permissionState.currentRequest != null,
+                    )
+                },
+        )
+    }
 }
 
 /**
@@ -100,9 +124,28 @@ private fun EntryProviderScope<NavKey>.tvEntries(
     navigate: (NavKey) -> Unit,
     navigateToMain: () -> Unit,
     navigateOrReuse: (NavKey) -> Unit,
+    goBack: () -> Unit,
+    permissionViewModel: PermissionViewModel,
+    permissionApplicable: Boolean,
 ) {
     entry<WelcomeRoute> {
-        WelcomeScreen(onContinueClick = dropUnlessResumed { navigate(ServersRoute) })
+        WelcomeScreen(
+            onContinueClick =
+                dropUnlessResumed {
+                    navigate(if (permissionApplicable) PermissionRoute else ServersRoute)
+                }
+        )
+    }
+    entry<PermissionRoute> {
+        PermissionScreen(
+            viewModel = permissionViewModel,
+            onDecided =
+                dropUnlessResumed {
+                    // Pop the permission entry so back from Servers returns to Welcome.
+                    goBack()
+                    navigate(ServersRoute)
+                },
+        )
     }
     entry<ServersRoute> {
         ServersScreen(

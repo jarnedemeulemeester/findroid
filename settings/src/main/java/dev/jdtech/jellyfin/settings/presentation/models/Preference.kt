@@ -10,4 +10,6 @@ interface Preference {
     val enabled: Boolean
     val dependencies: List<PreferenceBackend<Boolean>>
     val supportedDeviceTypes: List<DeviceType>
+    val minSdk: Int?
+        get() = null
 }

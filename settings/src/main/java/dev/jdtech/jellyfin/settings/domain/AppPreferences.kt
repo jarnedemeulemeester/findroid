@@ -105,6 +105,9 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     // Offline mode
     val offlineMode = Preference("pref_offline_mode", false)
 
+    // Permissions
+    val localNetworkPermissionDecided = Preference("pref_permission_local_network_decided", false)
+
     // Migrations
     val mpvMigrated = Preference("mpv_migrated", false)
 
