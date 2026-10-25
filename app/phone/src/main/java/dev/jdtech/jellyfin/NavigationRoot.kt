@@ -174,7 +174,7 @@ fun NavigationRoot(
                 isOfflineMode = LocalOfflineMode.current,
                 searchExpanded = searchExpanded,
                 permissionViewModel = permissionViewModel,
-                permissionApplicable = permissionState.isApplicable,
+                permissionApplicable = permissionState.currentRequest != null,
             )
         }
     } else {
@@ -182,7 +182,7 @@ fun NavigationRoot(
             backStack = setupBackStack,
             entryDecorators = entryDecorators,
             permissionViewModel = permissionViewModel,
-            permissionApplicable = permissionState.isApplicable,
+            permissionApplicable = permissionState.currentRequest != null,
         )
     }
 }

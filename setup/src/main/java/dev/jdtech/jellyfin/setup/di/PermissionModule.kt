@@ -12,11 +12,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object PermissionModule {
+    /** The permissions that gate app entry, in the order they are asked. */
     @Provides
     @Singleton
-    fun providePermissionRequest(appPreferences: AppPreferences): PermissionRequest =
-        PermissionRequest(
-            permission = PermissionDefinitions.localNetwork,
-            decidedPreference = appPreferences.localNetworkPermissionDecided,
+    fun providePermissionRequests(appPreferences: AppPreferences): List<PermissionRequest> =
+        listOf(
+            PermissionRequest(
+                permission = PermissionDefinitions.localNetwork,
+                decidedPreference = appPreferences.localNetworkPermissionDecided,
+            )
         )
 }

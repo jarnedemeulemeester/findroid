@@ -70,12 +70,14 @@ fun PermissionScreen(
     // recording a decision.
     onBackPressed?.let { BackHandler(onBack = it) }
 
-    // Advance as soon as the user decided (granted or skipped).
-    LaunchedEffect(state.isDecided) {
-        if (state.isDecided) {
+    // Advance when the queue is exhausted, or nothing applies on this OS version.
+    LaunchedEffect(state.currentRequest) {
+        if (state.currentRequest == null) {
             onDecided()
         }
     }
+
+    val request = state.currentRequest ?: return
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -84,8 +86,7 @@ fun PermissionScreen(
             } else {
                 val activity = context as? Activity
                 if (
-                    activity != null &&
-                        !shouldShowPermissionRationale(activity, viewModel.request.permission)
+                    activity != null && !shouldShowPermissionRationale(activity, request.permission)
                 ) {
                     // The system dialog is suppressed ("don't ask again").
                     viewModel.onAction(PermissionAction.OnPermanentlyDenied)
@@ -94,11 +95,11 @@ fun PermissionScreen(
         }
 
     PermissionScreenLayout(
-        title = viewModel.request.permission.nameStringResource,
-        rationale = viewModel.request.permission.rationaleStringRes,
-        icon = viewModel.request.permission.iconDrawableId,
+        title = request.permission.nameStringResource,
+        rationale = request.permission.rationaleStringRes,
+        icon = request.permission.iconDrawableId,
         permanentlyDenied = state.permanentlyDenied,
-        onGrantClick = { launcher.launch(viewModel.request.permission.id) },
+        onGrantClick = { launcher.launch(request.permission.id) },
         onOpenSettingsClick = { openAppSettings(context) },
         onSkipClick = { viewModel.onAction(PermissionAction.OnSkipClick) },
     )

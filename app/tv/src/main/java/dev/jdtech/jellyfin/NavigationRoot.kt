@@ -106,7 +106,7 @@ fun NavigationRoot(
                         navigateOrReuse = navigateOrReuse,
                         goBack = goBack,
                         permissionViewModel = permissionViewModel,
-                        permissionApplicable = permissionState.isApplicable,
+                        permissionApplicable = permissionState.currentRequest != null,
                     )
                 },
         )

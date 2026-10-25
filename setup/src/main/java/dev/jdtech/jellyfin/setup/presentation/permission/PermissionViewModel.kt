@@ -21,7 +21,7 @@ class PermissionViewModel
 constructor(
     private val appPreferences: AppPreferences,
     @ApplicationContext private val context: Context,
-    val request: PermissionRequest,
+    private val requests: List<PermissionRequest>,
 ) : ViewModel() {
     private val _state = MutableStateFlow(PermissionState())
     val state = _state.asStateFlow()
@@ -29,17 +29,19 @@ constructor(
     init {
         onAction(PermissionAction.Check)
 
-        // The decided flag connects the interstitial gate and the permission screen.
-        appPreferences
-            .observe(request.decidedPreference)
-            .onEach { decided -> _state.update { it.copy(isDecided = decided) } }
-            .launchIn(viewModelScope)
+        // The decided flags connect the interstitial gate and the permission screen.
+        requests.forEach { request ->
+            appPreferences
+                .observe(request.decidedPreference)
+                .onEach { check() }
+                .launchIn(viewModelScope)
+        }
     }
 
     fun onAction(action: PermissionAction) {
         when (action) {
             is PermissionAction.Check -> check()
-            is PermissionAction.OnSkipClick -> decide()
+            is PermissionAction.OnSkipClick -> decideCurrent()
             is PermissionAction.OnPermissionResult -> onPermissionResult(action.granted)
             is PermissionAction.OnPermanentlyDenied ->
                 _state.update { it.copy(permanentlyDenied = true) }
@@ -48,37 +50,51 @@ constructor(
     }
 
     /**
-     * No-op below the permission's minSdk: the permission is unknown to the OS there, and the
-     * decided flag must not be set so that devices upgrading later still get the prompt once.
+     * Re-evaluates all requests and selects the first one needing a prompt. Requests below their
+     * minSdk are skipped and their decided flags never set, so devices upgrading later still get
+     * the prompt once.
      */
     private fun check() {
-        val isApplicable = Build.VERSION.SDK_INT >= request.permission.minSdk
-        val isGranted = isPermissionGranted(context, request.permission)
-        var isDecided = appPreferences.getValue(request.decidedPreference)
+        for ((permission, decidedPreference) in requests) {
+            val isApplicable = Build.VERSION.SDK_INT >= permission.minSdk
+            val isGranted = isPermissionGranted(context, permission)
 
-        // Already granted, e.g. carried over from the NEARBY_DEVICES group: mark decided
-        // without prompting.
-        if (isApplicable && isGranted && !isDecided) {
-            appPreferences.setValue(request.decidedPreference, true)
-            isDecided = true
+            // Already granted, e.g. carried over from the NEARBY_DEVICES group: mark decided
+            // without prompting.
+            if (isApplicable && isGranted && !appPreferences.getValue(decidedPreference)) {
+                appPreferences.setValue(decidedPreference, true)
+            }
+        }
+        selectCurrentRequest()
+    }
+
+    private fun selectCurrentRequest() {
+        val current = requests.firstOrNull { request ->
+            Build.VERSION.SDK_INT >= request.permission.minSdk &&
+                !isPermissionGranted(context, request.permission) &&
+                !appPreferences.getValue(request.decidedPreference)
         }
 
-        _state.update {
-            it.copy(isApplicable = isApplicable, isGranted = isGranted, isDecided = isDecided)
+        _state.update { state ->
+            if (state.currentRequest == current) {
+                state
+            } else {
+                // Reset the denial state when moving on to another request.
+                state.copy(currentRequest = current, permanentlyDenied = false)
+            }
         }
     }
 
     private fun onPermissionResult(granted: Boolean) {
-        _state.update { it.copy(isGranted = granted, permanentlyDenied = false) }
         if (granted) {
-            decide()
+            decideCurrent()
         }
     }
 
-    private fun decide() {
-        if (!appPreferences.getValue(request.decidedPreference)) {
+    private fun decideCurrent() {
+        _state.value.currentRequest?.let { request ->
             appPreferences.setValue(request.decidedPreference, true)
         }
-        _state.update { it.copy(isDecided = true) }
+        check()
     }
 }
