@@ -21,7 +21,7 @@
     <string name="settings_category_permissions">Permissions</string>
     <string name="permission_local_network">Local network access</string>
     <string name="permission_local_network_summary">Required to find and connect to servers on your local network</string>
-    <string name="permission_local_network_rationale">Findroid needs access to your local network to discover and connect to your Jellyfin server. On Android 17 and newer this requires your permission.</string>
+    <string name="permission_local_network_rationale">Findroid needs access to your local network to find and connect to your Jellyfin server. Remote servers are not affected.</string>
     <string name="permission_status_granted">Granted</string>
     <string name="permission_status_denied">Denied</string>
     <string name="pref_player_mpv_hwdec">Hardware decoding</string>
