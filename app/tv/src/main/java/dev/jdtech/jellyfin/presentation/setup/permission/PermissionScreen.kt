@@ -141,7 +141,11 @@ private fun PermissionScreenLayout(
             if (permanentlyDenied) {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                 Text(
-                    text = stringResource(SetupR.string.permission_permanently_denied),
+                    text =
+                        stringResource(
+                            SetupR.string.permission_permanently_denied,
+                            stringResource(title),
+                        ),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                 )

@@ -28,7 +28,7 @@
    <string name="permission_btn_grant">Grant</string>
    <string name="permission_btn_not_now">Not now</string>
    <string name="permission_btn_open_settings">Open settings</string>
-   <string name="permission_permanently_denied">Local network access was denied. To use it, allow Findroid to access devices on your local network in the system settings.</string>
+   <string name="permission_permanently_denied">%1$s was denied. To use it, allow it in the system settings.</string>
    <string name="confirm">Confirm</string>
    <string name="cancel">Cancel</string>
    <string name="or">OR</string>
