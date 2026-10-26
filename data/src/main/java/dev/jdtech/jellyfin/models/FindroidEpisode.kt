@@ -21,6 +21,7 @@ data class FindroidEpisode(
     override val favorite: Boolean,
     override val canPlay: Boolean,
     override val canDownload: Boolean,
+    override val canShuffle: Boolean = false,
     override val runtimeTicks: Long,
     override val playbackPositionTicks: Long,
     val premiereDate: DateTime?,
