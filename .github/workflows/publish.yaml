@@ -50,18 +50,9 @@ jobs:
           FINDROID_KEY_PASSWORD: ${{ secrets.FINDROID_KEY_PASSWORD }}
           FINDROID_PLAY_API_CREDENTIALS: ${{ steps.findroid_play_api_credentials.outputs.filePath }}
 
-      - name: Rename apk files
-        working-directory: ./app/phone/build/outputs/apk/libre/release/
-        run: |
-          rename -- 'phone' 'findroid' *.apk
-          rename -- '-release' '' *.apk
-
       - name: Create release
         uses: softprops/action-gh-release@v3
         with:
           draft: true
-          files: |
-            ./app/phone/build/outputs/apk/libre/release/findroid-${{ github.ref_name }}-libre-arm64-v8a.apk
-            ./app/phone/build/outputs/apk/libre/release/findroid-${{ github.ref_name }}-libre-armeabi-v7a.apk
-            ./app/phone/build/outputs/apk/libre/release/findroid-${{ github.ref_name }}-libre-x86_64.apk
-            ./app/phone/build/outputs/apk/libre/release/findroid-${{ github.ref_name }}-libre-x86.apk
+          fail_on_unmatched_files: true
+          files: ./app/phone/build/outputs/apk/libre/release/findroid-v*-libre-*.apk
