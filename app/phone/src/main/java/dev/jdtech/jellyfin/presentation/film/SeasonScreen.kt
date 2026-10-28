@@ -143,8 +143,8 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                     Spacer(Modifier.height(MaterialTheme.spacings.default.div(2)))
                     ItemButtonsBar(
                         item = season,
-                        onPlayClick = { startFromBeginning ->
-                            onAction(SeasonAction.Play(startFromBeginning = startFromBeginning))
+                        onPlayClick = { playOptions ->
+                            onAction(SeasonAction.Play(playOptions.first))
                         },
                         onMarkAsPlayedClick = {
                             when (season.played) {
