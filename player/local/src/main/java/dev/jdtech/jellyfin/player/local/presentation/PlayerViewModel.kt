@@ -23,6 +23,7 @@ import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import dev.jdtech.jellyfin.player.local.R
+import dev.jdtech.jellyfin.player.local.deviceprofile.DeviceProfiles
 import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
 import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -60,6 +61,7 @@ constructor(
 
     private val playerBackend =
         PlayerBackend.fromValue(appPreferences.getValue(appPreferences.playerBackend))
+    private val deviceProfile by lazy { DeviceProfiles.create(playerBackend) }
 
     private val _uiState =
         MutableStateFlow(
@@ -186,6 +188,7 @@ constructor(
                         itemKind = BaseItemKind.fromName(itemKind),
                         mediaSourceIndex = null,
                         startFromBeginning = startFromBeginning,
+                        deviceProfile = deviceProfile,
                     )
                 } catch (e: Exception) {
                     Timber.e(e)

@@ -303,7 +303,27 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
+    private val defaultDeviceProfile =
+        DeviceProfile(
+            name = "Direct play all",
+            maxStaticBitrate = 1_000_000_000,
+            maxStreamingBitrate = 1_000_000_000,
+            codecProfiles = emptyList(),
+            containerProfiles = emptyList(),
+            directPlayProfiles = emptyList(),
+            transcodingProfiles = emptyList(),
+            subtitleProfiles =
+                listOf(
+                    SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                    SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                ),
+        )
+
+    override suspend fun getMediaSources(
+        itemId: UUID,
+        includePath: Boolean,
+        deviceProfile: DeviceProfile?,
+    ): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             val sources = mutableListOf<FindroidSource>()
             sources.addAll(
@@ -312,21 +332,7 @@ class JellyfinRepositoryImpl(
                         itemId,
                         PlaybackInfoDto(
                             userId = jellyfinApi.userId!!,
-                            deviceProfile =
-                                DeviceProfile(
-                                    name = "Direct play all",
-                                    maxStaticBitrate = 1_000_000_000,
-                                    maxStreamingBitrate = 1_000_000_000,
-                                    codecProfiles = emptyList(),
-                                    containerProfiles = emptyList(),
-                                    directPlayProfiles = emptyList(),
-                                    transcodingProfiles = emptyList(),
-                                    subtitleProfiles =
-                                        listOf(
-                                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
-                                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
-                                        ),
-                                ),
+                            deviceProfile = deviceProfile ?: defaultDeviceProfile,
                             maxStreamingBitrate = 1_000_000_000,
                         ),
                     )

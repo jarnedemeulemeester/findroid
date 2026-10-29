@@ -16,6 +16,7 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.DeviceProfile
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
 import timber.log.Timber
@@ -24,6 +25,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     private var startItem: FindroidItem? = null
     private var items: List<FindroidItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
+    private var deviceProfile: DeviceProfile? = null
     var currentItemIndex: Int = 0
 
     suspend fun getInitialItem(
@@ -31,8 +33,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         itemKind: BaseItemKind,
         mediaSourceIndex: Int? = null,
         startFromBeginning: Boolean = false,
+        deviceProfile: DeviceProfile,
     ): PlayerItem? {
         Timber.d("Retrieving initial player item")
+
+        this.deviceProfile = deviceProfile
 
         val initialItem =
             when (itemKind) {
@@ -206,7 +211,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     ): PlayerItem {
         Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
 
-        val mediaSources = repository.getMediaSources(id, true)
+        val mediaSources = repository.getMediaSources(id, true, deviceProfile)
         val mediaSource =
             if (mediaSourceIndex == null) {
                 mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
