@@ -28,6 +28,7 @@ import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.Constants
+import dev.jdtech.jellyfin.settings.domain.models.PlayerBackend
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -56,6 +57,9 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), Player.Listener {
     val player: Player
+
+    private val playerBackend =
+        PlayerBackend.fromValue(appPreferences.getValue(appPreferences.playerBackend))
 
     private val _uiState =
         MutableStateFlow(
@@ -132,10 +136,9 @@ constructor(
                 )
         )
 
-        val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
         player =
             when (playerBackend) {
-                "exoplayer" -> {
+                PlayerBackend.EXOPLAYER -> {
                     val renderersFactory =
                         DefaultRenderersFactory(application)
                             .setExtensionRendererMode(
@@ -153,7 +156,7 @@ constructor(
                         .setPauseAtEndOfMediaItems(true)
                         .build()
                 }
-                "mpv" -> {
+                PlayerBackend.MPV -> {
                     MPVPlayer.Builder(application)
                         .setAudioAttributes(audioAttributes, true)
                         .setTrackSelectionParameters(trackSelector.parameters)
@@ -169,8 +172,6 @@ constructor(
                         .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
                         .build()
                 }
-
-                else -> throw RuntimeException("$playerBackend is not a valid player backend")
             }
     }
 
