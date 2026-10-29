@@ -1,6 +1,6 @@
 [versions]
 aboutlibraries = "15.3.0"
-android-plugin = "9.4.1"
+android-plugin = "9.5.0"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.8.0"
 androidx-compose = "1.12.1"
