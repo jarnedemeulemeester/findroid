@@ -25,6 +25,7 @@ import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import dev.jdtech.jellyfin.player.local.R
 import dev.jdtech.jellyfin.player.local.deviceprofile.DeviceProfiles
 import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
+import dev.jdtech.jellyfin.player.local.domain.VideoQualityOptions
 import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
@@ -225,6 +226,14 @@ constructor(
             player.prepare()
             player.play()
         }
+    }
+
+    val maxStreamingBitrate: Int?
+        get() = playlistManager.maxStreamingBitrate
+
+    fun getVideoQualityOptions(): List<Int> {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId)
+        return VideoQualityOptions.get(item?.videoBitrate, item?.videoCodec)
     }
 
     fun setMaxStreamingBitrate(bitrate: Int?) {

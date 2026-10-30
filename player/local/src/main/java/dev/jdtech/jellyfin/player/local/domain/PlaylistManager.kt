@@ -233,6 +233,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
                         ?: mediaSources[0]
                 else -> mediaSources[mediaSourceIndex]
             }
+        val videoStream = mediaSource.mediaStreams.firstOrNull { it.type == MediaStreamType.VIDEO }
         val externalSubtitles =
             mediaSource.mediaStreams
                 .filter { mediaStream ->
@@ -285,6 +286,8 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             trickplayInfo = trickplayInfo,
             playSessionId = mediaSource.playSessionId,
             isTranscoding = mediaSource.isTranscoding,
+            videoBitrate = videoStream?.bitrate,
+            videoCodec = videoStream?.codec,
         )
     }
 

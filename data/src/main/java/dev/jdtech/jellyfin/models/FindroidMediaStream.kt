@@ -20,6 +20,7 @@ data class FindroidMediaStream(
     val width: Int?,
     val videoDoViTitle: String?,
     val deliveryMethod: SubtitleDeliveryMethod? = null,
+    val bitrate: Int? = null,
 )
 
 fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): FindroidMediaStream {
@@ -37,6 +38,7 @@ fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): F
         width = width,
         videoDoViTitle = videoDoViTitle,
         deliveryMethod = deliveryMethod,
+        bitrate = bitRate,
     )
 }
 
