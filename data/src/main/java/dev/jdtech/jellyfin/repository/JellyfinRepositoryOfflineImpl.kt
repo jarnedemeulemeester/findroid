@@ -280,6 +280,8 @@ class JellyfinRepositoryOfflineImpl(
         }
     }
 
+    override suspend fun stopEncoding(playSessionId: String) {}
+
     override suspend fun markAsFavorite(itemId: UUID) {
         withContext(Dispatchers.IO) {
             database.setFavorite(jellyfinApi.userId!!, itemId, true)

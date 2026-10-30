@@ -32,6 +32,7 @@ import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.HttpMethod
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
@@ -518,6 +519,21 @@ class JellyfinRepositoryImpl(
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
+        }
+    }
+
+    override suspend fun stopEncoding(playSessionId: String) {
+        withContext(Dispatchers.IO) {
+            // Not available in the SDK
+            jellyfinApi.api.request(
+                method = HttpMethod.DELETE,
+                pathTemplate = "/Videos/ActiveEncodings",
+                queryParameters =
+                    mapOf(
+                        "deviceId" to jellyfinApi.api.deviceInfo.id,
+                        "playSessionId" to playSessionId,
+                    ),
+            )
         }
     }
 

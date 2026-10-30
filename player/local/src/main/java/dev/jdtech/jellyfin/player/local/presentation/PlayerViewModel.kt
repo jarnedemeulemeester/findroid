@@ -227,6 +227,37 @@ constructor(
         }
     }
 
+    fun setMaxStreamingBitrate(bitrate: Int?) {
+        if (bitrate == playlistManager.maxStreamingBitrate) return
+        playlistManager.maxStreamingBitrate = bitrate
+        reloadItems()
+    }
+
+    private fun reloadItems() {
+        val index = items.indexOfFirst { it.itemId.toString() == player.currentMediaItem?.mediaId }
+        if (index == -1) return
+        val currentItem = items[index]
+        val position = player.currentPosition
+
+        viewModelScope.launch {
+            try {
+                val newItems = items.map { item ->
+                    val playbackPosition = if (item == currentItem) position else 0L
+                    playlistManager.reloadPlayerItem(item, playbackPosition) ?: item
+                }
+                items = newItems.toMutableList()
+                player.setMediaItems(items.map { it.toMediaItem() }, index, position)
+                player.prepare()
+
+                if (currentItem.isTranscoding) {
+                    currentItem.playSessionId?.let { repository.stopEncoding(it) }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
     private fun getPlayerItem(mediaId: String?): PlayerItem? = items.firstOrNull {
         it.itemId.toString() == mediaId
     }

@@ -124,6 +124,8 @@ interface JellyfinRepository {
         playMethod: PlayMethod = PlayMethod.DIRECT_PLAY,
     )
 
+    suspend fun stopEncoding(playSessionId: String)
+
     suspend fun markAsFavorite(itemId: UUID)
 
     suspend fun unmarkAsFavorite(itemId: UUID)

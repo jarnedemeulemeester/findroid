@@ -203,6 +203,13 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         return playerItem
     }
 
+    suspend fun reloadPlayerItem(playerItem: PlayerItem, playbackPosition: Long): PlayerItem? {
+        Timber.d("Reloading player item ${playerItem.itemId}")
+
+        val item = items.firstOrNull { it.id == playerItem.itemId } ?: return null
+        return item.toPlayerItem(null, playbackPosition, playerItem.mediaSourceId)
+    }
+
     fun setCurrentMediaItemIndex(itemId: UUID) {
         currentItemIndex = items.indexOfFirst { it.id == itemId }
     }
@@ -210,15 +217,21 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     private suspend fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
+        mediaSourceId: String? = null,
     ): PlayerItem {
         Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
 
         val mediaSources = repository.getMediaSources(id, true, deviceProfile, maxStreamingBitrate)
         val mediaSource =
-            if (mediaSourceIndex == null) {
-                mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
-            } else {
-                mediaSources[mediaSourceIndex]
+            when {
+                mediaSourceId != null ->
+                    mediaSources.firstOrNull {
+                        it.id == mediaSourceId && it.type == FindroidSourceType.LOCAL
+                    } ?: mediaSources.first { it.id == mediaSourceId }
+                mediaSourceIndex == null ->
+                    mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL }
+                        ?: mediaSources[0]
+                else -> mediaSources[mediaSourceIndex]
             }
         val externalSubtitles =
             mediaSource.mediaStreams
