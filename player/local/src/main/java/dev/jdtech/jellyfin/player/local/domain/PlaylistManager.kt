@@ -26,6 +26,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     private var items: List<FindroidItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
     private var deviceProfile: DeviceProfile? = null
+    var maxStreamingBitrate: Int? = null
     var currentItemIndex: Int = 0
 
     suspend fun getInitialItem(
@@ -211,7 +212,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     ): PlayerItem {
         Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
 
-        val mediaSources = repository.getMediaSources(id, true, deviceProfile)
+        val mediaSources = repository.getMediaSources(id, true, deviceProfile, maxStreamingBitrate)
         val mediaSource =
             if (mediaSourceIndex == null) {
                 mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
