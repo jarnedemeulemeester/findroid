@@ -29,9 +29,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.DeviceProfile
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.PlayMethod
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
+import org.jellyfin.sdk.model.api.UserPolicy
 
 class JellyfinRepositoryOfflineImpl(
     private val context: Context,
@@ -203,7 +206,15 @@ class JellyfinRepositoryOfflineImpl(
             items
         }
 
-    override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
+    override suspend fun getMediaSources(
+        itemId: UUID,
+        includePath: Boolean,
+        deviceProfile: DeviceProfile?,
+        maxStreamingBitrate: Int?,
+        mediaSourceId: String?,
+        audioStreamIndex: Int?,
+        subtitleStreamIndex: Int?,
+    ): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             database.getSources(itemId).map { it.toFindroidSource(database) }
         }
@@ -229,12 +240,17 @@ class JellyfinRepositoryOfflineImpl(
 
     override suspend fun postCapabilities() {}
 
-    override suspend fun postPlaybackStart(itemId: UUID) {}
+    override suspend fun postPlaybackStart(
+        itemId: UUID,
+        playSessionId: String?,
+        playMethod: PlayMethod,
+    ) {}
 
     override suspend fun postPlaybackStop(
         itemId: UUID,
         positionTicks: Long,
         playedPercentage: Int,
+        playSessionId: String?,
     ) {
         withContext(Dispatchers.IO) {
             when {
@@ -259,12 +275,16 @@ class JellyfinRepositoryOfflineImpl(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
+        playSessionId: String?,
+        playMethod: PlayMethod,
     ) {
         withContext(Dispatchers.IO) {
             database.setPlaybackPositionTicks(itemId, jellyfinApi.userId!!, positionTicks)
             database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
         }
     }
+
+    override suspend fun stopEncoding(playSessionId: String) {}
 
     override suspend fun markAsFavorite(itemId: UUID) {
         withContext(Dispatchers.IO) {
@@ -304,6 +324,10 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun getUserConfiguration(): UserConfiguration? {
+        return null
+    }
+
+    override suspend fun getUserPolicy(): UserPolicy? {
         return null
     }
 

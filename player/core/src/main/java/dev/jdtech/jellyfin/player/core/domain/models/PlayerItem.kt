@@ -17,4 +17,22 @@ data class PlayerItem(
     val externalSubtitles: List<ExternalSubtitle> = emptyList(),
     val chapters: List<PlayerChapter> = emptyList(),
     val trickplayInfo: TrickplayInfo? = null,
-) : Parcelable
+    val playSessionId: String? = null,
+    val isTranscoding: Boolean = false,
+    val isDownloaded: Boolean = false,
+    val videoBitrate: Int? = null,
+    val videoCodec: String? = null,
+    val audioStreams: List<PlayerStream> = emptyList(),
+    val subtitleStreams: List<PlayerStream> = emptyList(),
+    val audioStreamIndex: Int? = null,
+    val subtitleStreamIndex: Int? = null,
+) : Parcelable {
+    // Subtitle streams in the order the player lists its text tracks
+    val playerSubtitleStreams: List<PlayerStream>
+        get() =
+            if (isTranscoding) {
+                subtitleStreams.filter { it.isExternal }
+            } else {
+                subtitleStreams.filter { it.isEmbedded } + subtitleStreams.filter { it.isExternal }
+            }
+}

@@ -16,9 +16,12 @@ import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.DeviceProfile
 import org.jellyfin.sdk.model.api.ItemFields
+import org.jellyfin.sdk.model.api.PlayMethod
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
+import org.jellyfin.sdk.model.api.UserPolicy
 
 interface JellyfinRepository {
     suspend fun getPublicSystemInfo(): PublicSystemInfo
@@ -86,7 +89,15 @@ interface JellyfinRepository {
         offline: Boolean = false,
     ): List<FindroidEpisode>
 
-    suspend fun getMediaSources(itemId: UUID, includePath: Boolean = false): List<FindroidSource>
+    suspend fun getMediaSources(
+        itemId: UUID,
+        includePath: Boolean = false,
+        deviceProfile: DeviceProfile? = null,
+        maxStreamingBitrate: Int? = null,
+        mediaSourceId: String? = null,
+        audioStreamIndex: Int? = null,
+        subtitleStreamIndex: Int? = null,
+    ): List<FindroidSource>
 
     suspend fun getStreamUrl(itemId: UUID, mediaSourceId: String): String
 
@@ -96,11 +107,28 @@ interface JellyfinRepository {
 
     suspend fun postCapabilities()
 
-    suspend fun postPlaybackStart(itemId: UUID)
+    suspend fun postPlaybackStart(
+        itemId: UUID,
+        playSessionId: String? = null,
+        playMethod: PlayMethod = PlayMethod.DIRECT_PLAY,
+    )
 
-    suspend fun postPlaybackStop(itemId: UUID, positionTicks: Long, playedPercentage: Int)
+    suspend fun postPlaybackStop(
+        itemId: UUID,
+        positionTicks: Long,
+        playedPercentage: Int,
+        playSessionId: String? = null,
+    )
 
-    suspend fun postPlaybackProgress(itemId: UUID, positionTicks: Long, isPaused: Boolean)
+    suspend fun postPlaybackProgress(
+        itemId: UUID,
+        positionTicks: Long,
+        isPaused: Boolean,
+        playSessionId: String? = null,
+        playMethod: PlayMethod = PlayMethod.DIRECT_PLAY,
+    )
+
+    suspend fun stopEncoding(playSessionId: String)
 
     suspend fun markAsFavorite(itemId: UUID)
 
@@ -115,6 +143,8 @@ interface JellyfinRepository {
     suspend fun updateDeviceName(name: String)
 
     suspend fun getUserConfiguration(): UserConfiguration?
+
+    suspend fun getUserPolicy(): UserPolicy?
 
     suspend fun getDownloads(): List<FindroidItem>
 
