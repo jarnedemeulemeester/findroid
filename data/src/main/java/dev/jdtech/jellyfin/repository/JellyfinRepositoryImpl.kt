@@ -327,7 +327,7 @@ class JellyfinRepositoryImpl(
     ): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             val sources = mutableListOf<FindroidSource>()
-            sources.addAll(
+            val playbackInfo =
                 jellyfinApi.mediaInfoApi
                     .getPostedPlaybackInfo(
                         itemId,
@@ -338,8 +338,15 @@ class JellyfinRepositoryImpl(
                         ),
                     )
                     .content
-                    .mediaSources
-                    .map { it.toFindroidSource(this@JellyfinRepositoryImpl, itemId, includePath) }
+            sources.addAll(
+                playbackInfo.mediaSources.map {
+                    it.toFindroidSource(
+                        this@JellyfinRepositoryImpl,
+                        itemId,
+                        includePath,
+                        playbackInfo.playSessionId,
+                    )
+                }
             )
             sources.addAll(database.getSources(itemId).map { it.toFindroidSource(database) })
             sources
@@ -424,7 +431,11 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun postPlaybackStart(itemId: UUID) {
+    override suspend fun postPlaybackStart(
+        itemId: UUID,
+        playSessionId: String?,
+        playMethod: PlayMethod,
+    ) {
         Timber.d("Sending start $itemId")
         withContext(Dispatchers.IO) {
             jellyfinApi.sessionApi.reportPlaybackStart(
@@ -433,9 +444,10 @@ class JellyfinRepositoryImpl(
                     canSeek = true,
                     isPaused = false,
                     isMuted = false,
-                    playMethod = PlayMethod.DIRECT_PLAY,
+                    playMethod = playMethod,
                     repeatMode = RepeatMode.REPEAT_NONE,
                     playbackOrder = PlaybackOrder.DEFAULT,
+                    playSessionId = playSessionId,
                 )
             )
         }
@@ -445,6 +457,7 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         playedPercentage: Int,
+        playSessionId: String?,
     ) {
         Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
@@ -464,7 +477,13 @@ class JellyfinRepositoryImpl(
             }
             try {
                 jellyfinApi.sessionApi.reportPlaybackStopped(
-                    PlaybackStopInfo(itemId = itemId, positionTicks = positionTicks, failed = false)
+                    PlaybackStopInfo(
+                        itemId = itemId,
+                        positionTicks = positionTicks,
+                        failed = false,
+                        // Needed for the server to stop the transcode
+                        playSessionId = playSessionId,
+                    )
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
@@ -476,6 +495,8 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
+        playSessionId: String?,
+        playMethod: PlayMethod,
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
@@ -487,10 +508,11 @@ class JellyfinRepositoryImpl(
                         canSeek = true,
                         isPaused = isPaused,
                         isMuted = false,
-                        playMethod = PlayMethod.DIRECT_PLAY,
+                        playMethod = playMethod,
                         repeatMode = RepeatMode.REPEAT_NONE,
                         playbackOrder = PlaybackOrder.DEFAULT,
                         positionTicks = positionTicks,
+                        playSessionId = playSessionId,
                     )
                 )
             } catch (_: Exception) {

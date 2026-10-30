@@ -15,23 +15,28 @@ data class FindroidSource(
     val size: Long,
     val mediaStreams: List<FindroidMediaStream>,
     val downloadId: Long? = null,
+    val playSessionId: String? = null,
+    val isTranscoding: Boolean = false,
 )
 
 suspend fun MediaSourceInfo.toFindroidSource(
     jellyfinRepository: JellyfinRepository,
     itemId: UUID,
     includePath: Boolean = false,
+    playSessionId: String? = null,
 ): FindroidSource {
+    val isTranscoding = !supportsDirectPlay && !supportsDirectStream && transcodingUrl != null
     val path =
-        when (protocol) {
-            MediaProtocol.FILE -> {
+        when {
+            isTranscoding -> jellyfinRepository.getBaseUrl() + transcodingUrl
+            protocol == MediaProtocol.FILE -> {
                 try {
                     if (includePath) jellyfinRepository.getStreamUrl(itemId, id.orEmpty()) else ""
                 } catch (_: Exception) {
                     ""
                 }
             }
-            MediaProtocol.HTTP -> this.path.orEmpty()
+            protocol == MediaProtocol.HTTP -> this.path.orEmpty()
             else -> ""
         }
     return FindroidSource(
@@ -42,6 +47,8 @@ suspend fun MediaSourceInfo.toFindroidSource(
         size = size ?: 0,
         mediaStreams =
             mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList(),
+        playSessionId = playSessionId,
+        isTranscoding = isTranscoding,
     )
 }
 

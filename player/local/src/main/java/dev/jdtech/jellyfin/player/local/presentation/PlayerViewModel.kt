@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.PlayMethod
 import timber.log.Timber
 
 @HiltViewModel
@@ -226,6 +227,13 @@ constructor(
         }
     }
 
+    private fun getPlayerItem(mediaId: String?): PlayerItem? = items.firstOrNull {
+        it.itemId.toString() == mediaId
+    }
+
+    private val PlayerItem?.playMethod: PlayMethod
+        get() = if (this?.isTranscoding == true) PlayMethod.TRANSCODE else PlayMethod.DIRECT_PLAY
+
     private fun PlayerItem.toMediaItem(): MediaItem {
         val streamUrl = mediaSourceUri
         val mediaSubtitles = externalSubtitles.map { externalSubtitle ->
@@ -253,6 +261,7 @@ constructor(
     @OptIn(DelicateCoroutinesApi::class)
     private fun releasePlayer() {
         val mediaId = player.currentMediaItem?.mediaId
+        val playSessionId = getPlayerItem(mediaId)?.playSessionId
         val position = player.currentPosition
         val duration = player.duration
         GlobalScope.launch {
@@ -264,6 +273,7 @@ constructor(
                         UUID.fromString(mediaId),
                         position.times(10000),
                         position.div(duration.toFloat()).times(100).toInt(),
+                        playSessionId,
                     )
                 }
             } catch (e: Exception) {
@@ -284,12 +294,15 @@ constructor(
         viewModelScope.launch(Dispatchers.Main) {
             savedStateHandle["position"] = player.currentPosition
             if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
+                val playerItem = getPlayerItem(player.currentMediaItem!!.mediaId)
                 val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
                 try {
                     repository.postPlaybackProgress(
                         itemId,
                         player.currentPosition.times(10000),
                         !player.isPlaying,
+                        playerItem?.playSessionId,
+                        playerItem.playMethod,
                     )
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -372,7 +385,11 @@ constructor(
                             )
                         }
 
-                        repository.postPlaybackStart(item.itemId)
+                        repository.postPlaybackStart(
+                            item.itemId,
+                            item.playSessionId,
+                            item.playMethod,
+                        )
 
                         if (segmentsSkipButton || segmentsAutoSkip) {
                             getSegments(item.itemId)
@@ -426,6 +443,7 @@ constructor(
                         UUID.fromString(mediaId),
                         position.times(10000),
                         position.div(duration.toFloat()).times(100).toInt(),
+                        getPlayerItem(mediaId)?.playSessionId,
                     )
                 } catch (e: Exception) {
                     Timber.e(e)

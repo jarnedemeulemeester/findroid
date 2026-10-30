@@ -19,6 +19,7 @@ import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceProfile
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import timber.log.Timber
 
 class PlaylistManager @Inject internal constructor(private val repository: JellyfinRepository) {
@@ -222,7 +223,8 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         val externalSubtitles =
             mediaSource.mediaStreams
                 .filter { mediaStream ->
-                    mediaStream.isExternal &&
+                    (mediaStream.isExternal ||
+                        mediaStream.deliveryMethod == SubtitleDeliveryMethod.EXTERNAL) &&
                         mediaStream.type == MediaStreamType.SUBTITLE &&
                         !mediaStream.path.isNullOrBlank()
                 }
@@ -268,6 +270,8 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
+            playSessionId = mediaSource.playSessionId,
+            isTranscoding = mediaSource.isTranscoding,
         )
     }
 
