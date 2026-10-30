@@ -135,6 +135,7 @@ class PlayerActivity : BasePlayerActivity() {
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
         val qualityButton = binding.playerView.findViewById<ImageButton>(R.id.btn_quality)
+        val qualitySpace = binding.playerView.findViewById<Space>(R.id.space_quality)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
         skipSegmentButton = binding.playerView.findViewById(R.id.btn_skip_segment)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
@@ -149,6 +150,10 @@ class PlayerActivity : BasePlayerActivity() {
                         uiState.apply {
                             // Title
                             videoNameTextView.text = currentItemTitle
+
+                            // Quality can't be changed for downloaded files
+                            qualityButton.isVisible = !currentItemIsDownloaded
+                            qualitySpace.isVisible = !currentItemIsDownloaded
 
                             // Media segment
                             currentSegment?.let { segment ->

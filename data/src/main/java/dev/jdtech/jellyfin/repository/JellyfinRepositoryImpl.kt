@@ -54,6 +54,7 @@ import org.jellyfin.sdk.model.api.SortOrder as ItemSortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
+import org.jellyfin.sdk.model.api.UserPolicy
 import timber.log.Timber
 
 class JellyfinRepositoryImpl(
@@ -602,6 +603,9 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getUserConfiguration(): UserConfiguration =
         withContext(Dispatchers.IO) { jellyfinApi.userApi.getCurrentUser().content.configuration!! }
+
+    override suspend fun getUserPolicy(): UserPolicy? =
+        withContext(Dispatchers.IO) { jellyfinApi.userApi.getCurrentUser().content.policy }
 
     override suspend fun getDownloads(): List<FindroidItem> =
         withContext(Dispatchers.IO) {

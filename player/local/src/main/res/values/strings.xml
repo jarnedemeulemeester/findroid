@@ -6,6 +6,7 @@
     <string name="video_quality_best">Best</string>
     <string name="video_quality_mbps">%1$s Mbps</string>
     <string name="video_quality_kbps">%1$d kbps</string>
+    <string name="video_quality_transcoding_disabled">Transcoding is disabled for your account</string>
     <string name="select_a_version">"Select a version"</string>
     <string name="external">External</string>
     <string name="none">None</string>

@@ -76,6 +76,7 @@ constructor(
                 currentTrickplay = null,
                 currentChapters = emptyList(),
                 fileLoaded = false,
+                currentItemIsDownloaded = false,
             )
         )
     val uiState = _uiState.asStateFlow()
@@ -90,6 +91,7 @@ constructor(
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>,
         val fileLoaded: Boolean,
+        val currentItemIsDownloaded: Boolean,
     )
 
     private var items: MutableList<PlayerItem> = mutableListOf()
@@ -120,9 +122,21 @@ constructor(
 
     var isInPictureInPictureMode: Boolean = false
 
+    var canTranscodeVideo: Boolean = true
+        private set
+
     init {
         playlistManager.maxStreamingBitrate =
             appPreferences.getValue(appPreferences.playerMaxStreamingBitrate).takeIf { it > 0 }
+        viewModelScope.launch {
+            try {
+                repository.getUserPolicy()?.let {
+                    canTranscodeVideo = it.enableVideoPlaybackTranscoding
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
 
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
         segmentsSkipButtonTypes =
@@ -548,6 +562,7 @@ constructor(
                                 currentSegment = null,
                                 currentChapters = item.chapters,
                                 fileLoaded = false,
+                                currentItemIsDownloaded = item.isDownloaded,
                             )
                         }
 

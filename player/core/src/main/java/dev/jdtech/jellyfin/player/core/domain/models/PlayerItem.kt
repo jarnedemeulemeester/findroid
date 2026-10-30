@@ -19,6 +19,7 @@ data class PlayerItem(
     val trickplayInfo: TrickplayInfo? = null,
     val playSessionId: String? = null,
     val isTranscoding: Boolean = false,
+    val isDownloaded: Boolean = false,
     val videoBitrate: Int? = null,
     val videoCodec: String? = null,
     val audioStreams: List<PlayerStream> = emptyList(),

@@ -305,6 +305,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             trickplayInfo = trickplayInfo,
             playSessionId = mediaSource.playSessionId,
             isTranscoding = mediaSource.isTranscoding,
+            isDownloaded = mediaSource.type == FindroidSourceType.LOCAL,
             videoBitrate = videoStream?.bitrate,
             videoCodec = videoStream?.codec,
             audioStreams = mediaSource.mediaStreams.toPlayerStreams(MediaStreamType.AUDIO),

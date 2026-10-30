@@ -21,6 +21,7 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PlayMethod
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
+import org.jellyfin.sdk.model.api.UserPolicy
 
 interface JellyfinRepository {
     suspend fun getPublicSystemInfo(): PublicSystemInfo
@@ -142,6 +143,8 @@ interface JellyfinRepository {
     suspend fun updateDeviceName(name: String)
 
     suspend fun getUserConfiguration(): UserConfiguration?
+
+    suspend fun getUserPolicy(): UserPolicy?
 
     suspend fun getDownloads(): List<FindroidItem>
 

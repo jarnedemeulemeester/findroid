@@ -34,6 +34,7 @@ import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.PlayMethod
 import org.jellyfin.sdk.model.api.PublicSystemInfo
 import org.jellyfin.sdk.model.api.UserConfiguration
+import org.jellyfin.sdk.model.api.UserPolicy
 
 class JellyfinRepositoryOfflineImpl(
     private val context: Context,
@@ -323,6 +324,10 @@ class JellyfinRepositoryOfflineImpl(
     }
 
     override suspend fun getUserConfiguration(): UserConfiguration? {
+        return null
+    }
+
+    override suspend fun getUserPolicy(): UserPolicy? {
         return null
     }
 
