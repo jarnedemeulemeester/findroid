@@ -210,6 +210,9 @@ class JellyfinRepositoryOfflineImpl(
         includePath: Boolean,
         deviceProfile: DeviceProfile?,
         maxStreamingBitrate: Int?,
+        mediaSourceId: String?,
+        audioStreamIndex: Int?,
+        subtitleStreamIndex: Int?,
     ): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             database.getSources(itemId).map { it.toFindroidSource(database) }

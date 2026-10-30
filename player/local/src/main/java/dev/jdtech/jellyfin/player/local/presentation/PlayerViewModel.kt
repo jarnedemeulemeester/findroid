@@ -13,6 +13,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.Tracks
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -21,6 +22,7 @@ import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerStream
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import dev.jdtech.jellyfin.player.local.R
 import dev.jdtech.jellyfin.player.local.deviceprofile.DeviceProfiles
@@ -91,6 +93,14 @@ constructor(
     )
 
     private var items: MutableList<PlayerItem> = mutableListOf()
+
+    private data class StreamSelection(
+        val itemId: UUID,
+        val audioStreamIndex: Int?,
+        val subtitleStreamIndex: Int?,
+    )
+
+    private var pendingStreamSelection: StreamSelection? = null
 
     private val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
@@ -239,10 +249,112 @@ constructor(
     fun setMaxStreamingBitrate(bitrate: Int?) {
         if (bitrate == playlistManager.maxStreamingBitrate) return
         playlistManager.maxStreamingBitrate = bitrate
-        reloadItems()
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return
+        reloadItems(getSelectedAudioStreamIndex(item), getSelectedSubtitleStreamIndex(item))
     }
 
-    private fun reloadItems() {
+    val isTranscoding: Boolean
+        get() = getPlayerItem(player.currentMediaItem?.mediaId)?.isTranscoding == true
+
+    fun getStreams(trackType: @C.TrackType Int): List<PlayerStream> {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return emptyList()
+        return when (trackType) {
+            C.TRACK_TYPE_AUDIO -> item.audioStreams
+            C.TRACK_TYPE_TEXT -> item.subtitleStreams
+            else -> emptyList()
+        }
+    }
+
+    fun getSelectedStreamIndex(trackType: @C.TrackType Int): Int? {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return null
+        return when (trackType) {
+            C.TRACK_TYPE_AUDIO -> getSelectedAudioStreamIndex(item)
+            C.TRACK_TYPE_TEXT -> getSelectedSubtitleStreamIndex(item)
+            else -> null
+        }
+    }
+
+    // Index -1 disables subtitles
+    fun selectStream(trackType: @C.TrackType Int, index: Int) {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return
+        val audioStreamIndex = getSelectedAudioStreamIndex(item)
+        val subtitleStreamIndex = getSelectedSubtitleStreamIndex(item)
+        when (trackType) {
+            C.TRACK_TYPE_AUDIO -> {
+                if (index != audioStreamIndex) reloadItems(index, subtitleStreamIndex)
+            }
+            C.TRACK_TYPE_TEXT -> {
+                if (index == subtitleStreamIndex) return
+                val stream = item.subtitleStreams.firstOrNull { it.index == index }
+                val isBurnedIn =
+                    item.subtitleStreams.any { it.index == subtitleStreamIndex && it.isBurnedIn }
+                if (isBurnedIn || stream?.isBurnedIn == true) {
+                    reloadItems(audioStreamIndex, index)
+                } else {
+                    selectTrackGroup(
+                        C.TRACK_TYPE_TEXT,
+                        getTrackGroups(C.TRACK_TYPE_TEXT)
+                            .getOrNull(item.playerSubtitleStreams.indexOf(stream)),
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getTrackGroups(trackType: @C.TrackType Int): List<Tracks.Group> =
+        player.currentTracks.groups.filter { it.type == trackType }
+
+    private fun getSelectedAudioStreamIndex(item: PlayerItem): Int? {
+        if (item.isTranscoding) return item.audioStreamIndex
+        val groupIndex = getTrackGroups(C.TRACK_TYPE_AUDIO).indexOfFirst { it.isSelected }
+        return item.audioStreams.getOrNull(groupIndex)?.index
+    }
+
+    private fun getSelectedSubtitleStreamIndex(item: PlayerItem): Int {
+        val groupIndex = getTrackGroups(C.TRACK_TYPE_TEXT).indexOfFirst { it.isSelected }
+        item.playerSubtitleStreams.getOrNull(groupIndex)?.let {
+            return it.index
+        }
+        // Burned in subtitles have no player track
+        val burnedIn =
+            item.subtitleStreams.firstOrNull {
+                it.index == item.subtitleStreamIndex && it.isBurnedIn
+            }
+        return if (item.isTranscoding && burnedIn != null) burnedIn.index else -1
+    }
+
+    private fun applyStreamSelection(item: PlayerItem, selection: StreamSelection) {
+        if (!item.isTranscoding) {
+            val audioGroupIndex =
+                item.audioStreams.indexOfFirst { it.index == selection.audioStreamIndex }
+            getTrackGroups(C.TRACK_TYPE_AUDIO).getOrNull(audioGroupIndex)?.let {
+                selectTrackGroup(C.TRACK_TYPE_AUDIO, it)
+            }
+        }
+        if (selection.subtitleStreamIndex != null) {
+            val textGroupIndex =
+                item.playerSubtitleStreams.indexOfFirst {
+                    it.index == selection.subtitleStreamIndex
+                }
+            selectTrackGroup(
+                C.TRACK_TYPE_TEXT,
+                getTrackGroups(C.TRACK_TYPE_TEXT).getOrNull(textGroupIndex),
+            )
+        }
+    }
+
+    override fun onTracksChanged(tracks: Tracks) {
+        val selection = pendingStreamSelection ?: return
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return
+        if (item.itemId != selection.itemId) return
+        // mpv adds external subtitles one by one, wait for all of them
+        if (getTrackGroups(C.TRACK_TYPE_TEXT).size < item.playerSubtitleStreams.size) return
+
+        pendingStreamSelection = null
+        applyStreamSelection(item, selection)
+    }
+
+    private fun reloadItems(audioStreamIndex: Int?, subtitleStreamIndex: Int?) {
         val index = items.indexOfFirst { it.itemId.toString() == player.currentMediaItem?.mediaId }
         if (index == -1) return
         val currentItem = items[index]
@@ -251,10 +363,20 @@ constructor(
         viewModelScope.launch {
             try {
                 val newItems = items.map { item ->
-                    val playbackPosition = if (item == currentItem) position else 0L
-                    playlistManager.reloadPlayerItem(item, playbackPosition) ?: item
+                    if (item == currentItem) {
+                        playlistManager.reloadPlayerItem(
+                            item,
+                            position,
+                            audioStreamIndex,
+                            subtitleStreamIndex,
+                        )
+                    } else {
+                        playlistManager.reloadPlayerItem(item, 0L)
+                    } ?: item
                 }
                 items = newItems.toMutableList()
+                pendingStreamSelection =
+                    StreamSelection(currentItem.itemId, audioStreamIndex, subtitleStreamIndex)
                 player.setMediaItems(items.map { it.toMediaItem() }, index, position)
                 player.prepare()
 
@@ -523,28 +645,29 @@ constructor(
 
     fun switchToTrack(trackType: @C.TrackType Int, index: Int) {
         // Index -1 equals disable track
-        if (index == -1) {
-            player.trackSelectionParameters =
+        selectTrackGroup(
+            trackType,
+            player.currentTracks.groups
+                .filter { it.type == trackType && it.isSupported }
+                .getOrNull(index),
+        )
+    }
+
+    private fun selectTrackGroup(trackType: @C.TrackType Int, group: Tracks.Group?) {
+        player.trackSelectionParameters =
+            if (group == null) {
                 player.trackSelectionParameters
                     .buildUpon()
                     .clearOverridesOfType(trackType)
                     .setTrackTypeDisabled(trackType, true)
                     .build()
-        } else {
-            player.trackSelectionParameters =
+            } else {
                 player.trackSelectionParameters
                     .buildUpon()
-                    .setOverrideForType(
-                        TrackSelectionOverride(
-                            player.currentTracks.groups
-                                .filter { it.type == trackType && it.isSupported }[index]
-                                .mediaTrackGroup,
-                            0,
-                        )
-                    )
+                    .setOverrideForType(TrackSelectionOverride(group.mediaTrackGroup, 0))
                     .setTrackTypeDisabled(trackType, false)
                     .build()
-        }
+            }
     }
 
     fun selectSpeed(speed: Float) {

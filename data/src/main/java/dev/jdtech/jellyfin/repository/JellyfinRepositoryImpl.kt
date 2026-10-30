@@ -325,6 +325,9 @@ class JellyfinRepositoryImpl(
         includePath: Boolean,
         deviceProfile: DeviceProfile?,
         maxStreamingBitrate: Int?,
+        mediaSourceId: String?,
+        audioStreamIndex: Int?,
+        subtitleStreamIndex: Int?,
     ): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             val sources = mutableListOf<FindroidSource>()
@@ -336,6 +339,9 @@ class JellyfinRepositoryImpl(
                             userId = jellyfinApi.userId!!,
                             deviceProfile = deviceProfile ?: defaultDeviceProfile,
                             maxStreamingBitrate = maxStreamingBitrate,
+                            mediaSourceId = mediaSourceId,
+                            audioStreamIndex = audioStreamIndex,
+                            subtitleStreamIndex = subtitleStreamIndex,
                         ),
                     )
                     .content
