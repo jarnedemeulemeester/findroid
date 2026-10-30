@@ -29,6 +29,8 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     // Player
     val playerBackend = Preference("pref_player_backend", PlayerBackend.EXOPLAYER.value)
     val playerBrightness = Preference("pref_player_brightness", -1.0f)
+    // 0 means no limit
+    val playerMaxStreamingBitrate = Preference("pref_player_max_streaming_bitrate", 0)
 
     // Player - mpv
     val playerMpv = Preference("pref_player_mpv", false)

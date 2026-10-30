@@ -31,13 +31,19 @@ class QualitySelectionDialogFragment(private val viewModel: PlayerViewModel) : D
             val builder = MaterialAlertDialogBuilder(activity)
             builder.setTitle(getString(R.string.select_video_quality)).setSingleChoiceItems(
                 qualityTexts.toTypedArray(),
-                bitrates.indexOf(viewModel.maxStreamingBitrate),
+                getCheckedItem(bitrates),
             ) { dialog, which ->
                 viewModel.setMaxStreamingBitrate(bitrates[which])
                 dialog.dismiss()
             }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    // The saved bitrate can be missing from the list, check the highest option within it
+    private fun getCheckedItem(bitrates: List<Int?>): Int {
+        val maxStreamingBitrate = viewModel.maxStreamingBitrate ?: return 0
+        return bitrates.indexOfFirst { it != null && it <= maxStreamingBitrate }
     }
 
     override fun onDestroy() {

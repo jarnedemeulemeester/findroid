@@ -121,6 +121,9 @@ constructor(
     var isInPictureInPictureMode: Boolean = false
 
     init {
+        playlistManager.maxStreamingBitrate =
+            appPreferences.getValue(appPreferences.playerMaxStreamingBitrate).takeIf { it > 0 }
+
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
         segmentsSkipButtonTypes =
             appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
@@ -249,6 +252,7 @@ constructor(
     fun setMaxStreamingBitrate(bitrate: Int?) {
         if (bitrate == playlistManager.maxStreamingBitrate) return
         playlistManager.maxStreamingBitrate = bitrate
+        appPreferences.setValue(appPreferences.playerMaxStreamingBitrate, bitrate ?: 0)
         val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return
         reloadItems(getSelectedAudioStreamIndex(item), getSelectedSubtitleStreamIndex(item))
     }
