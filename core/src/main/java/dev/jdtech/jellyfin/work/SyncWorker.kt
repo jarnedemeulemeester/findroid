@@ -8,12 +8,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
-import dev.jdtech.jellyfin.models.FindroidItem
-import dev.jdtech.jellyfin.models.User
 import dev.jdtech.jellyfin.models.toFindroidEpisode
 import dev.jdtech.jellyfin.models.toFindroidMovie
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
-import org.jellyfin.sdk.model.api.UpdateUserItemDataDto
 
 @HiltWorker
 class SyncWorker
@@ -57,36 +54,11 @@ constructor(
                         it.toFindroidEpisode(database, user.id)
                     }
 
-                syncUserData(jellyfinApi, user, movies)
-                syncUserData(jellyfinApi, user, episodes)
+                pushPendingUserData(database, jellyfinApi, user.id, movies)
+                pushPendingUserData(database, jellyfinApi, user.id, episodes)
             }
         }
 
         return Result.success()
-    }
-
-    private suspend fun syncUserData(
-        jellyfinApi: JellyfinApi,
-        user: User,
-        items: List<FindroidItem>,
-    ) {
-        for (item in items) {
-            val userData = database.getUserDataToBeSynced(user.id, item.id) ?: continue
-
-            try {
-                jellyfinApi.userDataApi.updateItemUserData(
-                    itemId = item.id,
-                    userId = user.id,
-                    data =
-                        UpdateUserItemDataDto(
-                            playbackPositionTicks = userData.playbackPositionTicks,
-                            isFavorite = userData.favorite,
-                            played = userData.played,
-                        ),
-                )
-
-                database.setUserDataToBeSynced(user.id, item.id, false)
-            } catch (_: Exception) {}
-        }
     }
 }
