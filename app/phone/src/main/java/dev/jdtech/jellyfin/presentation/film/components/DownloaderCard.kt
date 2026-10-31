@@ -117,7 +117,8 @@ fun DownloaderCard(state: DownloaderState, onCancelClick: () -> Unit, onRetryCli
             CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
                 when (state.status) {
                     DownloadManager.STATUS_PENDING,
-                    DownloadManager.STATUS_RUNNING -> {
+                    DownloadManager.STATUS_RUNNING,
+                    DownloadManager.STATUS_PAUSED -> {
                         FilledTonalIconButton(onClick = onCancelClick) {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_x),

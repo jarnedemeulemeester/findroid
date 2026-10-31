@@ -104,6 +104,8 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
+    pendingItemRoute: NavKey? = null,
+    onPendingItemRouteHandled: () -> Unit = {},
 ) {
     val setupComplete = hasServers && hasCurrentServer && hasCurrentUser
 
@@ -184,6 +186,16 @@ fun NavigationRoot(
             permissionViewModel = permissionViewModel,
             permissionApplicable = permissionState.currentRequest != null,
         )
+    }
+
+    // Open the item of a tapped download notification. Dropped while setup is incomplete
+    LaunchedEffect(pendingItemRoute) {
+        if (pendingItemRoute != null) {
+            if (setupComplete) {
+                navigator.navigateOrReuse(pendingItemRoute)
+            }
+            onPendingItemRouteHandled()
+        }
     }
 }
 

@@ -95,7 +95,9 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
                         _state.emit(
                             DownloaderState(
                                 status = status,
-                                progress = progress.coerceAtLeast(0) / 100f,
+                                // Keep showing the last known progress while there is none
+                                progress =
+                                    if (progress < 0) _state.value.progress else progress / 100f,
                             )
                         )
                     }
