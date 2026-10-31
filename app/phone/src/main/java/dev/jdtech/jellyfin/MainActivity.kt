@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.utils.LocalOfflineMode
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     /** Route of the item to open, requested by tapping a download notification. */
-    private var pendingItemRoute: Any? by mutableStateOf(null)
+    private var pendingItemRoute: NavKey? by mutableStateOf(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +39,9 @@ class MainActivity : AppCompatActivity() {
             val state by viewModel.state.collectAsStateWithLifecycle()
 
             FindroidTheme(dynamicColor = state.isDynamicColors) {
-                val navController = rememberNavController()
                 if (!state.isLoading) {
                     CompositionLocalProvider(LocalOfflineMode provides state.isOfflineMode) {
                         NavigationRoot(
-                            navController = navController,
                             hasServers = state.hasServers,
                             hasCurrentServer = state.hasCurrentServer,
                             hasCurrentUser = state.hasCurrentUser,
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         pendingItemRoute = intent.toItemRoute()
     }
 
-    private fun Intent.toItemRoute(): Any? {
+    private fun Intent.toItemRoute(): NavKey? {
         if (action != MediaDownloadWorker.ACTION_VIEW_ITEM) return null
         val itemId = getStringExtra(MediaDownloadWorker.EXTRA_ITEM_ID) ?: return null
         return when (getStringExtra(MediaDownloadWorker.EXTRA_ITEM_KIND)) {

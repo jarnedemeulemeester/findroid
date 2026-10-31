@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+java { toolchain { languageVersion = Versions.JAVA } }
+
 android {
     namespace = "dev.jdtech.jellyfin.data"
     compileSdk = Versions.COMPILE_SDK
@@ -24,11 +26,6 @@ android {
         register("staging") { initWith(getByName("release")) }
     }
 
-    compileOptions {
-        sourceCompatibility = Versions.JAVA
-        targetCompatibility = Versions.JAVA
-    }
-
     buildFeatures { buildConfig = true }
 }
 
@@ -40,6 +37,7 @@ dependencies {
     implementation(libs.androidx.room3.runtime)
     ksp(libs.androidx.room3.compiler)
     implementation(libs.jellyfin.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
 }

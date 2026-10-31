@@ -53,8 +53,8 @@ import timber.log.Timber
 
 @Composable
 fun SettingsScreen(
-    indexes: IntArray = intArrayOf(),
-    navigateToSettings: (indexes: IntArray) -> Unit,
+    indexes: List<Int> = emptyList(),
+    navigateToSettings: (indexes: List<Int>) -> Unit,
     navigateToSettingsFileEdit: (filePath: String) -> Unit,
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,

@@ -1,3 +1,5 @@
+import com.android.build.api.variant.FilterConfiguration
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose.compiler)
@@ -8,6 +10,8 @@ plugins {
     alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.aboutlibraries.android)
 }
+
+java { toolchain { languageVersion = Versions.JAVA } }
 
 android {
     namespace = "dev.jdtech.jellyfin"
@@ -64,13 +68,6 @@ android {
         }
     }
 
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = Versions.JAVA
-        targetCompatibility = Versions.JAVA
-    }
-
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -82,6 +79,20 @@ android {
         includeInApk = false
         // Disables dependency metadata when building Android App Bundles.
         includeInBundle = false
+    }
+}
+
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        variant.outputs.forEach { output ->
+            val abi =
+                output.filters
+                    .firstOrNull { it.filterType == FilterConfiguration.FilterType.ABI }
+                    ?.identifier
+            output.outputFileName.set(
+                "findroid-v${output.versionName.get()}-${variant.flavorName}-$abi.apk"
+            )
+        }
     }
 }
 
@@ -132,8 +143,11 @@ dependencies {
     implementation(libs.media3.ffmpeg.decoder)
     implementation(libs.timber)
 
-    coreLibraryDesugaring(libs.android.desugar.jdk)
-
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.savedstate.compose)
 }

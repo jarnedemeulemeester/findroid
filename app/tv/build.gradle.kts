@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+java { toolchain { languageVersion = Versions.JAVA } }
+
 android {
     namespace = "dev.jdtech.jellyfin"
     compileSdk = Versions.COMPILE_SDK
@@ -60,13 +62,6 @@ android {
         }
     }
 
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = Versions.JAVA
-        targetCompatibility = Versions.JAVA
-    }
-
     buildFeatures {
         buildConfig = true
         compose = true
@@ -101,7 +96,11 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.session)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.savedstate.compose)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.tv.material)
     implementation(libs.coil.compose)
@@ -113,10 +112,9 @@ dependencies {
     implementation(libs.jellyfin.core)
     ksp(libs.kotlin.metadata.jvm)
     implementation(libs.media3.ffmpeg.decoder)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
-
-    coreLibraryDesugaring(libs.android.desugar.jdk)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
