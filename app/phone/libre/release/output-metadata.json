@@ -1,0 +1,87 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "dev.jdtech.jellyfin",
+  "variantName": "libreRelease",
+  "elements": [
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 34,
+      "versionName": "1.2.0",
+      "outputFile": "findroid-v1.2.0-libre-armeabi-v7a.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 34,
+      "versionName": "1.2.0",
+      "outputFile": "findroid-v1.2.0-libre-x86_64.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 34,
+      "versionName": "1.2.0",
+      "outputFile": "findroid-v1.2.0-libre-x86.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 34,
+      "versionName": "1.2.0",
+      "outputFile": "findroid-v1.2.0-libre-arm64-v8a.apk"
+    }
+  ],
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/findroid-v1.2.0-libre-armeabi-v7a.dm",
+        "baselineProfiles/1/findroid-v1.2.0-libre-x86_64.dm",
+        "baselineProfiles/1/findroid-v1.2.0-libre-x86.dm",
+        "baselineProfiles/1/findroid-v1.2.0-libre-arm64-v8a.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/findroid-v1.2.0-libre-armeabi-v7a.dm",
+        "baselineProfiles/0/findroid-v1.2.0-libre-x86_64.dm",
+        "baselineProfiles/0/findroid-v1.2.0-libre-x86.dm",
+        "baselineProfiles/0/findroid-v1.2.0-libre-arm64-v8a.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 29
+}

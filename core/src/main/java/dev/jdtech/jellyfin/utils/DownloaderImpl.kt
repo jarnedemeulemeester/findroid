@@ -8,6 +8,7 @@ import android.os.StatFs
 import android.text.format.Formatter
 import androidx.core.net.toUri
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dev.jdtech.jellyfin.core.R as CoreR
@@ -32,8 +33,10 @@ import dev.jdtech.jellyfin.models.toFindroidUserDataDto
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.ImagesDownloaderWorker
+import dev.jdtech.jellyfin.work.MtlsDownloadWorker
 import java.io.File
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import kotlin.Exception
 import kotlin.math.ceil
 import kotlinx.coroutines.coroutineScope
@@ -57,12 +60,8 @@ class DownloaderImpl(
         storageIndex: Int,
     ): Pair<Long, UiText?> = coroutineScope {
         try {
-            if (!appPreferences.getValue(appPreferences.clientCertificateAlias).isNullOrBlank()) {
-                return@coroutineScope Pair(
-                    -1,
-                    UiText.StringResource(CoreR.string.download_mtls_unsupported),
-                )
-            }
+            val useMtlsDownloader =
+                !appPreferences.getValue(appPreferences.clientCertificateAlias).isNullOrBlank()
             val source =
                 jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
             val segments = jellyfinRepository.getSegments(item.id)
@@ -96,20 +95,25 @@ class DownloaderImpl(
                     ),
                 )
             }
-            val request =
-                DownloadManager.Request(source.path.toUri())
-                    .setTitle(item.name)
-                    .setAllowedOverMetered(
-                        appPreferences.getValue(appPreferences.downloadOverMobileData)
-                    )
-                    .setAllowedOverRoaming(
-                        appPreferences.getValue(appPreferences.downloadWhenRoaming)
-                    )
-                    .setNotificationVisibility(
-                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
-                    )
-                    .setDestinationUri(path)
-            val downloadId = downloadManager.enqueue(request)
+            val downloadId =
+                if (useMtlsDownloader) {
+                    enqueueMtlsDownload(source.path, path.path.orEmpty(), source.id)
+                } else {
+                    val request =
+                        DownloadManager.Request(source.path.toUri())
+                            .setTitle(item.name)
+                            .setAllowedOverMetered(
+                                appPreferences.getValue(appPreferences.downloadOverMobileData)
+                            )
+                            .setAllowedOverRoaming(
+                                appPreferences.getValue(appPreferences.downloadWhenRoaming)
+                            )
+                            .setNotificationVisibility(
+                                DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                            )
+                            .setDestinationUri(path)
+                    downloadManager.enqueue(request)
+                }
 
             when (item) {
                 is FindroidMovie -> {
@@ -171,7 +175,9 @@ class DownloaderImpl(
     override suspend fun cancelDownload(item: FindroidItem, downloadId: Long) {
         val source =
             database.getSourceByDownloadId(downloadId)?.toFindroidSource(database) ?: return
-        if (source.downloadId != null) {
+        if (isMtlsDownload(downloadId)) {
+            workManager.cancelWorkById(getWorkId(downloadId))
+        } else if (source.downloadId != null) {
             downloadManager.remove(source.downloadId!!)
         }
         deleteItem(item, source)
@@ -220,6 +226,32 @@ class DownloaderImpl(
         var downloadStatus = -1
         var progress = -1
         if (downloadId == null) {
+            return Pair(downloadStatus, progress)
+        }
+        if (isMtlsDownload(downloadId)) {
+            val workInfo = workManager.getWorkInfoById(getWorkId(downloadId)).get()
+            if (workInfo == null) return Pair(DownloadManager.STATUS_FAILED, 0)
+            downloadStatus =
+                when (workInfo.state) {
+                    WorkInfo.State.ENQUEUED,
+                    WorkInfo.State.BLOCKED -> DownloadManager.STATUS_PENDING
+                    WorkInfo.State.RUNNING -> DownloadManager.STATUS_RUNNING
+                    WorkInfo.State.SUCCEEDED -> DownloadManager.STATUS_SUCCESSFUL
+                    WorkInfo.State.FAILED,
+                    WorkInfo.State.CANCELLED -> DownloadManager.STATUS_FAILED
+                }
+            progress =
+                when (workInfo.state) {
+                    WorkInfo.State.SUCCEEDED -> 100
+                    WorkInfo.State.RUNNING ->
+                        workInfo.progress
+                            .getLong(
+                                MtlsDownloadWorker.KEY_PROGRESS,
+                                0,
+                            )
+                            .toInt()
+                    else -> 0
+                }
             return Pair(downloadStatus, progress)
         }
         val query = DownloadManager.Query().setFilterById(downloadId)
@@ -272,20 +304,75 @@ class DownloaderImpl(
             database.insertMediaStream(
                 mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty())
             )
-            val request =
-                DownloadManager.Request(mediaStream.path!!.toUri())
-                    .setTitle(mediaStream.title)
-                    .setAllowedOverMetered(
-                        appPreferences.getValue(appPreferences.downloadOverMobileData)
-                    )
-                    .setAllowedOverRoaming(
-                        appPreferences.getValue(appPreferences.downloadWhenRoaming)
-                    )
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
-                    .setDestinationUri(streamPath)
-            val downloadId = downloadManager.enqueue(request)
+            val downloadId =
+                if (
+                    !appPreferences.getValue(appPreferences.clientCertificateAlias).isNullOrBlank()
+                ) {
+                    enqueueMtlsDownload(mediaStream.path!!, streamPath.path.orEmpty(), null, id)
+                } else {
+                    val request =
+                        DownloadManager.Request(mediaStream.path!!.toUri())
+                            .setTitle(mediaStream.title)
+                            .setAllowedOverMetered(
+                                appPreferences.getValue(appPreferences.downloadOverMobileData)
+                            )
+                            .setAllowedOverRoaming(
+                                appPreferences.getValue(appPreferences.downloadWhenRoaming)
+                            )
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+                            .setDestinationUri(streamPath)
+                    downloadManager.enqueue(request)
+                }
             database.setMediaStreamDownloadId(id, downloadId)
         }
+    }
+
+    private fun enqueueMtlsDownload(
+        url: String,
+        temporaryPath: String,
+        sourceId: String? = null,
+        mediaStreamId: UUID? = null,
+    ): Long {
+        val downloadId = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE
+        val request =
+            OneTimeWorkRequestBuilder<MtlsDownloadWorker>()
+                .setInputData(
+                    workDataOf(
+                        MtlsDownloadWorker.KEY_URL to url,
+                        MtlsDownloadWorker.KEY_TEMPORARY_PATH to temporaryPath,
+                        MtlsDownloadWorker.KEY_SOURCE_ID to sourceId,
+                        MtlsDownloadWorker.KEY_MEDIA_STREAM_ID to mediaStreamId?.toString(),
+                    )
+                )
+                .setBackoffCriteria(
+                    androidx.work.BackoffPolicy.EXPONENTIAL,
+                    10,
+                    TimeUnit.SECONDS,
+                )
+                .build()
+        context
+            .getSharedPreferences(MTLS_DOWNLOADS_PREFS, Context.MODE_PRIVATE)
+            .edit()
+            .putString(downloadId.toString(), request.id.toString())
+            .apply()
+        workManager.enqueue(request)
+        return downloadId
+    }
+
+    private fun isMtlsDownload(downloadId: Long) =
+        context
+            .getSharedPreferences(MTLS_DOWNLOADS_PREFS, Context.MODE_PRIVATE)
+            .contains(downloadId.toString())
+
+    private fun getWorkId(downloadId: Long): UUID =
+        UUID.fromString(
+            context
+                .getSharedPreferences(MTLS_DOWNLOADS_PREFS, Context.MODE_PRIVATE)
+                .getString(downloadId.toString(), null)
+        )
+
+    companion object {
+        private const val MTLS_DOWNLOADS_PREFS = "mtls_downloads"
     }
 
     private suspend fun downloadTrickplayData(
