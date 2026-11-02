@@ -106,4 +106,10 @@
     <string name="advanced">Avançado</string>
     <string name="discard_changes_dialog_title">Descartar alterações?</string>
     <string name="discard_changes_dialog_text">Você tem alterações não salvas.</string>
+    <string name="settings_category_permissions">Permissões</string>
+    <string name="permission_local_network">Acesso à rede local</string>
+    <string name="permission_local_network_summary">Necessário para encontrar e conectar-se a servidores em sua rede local</string>
+    <string name="permission_local_network_rationale">O Findroid precisa de acesso à sua rede local para encontrar e conectar-se ao seu servidor Jellyfin. Servidores remotos não são afetados.</string>
+    <string name="permission_status_granted">Permitido</string>
+    <string name="permission_status_denied">Negado</string>
 </resources>
