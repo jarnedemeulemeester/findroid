@@ -10,8 +10,14 @@ import java.security.Principal
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import java.util.UUID
+import javax.net.ssl.KeyManager
+import javax.net.ssl.SSLEngine
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509ExtendedKeyManager
+import javax.net.ssl.X509TrustManager
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import okhttp3.OkHttpClient
 import org.jellyfin.sdk.api.client.HttpClientOptions
 import org.jellyfin.sdk.api.client.extensions.authenticationApi
 import org.jellyfin.sdk.api.client.extensions.brandingApi
@@ -31,12 +37,6 @@ import org.jellyfin.sdk.api.client.extensions.videoApi
 import org.jellyfin.sdk.api.okhttp.OkHttpFactory
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
-import okhttp3.OkHttpClient
-import javax.net.ssl.KeyManager
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.TrustManagerFactory
-import javax.net.ssl.X509ExtendedKeyManager
-import javax.net.ssl.X509TrustManager
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-core
@@ -112,11 +112,14 @@ class JellyfinApi(
                     issuers: Array<out Principal>?,
                 ) = alias()?.let(::arrayOf)
 
-                override fun getPrivateKey(alias: String?): PrivateKey? =
-                    alias?.let { KeyChain.getPrivateKey(androidContext, it) }
+                override fun getPrivateKey(alias: String?): PrivateKey? = alias?.let {
+                    KeyChain.getPrivateKey(androidContext, it)
+                }
 
                 override fun getCertificateChain(alias: String?): Array<X509Certificate>? =
-                    alias?.let { KeyChain.getCertificateChain(androidContext, it) }
+                    alias?.let {
+                        KeyChain.getCertificateChain(androidContext, it)
+                    }
 
                 override fun chooseServerAlias(
                     keyType: String?,
@@ -143,7 +146,9 @@ class JellyfinApi(
                 init(null as java.security.KeyStore?)
             }
         val trustManager = trustManagerFactory.trustManagers.single() as X509TrustManager
-        return OkHttpFactory().createClient(options).newBuilder()
+        return OkHttpFactory()
+            .createClient(options)
+            .newBuilder()
             .sslSocketFactory(sslContext.socketFactory, trustManager)
             .build()
     }
