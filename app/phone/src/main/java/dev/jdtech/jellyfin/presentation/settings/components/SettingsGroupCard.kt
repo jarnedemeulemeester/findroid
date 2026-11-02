@@ -21,6 +21,7 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAction
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceFileEdit
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -115,6 +116,11 @@ fun SettingsGroupCard(
                         )
                     is PreferencePermission ->
                         SettingsPermissionCard(
+                            preference = preference,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    is PreferenceAction ->
+                        SettingsActionCard(
                             preference = preference,
                             modifier = Modifier.fillMaxWidth(),
                         )

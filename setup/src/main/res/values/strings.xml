@@ -11,6 +11,10 @@
    <string name="add_server_error_version">Unsupported server version: %1$s. Please update your server</string>
    <string name="edit_text_password_hint">Password</string>
    <string name="edit_text_server_address_hint">Server address</string>
+   <string name="client_certificate">Client certificate</string>
+   <string name="client_certificate_install">Install certificate</string>
+   <string name="client_certificate_select">Select certificate</string>
+   <string name="client_certificate_selected">Certificate selected</string>
    <string name="edit_text_username_hint">Username</string>
    <string name="login">Login</string>
    <string name="login_btn_login">Login</string>

@@ -7,12 +7,12 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.api.JellyfinApi
 import java.io.File
 import java.io.IOException
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
 
@@ -41,7 +41,7 @@ constructor(
             // Do not download images if they are already present
             if (baseDir.exists()) return@withContext
 
-            val client = OkHttpClient()
+            val client = JellyfinApi.getInstance(appContext).httpClient
             val uris = mapOf("primary" to item.images.primary, "backdrop" to item.images.backdrop)
 
             try {

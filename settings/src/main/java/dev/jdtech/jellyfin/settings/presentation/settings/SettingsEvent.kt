@@ -17,5 +17,7 @@ sealed interface SettingsEvent {
 
     data class LaunchIntent(val intent: Intent) : SettingsEvent
 
+    data object ChooseClientCertificate : SettingsEvent
+
     data object RestartActivity : SettingsEvent
 }

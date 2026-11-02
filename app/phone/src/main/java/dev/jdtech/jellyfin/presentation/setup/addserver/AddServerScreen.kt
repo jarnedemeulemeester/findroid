@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.presentation.setup.addserver
 
+import android.app.Activity
+import android.security.KeyChain
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,17 +64,20 @@ fun AddServerScreen(
     viewModel: AddServerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(true) { viewModel.discoverServers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is AddServerEvent.Success -> onSuccess()
+            is AddServerEvent.LaunchIntent -> context.startActivity(event.intent)
         }
     }
 
     AddServerScreenLayout(
         state = state,
+        viewModel = viewModel,
         onAction = { action ->
             when (action) {
                 is AddServerAction.OnBackClick -> onBackClick()
@@ -83,7 +89,11 @@ fun AddServerScreen(
 }
 
 @Composable
-private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAction) -> Unit) {
+private fun AddServerScreenLayout(
+    state: AddServerState,
+    viewModel: AddServerViewModel? = null,
+    onAction: (AddServerAction) -> Unit,
+) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
     val scrollState = rememberScrollState()
@@ -168,6 +178,36 @@ private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAct
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             )
+            Text(
+                text = stringResource(SetupR.string.client_certificate),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Button(
+                onClick = { viewModel?.installClientCertificate() },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(SetupR.string.client_certificate_install))
+            }
+            Button(
+                onClick = {
+                    KeyChain.choosePrivateKeyAlias(
+                        context as Activity,
+                        { alias -> alias?.let { viewModel?.setClientCertificateAlias(it) } },
+                        null,
+                        null,
+                        null,
+                        -1,
+                        viewModel?.clientCertificateAlias,
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    stringResource(
+                        SetupR.string.client_certificate_select
+                    )
+                )
+            }
         }
         IconButton(
             onClick = { onAction(AddServerAction.OnBackClick) },

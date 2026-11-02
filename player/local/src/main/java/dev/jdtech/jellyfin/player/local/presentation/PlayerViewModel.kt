@@ -15,10 +15,14 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
@@ -132,7 +136,16 @@ constructor(
                 )
         )
 
-        val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
+        val configuredPlayerBackend = appPreferences.getValue(appPreferences.playerBackend)
+        val hasClientCertificate =
+            !appPreferences.getValue(appPreferences.clientCertificateAlias).isNullOrBlank()
+        val playerBackend =
+            if (hasClientCertificate && configuredPlayerBackend == "mpv") {
+                Timber.i("Using ExoPlayer because MPV cannot access the Android Keystore client key")
+                "exoplayer"
+            } else {
+                configuredPlayerBackend
+            }
         player =
             when (playerBackend) {
                 "exoplayer" -> {
@@ -141,7 +154,14 @@ constructor(
                             .setExtensionRendererMode(
                                 DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
                             )
+                    val httpDataSourceFactory =
+                        OkHttpDataSource.Factory(
+                            JellyfinApi.getInstance(application).httpClient
+                        )
+                    val dataSourceFactory =
+                        DefaultDataSource.Factory(application, httpDataSourceFactory)
                     ExoPlayer.Builder(application, renderersFactory)
+                        .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
                         .setAudioAttributes(audioAttributes, true)
                         .setTrackSelector(trackSelector)
                         .setSeekBackIncrementMs(

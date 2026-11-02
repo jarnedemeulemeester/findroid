@@ -18,6 +18,12 @@
     <string name="settings_request_timeout">Request timeout</string>
     <string name="settings_connect_timeout">Connect timeout</string>
     <string name="settings_socket_timeout">Socket timeout</string>
+    <string name="settings_install_client_certificate">Install client certificate</string>
+    <string name="settings_install_client_certificate_summary">Install a PKCS#12 certificate and private key in the Android credential store.</string>
+    <string name="settings_select_client_certificate">Select client certificate</string>
+    <string name="settings_select_client_certificate_summary">Choose the certificate Findroid should use for mutual TLS connections.</string>
+    <string name="settings_remove_client_certificate">Remove client certificate</string>
+    <string name="settings_remove_client_certificate_summary">Stop using the selected client certificate.</string>
     <string name="settings_category_permissions">Permissions</string>
     <string name="permission_local_network">Local network access</string>
     <string name="permission_local_network_summary">Required to find and connect to servers on your local network</string>

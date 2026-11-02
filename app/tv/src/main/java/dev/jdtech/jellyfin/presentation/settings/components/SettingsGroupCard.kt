@@ -24,6 +24,7 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 import dev.jdtech.jellyfin.settings.domain.models.Preference as PreferenceBackend
 import dev.jdtech.jellyfin.settings.presentation.models.Preference
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAction
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferencePermission
@@ -98,6 +99,14 @@ fun SettingsGroupCard(
                             )
                         is PreferencePermission ->
                             SettingsPermissionCard(
+                                preference = preference,
+                                modifier =
+                                    Modifier.fillMaxWidth().onFocusChanged {
+                                        onFocusChange(it, preference)
+                                    },
+                            )
+                        is PreferenceAction ->
+                            SettingsActionCard(
                                 preference = preference,
                                 modifier =
                                     Modifier.fillMaxWidth().onFocusChanged {

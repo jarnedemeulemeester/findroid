@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.settings
 
 import android.app.Activity
+import android.security.KeyChain
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -64,6 +65,17 @@ fun SettingsScreen(
                 } catch (e: Exception) {
                     Timber.e(e)
                 }
+            }
+            is SettingsEvent.ChooseClientCertificate -> {
+                KeyChain.choosePrivateKeyAlias(
+                    context as Activity,
+                    { alias -> alias?.let(viewModel::setClientCertificateAlias) },
+                    null,
+                    null,
+                    null,
+                    -1,
+                    viewModel.clientCertificateAlias,
+                )
             }
             is SettingsEvent.RestartActivity -> {
                 try {

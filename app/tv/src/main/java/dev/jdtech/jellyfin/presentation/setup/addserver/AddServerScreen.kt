@@ -1,5 +1,7 @@
 package dev.jdtech.jellyfin.presentation.setup.addserver
 
+import android.app.Activity
+import android.security.KeyChain
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,20 +58,30 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 @Composable
 fun AddServerScreen(onSuccess: () -> Unit, viewModel: AddServerViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(true) { viewModel.discoverServers() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is AddServerEvent.Success -> onSuccess()
+            is AddServerEvent.LaunchIntent -> context.startActivity(event.intent)
         }
     }
 
-    AddServerScreenLayout(state = state, onAction = { action -> viewModel.onAction(action) })
+    AddServerScreenLayout(
+        state = state,
+        viewModel = viewModel,
+        onAction = { action -> viewModel.onAction(action) },
+    )
 }
 
 @Composable
-private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAction) -> Unit) {
+private fun AddServerScreenLayout(
+    state: AddServerState,
+    viewModel: AddServerViewModel? = null,
+    onAction: (AddServerAction) -> Unit,
+) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 
@@ -160,6 +172,32 @@ private fun AddServerScreenLayout(state: AddServerState, onAction: (AddServerAct
                         )
                     }
                 }
+            }
+            Text(
+                text = stringResource(R.string.client_certificate),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Button(
+                onClick = { viewModel?.installClientCertificate() },
+                modifier = Modifier.width(360.dp),
+            ) {
+                Text(stringResource(R.string.client_certificate_install))
+            }
+            Button(
+                onClick = {
+                    KeyChain.choosePrivateKeyAlias(
+                        context as Activity,
+                        { alias -> alias?.let { viewModel?.setClientCertificateAlias(it) } },
+                        null,
+                        null,
+                        null,
+                        -1,
+                        viewModel?.clientCertificateAlias,
+                    )
+                },
+                modifier = Modifier.width(360.dp),
+            ) {
+                Text(stringResource(R.string.client_certificate_select))
             }
         }
     }

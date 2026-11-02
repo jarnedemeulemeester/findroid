@@ -37,6 +37,8 @@ dependencies {
     implementation(libs.androidx.room3.runtime)
     ksp(libs.androidx.room3.compiler)
     implementation(libs.jellyfin.core)
+    implementation(libs.jellyfin.api.okhttp)
+    implementation(libs.okhttp)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)

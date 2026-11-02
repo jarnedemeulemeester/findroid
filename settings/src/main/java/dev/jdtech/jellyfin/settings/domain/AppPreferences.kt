@@ -93,6 +93,8 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
         Preference("pref_network_connect_timeout", Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT)
     val socketTimeout =
         Preference("pref_network_socket_timeout", Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT)
+    val clientCertificateAlias =
+        Preference<String?>(Constants.NETWORK_CLIENT_CERTIFICATE_ALIAS, null)
 
     // Cache
     val imageCache = Preference("pref_image_cache", true)

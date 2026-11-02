@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
+import android.security.KeyChain
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
@@ -11,6 +12,7 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.models.PermissionDefinitions
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAction
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceFileEdit
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -35,6 +37,13 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
 
     private val eventsChannel = Channel<SettingsEvent>()
     val events = eventsChannel.receiveAsFlow()
+
+    val clientCertificateAlias: String?
+        get() = appPreferences.getValue(appPreferences.clientCertificateAlias)
+
+    fun setClientCertificateAlias(alias: String) {
+        appPreferences.setValue(appPreferences.clientCertificateAlias, alias)
+    }
 
     private val permissionPreferences =
         PermissionDefinitions.all.map { permission ->
@@ -757,6 +766,56 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     backendPreference =
                                                         appPreferences.socketTimeout,
                                                     suffixRes = R.string.ms,
+                                                ),
+                                                PreferenceAction(
+                                                    nameStringResource =
+                                                        R.string.settings_install_client_certificate,
+                                                    descriptionStringRes =
+                                                        R.string
+                                                            .settings_install_client_certificate_summary,
+                                                    iconDrawableId = R.drawable.ic_shield_check,
+                                                    onClick = {
+                                                        viewModelScope.launch {
+                                                            eventsChannel.send(
+                                                                SettingsEvent.LaunchIntent(
+                                                                    KeyChain.createInstallIntent()
+                                                                )
+                                                            )
+                                                        }
+                                                    },
+                                                ),
+                                                PreferenceAction(
+                                                    nameStringResource =
+                                                        R.string.settings_select_client_certificate,
+                                                    descriptionStringRes =
+                                                        R.string
+                                                            .settings_select_client_certificate_summary,
+                                                    iconDrawableId = R.drawable.ic_shield_check,
+                                                    onClick = {
+                                                        viewModelScope.launch {
+                                                            eventsChannel.send(
+                                                                SettingsEvent.ChooseClientCertificate
+                                                            )
+                                                        }
+                                                    },
+                                                ),
+                                                PreferenceAction(
+                                                    nameStringResource =
+                                                        R.string.settings_remove_client_certificate,
+                                                    descriptionStringRes =
+                                                        R.string
+                                                            .settings_remove_client_certificate_summary,
+                                                    iconDrawableId = R.drawable.ic_shield_check,
+                                                    enabled =
+                                                        appPreferences.getValue(
+                                                            appPreferences.clientCertificateAlias
+                                                        ) != null,
+                                                    onClick = {
+                                                        appPreferences.setValue(
+                                                            appPreferences.clientCertificateAlias,
+                                                            null,
+                                                        )
+                                                    },
                                                 ),
                                             )
                                     )

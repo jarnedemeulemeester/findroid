@@ -1,8 +1,14 @@
 package dev.jdtech.jellyfin.api
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.security.KeyChain
 import dev.jdtech.jellyfin.data.BuildConfig
 import dev.jdtech.jellyfin.settings.domain.Constants
+import java.net.Socket
+import java.security.Principal
+import java.security.PrivateKey
+import java.security.cert.X509Certificate
 import java.util.UUID
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -22,8 +28,15 @@ import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.api.client.extensions.userDataApi
 import org.jellyfin.sdk.api.client.extensions.userViewApi
 import org.jellyfin.sdk.api.client.extensions.videoApi
+import org.jellyfin.sdk.api.okhttp.OkHttpFactory
 import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
+import okhttp3.OkHttpClient
+import javax.net.ssl.KeyManager
+import javax.net.ssl.SSLEngine
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509ExtendedKeyManager
+import javax.net.ssl.X509TrustManager
 
 /**
  * Jellyfin API class using org.jellyfin.sdk:jellyfin-core
@@ -38,6 +51,20 @@ class JellyfinApi(
     connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
     socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT,
 ) {
+    private val sharedPreferences: SharedPreferences =
+        androidContext.getSharedPreferences(
+            androidContext.packageName + "_preferences",
+            Context.MODE_PRIVATE,
+        )
+
+    val httpClient =
+        createHttpClient(
+            androidContext = androidContext,
+            requestTimeout = requestTimeout,
+            connectTimeout = connectTimeout,
+            socketTimeout = socketTimeout,
+        )
+
     val jellyfin = createJellyfin {
         clientInfo =
             ClientInfo(
@@ -48,7 +75,79 @@ class JellyfinApi(
                 version = BuildConfig.VERSION_NAME,
             )
         context = androidContext
+        apiClientFactory = OkHttpFactory(httpClient)
     }
+
+    private fun createHttpClient(
+        androidContext: Context,
+        requestTimeout: Long,
+        connectTimeout: Long,
+        socketTimeout: Long,
+    ): OkHttpClient {
+        val options =
+            HttpClientOptions(
+                requestTimeout = requestTimeout.toDuration(DurationUnit.MILLISECONDS),
+                connectTimeout = connectTimeout.toDuration(DurationUnit.MILLISECONDS),
+                socketTimeout = socketTimeout.toDuration(DurationUnit.MILLISECONDS),
+            )
+        val aliasPreference = Constants.NETWORK_CLIENT_CERTIFICATE_ALIAS
+        val keyManager =
+            object : X509ExtendedKeyManager() {
+                private fun alias() = sharedPreferences.getString(aliasPreference, null)
+
+                override fun chooseClientAlias(
+                    keyType: Array<out String>?,
+                    issuers: Array<out Principal>?,
+                    socket: Socket?,
+                ) = alias()
+
+                override fun chooseEngineClientAlias(
+                    keyType: Array<out String>?,
+                    issuers: Array<out Principal>?,
+                    engine: SSLEngine?,
+                ) = alias()
+
+                override fun getClientAliases(
+                    keyType: String?,
+                    issuers: Array<out Principal>?,
+                ) = alias()?.let(::arrayOf)
+
+                override fun getPrivateKey(alias: String?): PrivateKey? =
+                    alias?.let { KeyChain.getPrivateKey(androidContext, it) }
+
+                override fun getCertificateChain(alias: String?): Array<X509Certificate>? =
+                    alias?.let { KeyChain.getCertificateChain(androidContext, it) }
+
+                override fun chooseServerAlias(
+                    keyType: String?,
+                    issuers: Array<out Principal>?,
+                    socket: Socket?,
+                ): String? = null
+
+                override fun getServerAliases(
+                    keyType: String?,
+                    issuers: Array<out Principal>?,
+                ): Array<String>? = null
+
+                override fun chooseEngineServerAlias(
+                    keyType: String?,
+                    issuers: Array<out Principal>?,
+                    engine: SSLEngine?,
+                ): String? = null
+            }
+        val keyManagers = arrayOf<KeyManager>(keyManager)
+        val sslContext = javax.net.ssl.SSLContext.getInstance("TLS")
+        sslContext.init(keyManagers, null, null)
+        val trustManagerFactory =
+            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
+                init(null as java.security.KeyStore?)
+            }
+        val trustManager = trustManagerFactory.trustManagers.single() as X509TrustManager
+        return OkHttpFactory().createClient(options).newBuilder()
+            .sslSocketFactory(sslContext.socketFactory, trustManager)
+            .build()
+    }
+
     val api =
         jellyfin.createApi(
             httpClientOptions =

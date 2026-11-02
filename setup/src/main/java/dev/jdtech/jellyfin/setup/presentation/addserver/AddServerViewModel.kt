@@ -29,6 +29,21 @@ constructor(private val repository: SetupRepository, private val appPreferences:
     private val eventsChannel = Channel<AddServerEvent>()
     val events = eventsChannel.receiveAsFlow()
 
+    val clientCertificateAlias: String?
+        get() = appPreferences.getValue(appPreferences.clientCertificateAlias)
+
+    fun setClientCertificateAlias(alias: String) {
+        appPreferences.setValue(appPreferences.clientCertificateAlias, alias)
+    }
+
+    fun installClientCertificate() {
+        viewModelScope.launch {
+            eventsChannel.send(
+                AddServerEvent.LaunchIntent(android.security.KeyChain.createInstallIntent())
+            )
+        }
+    }
+
     fun discoverServers() {
         viewModelScope.launch {
             val discoveredServers = mutableListOf<DiscoveredServer>()
