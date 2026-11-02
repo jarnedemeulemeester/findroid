@@ -6,8 +6,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.api.JellyfinApi
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.io.File
 import java.io.IOException
 import java.util.UUID
