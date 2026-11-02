@@ -10,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.tv.material3.Icon
-import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Text
-import androidx.tv.material3.Surface
-import androidx.tv.material3.SurfaceDefaults
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.tv.material3.ClickableSurfaceDefaults
+import androidx.tv.material3.Icon
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Surface
+import androidx.tv.material3.Text
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAction
 
@@ -29,7 +29,8 @@ fun SettingsActionCard(
     Surface(
         onClick = preference.onClick,
         enabled = preference.enabled,
-        colors = SurfaceDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
+        colors =
+            ClickableSurfaceDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = modifier.then(onFocusChange?.let { Modifier.onFocusChanged(it) } ?: Modifier),
     ) {
         Row(
@@ -41,7 +42,10 @@ fun SettingsActionCard(
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
             Column {
-                Text(stringResource(preference.nameStringResource), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(preference.nameStringResource),
+                    style = MaterialTheme.typography.titleMedium,
+                )
                 preference.descriptionStringRes?.let {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     Text(stringResource(it), style = MaterialTheme.typography.bodyMedium)

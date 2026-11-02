@@ -1,9 +1,9 @@
 package dev.jdtech.jellyfin.settings.presentation.settings
 
-import android.security.KeyChain
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import android.security.KeyChain
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,8 +11,8 @@ import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.models.PermissionDefinitions
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
-import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAction
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceFileEdit
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
@@ -769,7 +769,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                 ),
                                                 PreferenceAction(
                                                     nameStringResource =
-                                                        R.string.settings_install_client_certificate,
+                                                        R.string
+                                                            .settings_install_client_certificate,
                                                     descriptionStringRes =
                                                         R.string
                                                             .settings_install_client_certificate_summary,
@@ -794,7 +795,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                     onClick = {
                                                         viewModelScope.launch {
                                                             eventsChannel.send(
-                                                                SettingsEvent.ChooseClientCertificate
+                                                                SettingsEvent
+                                                                    .ChooseClientCertificate
                                                             )
                                                         }
                                                     },
@@ -990,6 +992,23 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         appPreferences.getValue(
                                                             preference.backendPreference
                                                         ),
+                                                )
+                                            }
+                                            is PreferenceAction -> {
+                                                preference.copy(
+                                                    enabled =
+                                                        if (
+                                                            preference.nameStringResource ==
+                                                                R.string
+                                                                    .settings_remove_client_certificate
+                                                        ) {
+                                                            appPreferences.getValue(
+                                                                appPreferences
+                                                                    .clientCertificateAlias
+                                                            ) != null
+                                                        } else {
+                                                            preference.enabled
+                                                        }
                                                 )
                                             }
                                             else -> preference

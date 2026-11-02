@@ -1,9 +1,9 @@
 package dev.jdtech.jellyfin.presentation.settings
 
 import android.app.Activity
-import android.security.KeyChain
 import android.app.UiModeManager
 import android.os.Build
+import android.security.KeyChain
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement

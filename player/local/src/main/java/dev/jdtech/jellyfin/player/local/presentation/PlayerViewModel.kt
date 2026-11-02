@@ -13,16 +13,16 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
-import androidx.media3.exoplayer.DefaultRenderersFactory
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
-import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
@@ -141,7 +141,9 @@ constructor(
             !appPreferences.getValue(appPreferences.clientCertificateAlias).isNullOrBlank()
         val playerBackend =
             if (hasClientCertificate && configuredPlayerBackend == "mpv") {
-                Timber.i("Using ExoPlayer because MPV cannot access the Android Keystore client key")
+                Timber.i(
+                    "Using ExoPlayer because MPV cannot access the Android Keystore client key"
+                )
                 "exoplayer"
             } else {
                 configuredPlayerBackend
@@ -155,9 +157,7 @@ constructor(
                                 DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
                             )
                     val httpDataSourceFactory =
-                        OkHttpDataSource.Factory(
-                            JellyfinApi.getInstance(application).httpClient
-                        )
+                        OkHttpDataSource.Factory(JellyfinApi.getInstance(application).httpClient)
                     val dataSourceFactory =
                         DefaultDataSource.Factory(application, httpDataSourceFactory)
                     ExoPlayer.Builder(application, renderersFactory)

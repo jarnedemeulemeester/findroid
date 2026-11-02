@@ -29,7 +29,10 @@ fun SettingsActionCard(preference: PreferenceAction, modifier: Modifier = Modifi
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
             Column {
-                Text(stringResource(preference.nameStringResource), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(preference.nameStringResource),
+                    style = MaterialTheme.typography.titleMedium,
+                )
                 preference.descriptionStringRes?.let {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     Text(stringResource(it), style = MaterialTheme.typography.bodyMedium)

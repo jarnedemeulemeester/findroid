@@ -57,6 +57,12 @@ class DownloaderImpl(
         storageIndex: Int,
     ): Pair<Long, UiText?> = coroutineScope {
         try {
+            if (!appPreferences.getValue(appPreferences.clientCertificateAlias).isNullOrBlank()) {
+                return@coroutineScope Pair(
+                    -1,
+                    UiText.StringResource(CoreR.string.download_mtls_unsupported),
+                )
+            }
             val source =
                 jellyfinRepository.getMediaSources(item.id, true).first { it.id == sourceId }
             val segments = jellyfinRepository.getSegments(item.id)
