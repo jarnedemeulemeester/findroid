@@ -2,6 +2,11 @@
     <string name="select_audio_track">Select audio track</string>
     <string name="select_subtitle_track">Select subtitle track</string>
     <string name="select_playback_speed">Select playback speed</string>
+    <string name="select_video_quality">Select video quality</string>
+    <string name="video_quality_best">Best</string>
+    <string name="video_quality_mbps">%1$s Mbps</string>
+    <string name="video_quality_kbps">%1$d kbps</string>
+    <string name="video_quality_transcoding_disabled">Transcoding is disabled for your account</string>
     <string name="select_a_version">"Select a version"</string>
     <string name="external">External</string>
     <string name="none">None</string>

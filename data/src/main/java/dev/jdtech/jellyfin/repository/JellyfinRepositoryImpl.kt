@@ -32,6 +32,7 @@ import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.jellyfin.sdk.api.client.HttpMethod
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.DeviceOptionsDto
@@ -53,6 +54,7 @@ import org.jellyfin.sdk.model.api.SortOrder as ItemSortOrder
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.SubtitleProfile
 import org.jellyfin.sdk.model.api.UserConfiguration
+import org.jellyfin.sdk.model.api.UserPolicy
 import timber.log.Timber
 
 class JellyfinRepositoryImpl(
@@ -303,36 +305,56 @@ class JellyfinRepositoryImpl(
             }
         }
 
-    override suspend fun getMediaSources(itemId: UUID, includePath: Boolean): List<FindroidSource> =
+    private val defaultDeviceProfile =
+        DeviceProfile(
+            name = "Direct play all",
+            maxStaticBitrate = 1_000_000_000,
+            maxStreamingBitrate = 1_000_000_000,
+            codecProfiles = emptyList(),
+            containerProfiles = emptyList(),
+            directPlayProfiles = emptyList(),
+            transcodingProfiles = emptyList(),
+            subtitleProfiles =
+                listOf(
+                    SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
+                    SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
+                ),
+        )
+
+    override suspend fun getMediaSources(
+        itemId: UUID,
+        includePath: Boolean,
+        deviceProfile: DeviceProfile?,
+        maxStreamingBitrate: Int?,
+        mediaSourceId: String?,
+        audioStreamIndex: Int?,
+        subtitleStreamIndex: Int?,
+    ): List<FindroidSource> =
         withContext(Dispatchers.IO) {
             val sources = mutableListOf<FindroidSource>()
-            sources.addAll(
+            val playbackInfo =
                 jellyfinApi.mediaInfoApi
                     .getPostedPlaybackInfo(
                         itemId,
                         PlaybackInfoDto(
                             userId = jellyfinApi.userId!!,
-                            deviceProfile =
-                                DeviceProfile(
-                                    name = "Direct play all",
-                                    maxStaticBitrate = 1_000_000_000,
-                                    maxStreamingBitrate = 1_000_000_000,
-                                    codecProfiles = emptyList(),
-                                    containerProfiles = emptyList(),
-                                    directPlayProfiles = emptyList(),
-                                    transcodingProfiles = emptyList(),
-                                    subtitleProfiles =
-                                        listOf(
-                                            SubtitleProfile("srt", SubtitleDeliveryMethod.EXTERNAL),
-                                            SubtitleProfile("ass", SubtitleDeliveryMethod.EXTERNAL),
-                                        ),
-                                ),
-                            maxStreamingBitrate = 1_000_000_000,
+                            deviceProfile = deviceProfile ?: defaultDeviceProfile,
+                            maxStreamingBitrate = maxStreamingBitrate,
+                            mediaSourceId = mediaSourceId,
+                            audioStreamIndex = audioStreamIndex,
+                            subtitleStreamIndex = subtitleStreamIndex,
                         ),
                     )
                     .content
-                    .mediaSources
-                    .map { it.toFindroidSource(this@JellyfinRepositoryImpl, itemId, includePath) }
+            sources.addAll(
+                playbackInfo.mediaSources.map {
+                    it.toFindroidSource(
+                        this@JellyfinRepositoryImpl,
+                        itemId,
+                        includePath,
+                        playbackInfo.playSessionId,
+                    )
+                }
             )
             sources.addAll(database.getSources(itemId).map { it.toFindroidSource(database) })
             sources
@@ -417,7 +439,11 @@ class JellyfinRepositoryImpl(
         }
     }
 
-    override suspend fun postPlaybackStart(itemId: UUID) {
+    override suspend fun postPlaybackStart(
+        itemId: UUID,
+        playSessionId: String?,
+        playMethod: PlayMethod,
+    ) {
         Timber.d("Sending start $itemId")
         withContext(Dispatchers.IO) {
             jellyfinApi.sessionApi.reportPlaybackStart(
@@ -426,9 +452,10 @@ class JellyfinRepositoryImpl(
                     canSeek = true,
                     isPaused = false,
                     isMuted = false,
-                    playMethod = PlayMethod.DIRECT_PLAY,
+                    playMethod = playMethod,
                     repeatMode = RepeatMode.REPEAT_NONE,
                     playbackOrder = PlaybackOrder.DEFAULT,
+                    playSessionId = playSessionId,
                 )
             )
         }
@@ -438,6 +465,7 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         playedPercentage: Int,
+        playSessionId: String?,
     ) {
         Timber.d("Sending stop $itemId")
         withContext(Dispatchers.IO) {
@@ -457,7 +485,13 @@ class JellyfinRepositoryImpl(
             }
             try {
                 jellyfinApi.sessionApi.reportPlaybackStopped(
-                    PlaybackStopInfo(itemId = itemId, positionTicks = positionTicks, failed = false)
+                    PlaybackStopInfo(
+                        itemId = itemId,
+                        positionTicks = positionTicks,
+                        failed = false,
+                        // Needed for the server to stop the transcode
+                        playSessionId = playSessionId,
+                    )
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
@@ -469,6 +503,8 @@ class JellyfinRepositoryImpl(
         itemId: UUID,
         positionTicks: Long,
         isPaused: Boolean,
+        playSessionId: String?,
+        playMethod: PlayMethod,
     ) {
         Timber.d("Posting progress of $itemId, position: $positionTicks")
         withContext(Dispatchers.IO) {
@@ -480,15 +516,31 @@ class JellyfinRepositoryImpl(
                         canSeek = true,
                         isPaused = isPaused,
                         isMuted = false,
-                        playMethod = PlayMethod.DIRECT_PLAY,
+                        playMethod = playMethod,
                         repeatMode = RepeatMode.REPEAT_NONE,
                         playbackOrder = PlaybackOrder.DEFAULT,
                         positionTicks = positionTicks,
+                        playSessionId = playSessionId,
                     )
                 )
             } catch (_: Exception) {
                 database.setUserDataToBeSynced(jellyfinApi.userId!!, itemId, true)
             }
+        }
+    }
+
+    override suspend fun stopEncoding(playSessionId: String) {
+        withContext(Dispatchers.IO) {
+            // Not available in the SDK
+            jellyfinApi.api.request(
+                method = HttpMethod.DELETE,
+                pathTemplate = "/Videos/ActiveEncodings",
+                queryParameters =
+                    mapOf(
+                        "deviceId" to jellyfinApi.api.deviceInfo.id,
+                        "playSessionId" to playSessionId,
+                    ),
+            )
         }
     }
 
@@ -551,6 +603,9 @@ class JellyfinRepositoryImpl(
 
     override suspend fun getUserConfiguration(): UserConfiguration =
         withContext(Dispatchers.IO) { jellyfinApi.userApi.getCurrentUser().content.configuration!! }
+
+    override suspend fun getUserPolicy(): UserPolicy? =
+        withContext(Dispatchers.IO) { jellyfinApi.userApi.getCurrentUser().content.policy }
 
     override suspend fun getDownloads(): List<FindroidItem> =
         withContext(Dispatchers.IO) {

@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.settings.domain
 
 import android.content.SharedPreferences
+import dev.jdtech.jellyfin.settings.domain.models.PlayerBackend
 import dev.jdtech.jellyfin.settings.domain.models.Preference
 import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
@@ -26,8 +27,10 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     val displayExtraInfo = Preference("pref_display_extra_info", false)
 
     // Player
-    val playerBackend = Preference("pref_player_backend", "exoplayer")
+    val playerBackend = Preference("pref_player_backend", PlayerBackend.EXOPLAYER.value)
     val playerBrightness = Preference("pref_player_brightness", -1.0f)
+    // 0 means no limit
+    val playerMaxStreamingBitrate = Preference("pref_player_max_streaming_bitrate", 0)
 
     // Player - mpv
     val playerMpv = Preference("pref_player_mpv", false)

@@ -3,6 +3,7 @@ package dev.jdtech.jellyfin.models
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import org.jellyfin.sdk.model.api.VideoRangeType
 
 data class FindroidMediaStream(
@@ -18,6 +19,9 @@ data class FindroidMediaStream(
     val height: Int?,
     val width: Int?,
     val videoDoViTitle: String?,
+    val deliveryMethod: SubtitleDeliveryMethod? = null,
+    val bitrate: Int? = null,
+    val index: Int? = null,
 )
 
 fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): FindroidMediaStream {
@@ -34,6 +38,9 @@ fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): F
         height = height,
         width = width,
         videoDoViTitle = videoDoViTitle,
+        deliveryMethod = deliveryMethod,
+        bitrate = bitRate,
+        index = index,
     )
 }
 

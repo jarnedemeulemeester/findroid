@@ -37,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
 import dev.jdtech.jellyfin.player.local.presentation.PlayerEvents
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
+import dev.jdtech.jellyfin.presentation.player.QualitySelectionDialogFragment
 import dev.jdtech.jellyfin.presentation.player.SpeedSelectionDialogFragment
 import dev.jdtech.jellyfin.presentation.player.TrackSelectionDialogFragment
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
@@ -133,6 +134,8 @@ class PlayerActivity : BasePlayerActivity() {
 
         val audioButton = binding.playerView.findViewById<ImageButton>(R.id.btn_audio_track)
         val subtitleButton = binding.playerView.findViewById<ImageButton>(R.id.btn_subtitle)
+        val qualityButton = binding.playerView.findViewById<ImageButton>(R.id.btn_quality)
+        val qualitySpace = binding.playerView.findViewById<Space>(R.id.space_quality)
         val speedButton = binding.playerView.findViewById<ImageButton>(R.id.btn_speed)
         skipSegmentButton = binding.playerView.findViewById(R.id.btn_skip_segment)
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
@@ -147,6 +150,10 @@ class PlayerActivity : BasePlayerActivity() {
                         uiState.apply {
                             // Title
                             videoNameTextView.text = currentItemTitle
+
+                            // Quality can't be changed for downloaded files
+                            qualityButton.isVisible = !currentItemIsDownloaded
+                            qualitySpace.isVisible = !currentItemIsDownloaded
 
                             // Media segment
                             currentSegment?.let { segment ->
@@ -205,6 +212,8 @@ class PlayerActivity : BasePlayerActivity() {
                                 lockButton.imageAlpha = 255
                                 subtitleButton.isEnabled = true
                                 subtitleButton.imageAlpha = 255
+                                qualityButton.isEnabled = true
+                                qualityButton.imageAlpha = 255
                                 speedButton.isEnabled = true
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
@@ -267,6 +276,8 @@ class PlayerActivity : BasePlayerActivity() {
         subtitleButton.isEnabled = false
         subtitleButton.imageAlpha = 75
 
+        qualityButton.isEnabled = false
+        qualityButton.imageAlpha = 75
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
 
@@ -304,6 +315,11 @@ class PlayerActivity : BasePlayerActivity() {
         subtitleButton.setOnClickListener {
             TrackSelectionDialogFragment(C.TRACK_TYPE_TEXT, viewModel)
                 .show(supportFragmentManager, "trackselectiondialog")
+        }
+
+        qualityButton.setOnClickListener {
+            QualitySelectionDialogFragment(viewModel)
+                .show(supportFragmentManager, "qualityselectiondialog")
         }
 
         speedButton.setOnClickListener {
