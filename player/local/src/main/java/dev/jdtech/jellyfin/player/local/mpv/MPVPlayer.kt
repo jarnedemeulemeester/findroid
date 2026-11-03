@@ -164,6 +164,8 @@ class MPVPlayer(
         // Hardware video decoding
         mpvLib.setOptionString("hwdec", hwDec)
         mpvLib.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1")
+        // Work around AV1 GLES film-grain corruption until the native dependency is fixed (#1322).
+        mpvLib.setOptionString("vd-lavc-film-grain", "cpu")
 
         // TLS
         mpvLib.setOptionString("tls-verify", "no")
