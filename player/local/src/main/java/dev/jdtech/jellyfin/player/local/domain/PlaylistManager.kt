@@ -24,6 +24,7 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     private var startItem: FindroidItem? = null
     private var items: List<FindroidItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
+    private var autoPlayNextEpisode: Boolean? = null
     var currentItemIndex: Int = 0
 
     suspend fun getInitialItem(
@@ -165,6 +166,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     suspend fun getNextPlayerItem(): PlayerItem? {
         Timber.d("Retrieving next player item")
 
+        if (!isNextEpisodeAutoPlayEnabled()) {
+            Timber.d("Next episode autoplay is disabled in the user settings")
+            return null
+        }
+
         val itemIndex = currentItemIndex + 1
         val playerItem =
             when (startItem) {
@@ -198,6 +204,26 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
 
     fun setCurrentMediaItemIndex(itemId: UUID) {
         currentItemIndex = items.indexOfFirst { it.id == itemId }
+    }
+
+    /**
+     * Whether the server-side "Play next episode automatically" user setting is enabled. Defaults to
+     * true when the user configuration cannot be retrieved, e.g. in offline mode.
+     */
+    private suspend fun isNextEpisodeAutoPlayEnabled(): Boolean {
+        autoPlayNextEpisode?.let {
+            return it
+        }
+
+        val enabled =
+            try {
+                repository.getUserConfiguration()?.enableNextEpisodeAutoPlay ?: true
+            } catch (e: Exception) {
+                Timber.e("Failed to retrieve user configuration: $e")
+                true
+            }
+        autoPlayNextEpisode = enabled
+        return enabled
     }
 
     private suspend fun FindroidItem.toPlayerItem(
