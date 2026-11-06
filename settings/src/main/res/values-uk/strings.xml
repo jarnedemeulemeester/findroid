@@ -61,8 +61,6 @@
     <string name="pref_player_chapter_markers_summary">Відобразити маркери розділів на часовій шкалі</string>
     <string name="cancel">Відмінити</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Відображати попередній перегляд зображень під час жесту пошуку</string>
-    <string name="player_gestures_chapter_skip">Жест розділу</string>
-    <string name="player_gestures_chapter_skip_summary">Тривале натискання лівої/правої сторони для пропускання розділів (перевизначає жест подвійного прискорення)</string>
     <string name="player_start_maximized">Стартувати в режимі повного екрану</string>
     <string name="player_start_maximized_summary">Завжди відкривати відео в режимі повного екрану</string>
     <string name="users">Користувачі</string>
