@@ -105,6 +105,7 @@ fun MovieScreen(
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra("itemId", movieId.toString())
                     intent.putExtra("itemKind", BaseItemKind.MOVIE.serialName)
+                    intent.putExtra("mediaSourceId", action.mediaSourceId)
                     intent.putExtra("startFromBeginning", action.startFromBeginning)
                     context.startActivity(intent)
                 }
@@ -219,8 +220,8 @@ private fun MovieScreenLayout(
                     ItemButtonsBar(
                         item = movie,
                         downloaderState = downloaderState,
-                        onPlayClick = { startFromBeginning ->
-                            onAction(MovieAction.Play(startFromBeginning = startFromBeginning))
+                        onPlayClick = { playOptions ->
+                            onAction(MovieAction.Play(playOptions.first, playOptions.second))
                         },
                         onMarkAsPlayedClick = {
                             when (movie.played) {
@@ -235,8 +236,14 @@ private fun MovieScreenLayout(
                             }
                         },
                         onTrailerClick = { uri -> onAction(MovieAction.PlayTrailer(uri)) },
-                        onDownloadClick = { storageIndex ->
-                            onDownloaderAction(DownloaderAction.Download(movie, storageIndex))
+                        onDownloadClick = { downloadOptions ->
+                            onDownloaderAction(
+                                DownloaderAction.Download(
+                                    movie,
+                                    downloadOptions.first,
+                                    downloadOptions.second,
+                                )
+                            )
                         },
                         onDownloadCancelClick = {
                             onDownloaderAction(DownloaderAction.CancelDownload(movie))
