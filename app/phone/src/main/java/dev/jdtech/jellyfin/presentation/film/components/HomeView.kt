@@ -72,6 +72,7 @@ fun HomeView(
                 ItemCard(
                     item = item,
                     direction = Direction.VERTICAL,
+                    showSeriesName = true,
                     onClick = { onAction(HomeAction.OnItemClick(item)) },
                 )
             }

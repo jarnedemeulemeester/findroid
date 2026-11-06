@@ -10,6 +10,8 @@
 
 Findroid is third-party Android application for Jellyfin that provides a native user interface to browse and play movies and series.
 
+Findroid requires Jellyfin server version 12.0 or higher.
+
 I am developing this application in my spare time.
 
 **This project is in its early stages so expect bugs.**
@@ -46,8 +48,8 @@ I am developing this application in my spare time.
 - Media chapters
   - Timeline markers
   - Chapter navigation gestures
-- Trickplay (requires Jellyfin 10.9 or higher)
-- Media segments (requires Jellyfin 10.10 or higher)
+- Trickplay
+- Media segments
   - Skip button
   - Auto skip
 

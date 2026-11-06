@@ -17,4 +17,10 @@
     <string name="player_controls_skip_intro">Pular introdução</string>
     <string name="player_controls_picture_in_picture">Insira imagem em imagem</string>
     <string name="none">Nenhum</string>
+    <string name="player_controls_skip_outro">Saltar outro</string>
+    <string name="player_controls_next_episode">Próximo episódio</string>
+    <string name="player_controls_skip_recap">Saltar resumo</string>
+    <string name="player_controls_skip_preview">Saltar pré-visualização</string>
+    <string name="player_controls_skip_commercial">Saltar anúncio</string>
+    <string name="player_controls_skip_unknown">Saltar</string>
 </resources>

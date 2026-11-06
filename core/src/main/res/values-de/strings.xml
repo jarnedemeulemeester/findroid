@@ -26,7 +26,7 @@
     <string name="unknown_error">Unbekannter Fehler</string>
     <string name="search_hint">Suche Filme, Serien, Episoden…</string>
     <string name="title_favorite">Favoriten</string>
-    <string name="error_loading_data">Fehler beim laden von Daten</string>
+    <string name="error_loading_data">Fehler beim Laden von Daten</string>
     <string name="trailer_button_description">Trailer ansehen</string>
     <string name="no_favorites">Du hast keine Favoriten</string>
     <string name="jellyfin_banner">Jellyfin Banner</string>
@@ -108,4 +108,5 @@
     <string name="runtime_minutes_left">%1$d Min. verbleibend</string>
     <string name="download_pending">Ausstehend…</string>
     <string name="none">Keine</string>
+    <string name="discard">Verwerfen</string>
 </resources>

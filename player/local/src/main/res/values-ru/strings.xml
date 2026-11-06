@@ -17,4 +17,10 @@
     <string name="player_controls_progress">Прогресс-бар</string>
     <string name="none">Отключить</string>
     <string name="player_controls_picture_in_picture">Картинка в картинке</string>
+    <string name="player_controls_skip_outro">Пропустить концовку</string>
+    <string name="player_controls_next_episode">Следующая серия</string>
+    <string name="player_controls_skip_recap">Пропустить пересказ</string>
+    <string name="player_controls_skip_preview">Пропустить предпросмотр</string>
+    <string name="player_controls_skip_commercial">Пропустить рекламу</string>
+    <string name="player_controls_skip_unknown">Пропустить</string>
 </resources>

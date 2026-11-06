@@ -12,12 +12,12 @@
     <string name="player_controls_lock">Bloqueia o reprodutor</string>
     <string name="player_controls_skip_back">Saltar para trás</string>
     <string name="player_trickplay">Miniatura de pré-visualização</string>
-    <string name="player_controls_play_pause">Reproduzir pausar</string>
+    <string name="player_controls_play_pause">Reproduzir/Pausar</string>
     <string name="player_controls_skip_forward">Saltar para a frente</string>
     <string name="player_controls_progress">Barra de progresso</string>
     <string name="player_controls_picture_in_picture">Entrar no picture-in-picture</string>
     <string name="none">Nenhum</string>
-    <string name="player_controls_skip_outro">Pular extras</string>
+    <string name="player_controls_skip_outro">Pular encerramento</string>
     <string name="player_controls_next_episode">Próximo episódio</string>
     <string name="player_controls_skip_recap">Pular recapitulação</string>
     <string name="player_controls_skip_preview">Pular prévia</string>

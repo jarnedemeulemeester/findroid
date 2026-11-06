@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
+java { toolchain { languageVersion = Versions.JAVA } }
+
 android {
     namespace = "dev.jdtech.jellyfin.player.core"
     compileSdk = Versions.COMPILE_SDK
@@ -13,11 +15,6 @@ android {
     buildTypes {
         named("release") { isMinifyEnabled = false }
         register("staging") { initWith(getByName("release")) }
-    }
-
-    compileOptions {
-        sourceCompatibility = Versions.JAVA
-        targetCompatibility = Versions.JAVA
     }
 }
 
