@@ -1,0 +1,11 @@
+⚠️ This update requires Jellyfin Server 12.0 or higher. Please update your server before installing.
+
+Features:
+- Added runtime permission requests during setup and permission management in settings.
+
+Fixes:
+- Fixed a crash when showing multiple cast roles.
+- Fixed seasons not showing on cards in Home.
+- Fixed predictive back transitions.
+
+Plus a bunch of new translations.

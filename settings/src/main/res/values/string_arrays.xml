@@ -10,6 +10,10 @@
         <item>light</item>
         <item>dark</item>
     </string-array>
+    <string-array name="player_backends">
+        <item>exoplayer</item>
+        <item>mpv</item>
+    </string-array>
     <string-array name="mpv_hwdec">
         <item>no</item>
         <item>mediacodec</item>

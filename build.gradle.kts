@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.androidx.room3) apply false
     alias(libs.plugins.kotlin.parcelize) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.hilt) apply false
@@ -18,7 +19,7 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "com.ncorti.ktfmt.gradle")
+    plugins.apply("com.ncorti.ktfmt.gradle")
 
     configure<com.ncorti.ktfmt.gradle.KtfmtExtension> {
         kotlinLangStyle()
@@ -26,5 +27,6 @@ subprojects {
 }
 
 tasks.register<Delete>("clean") {
+    description = "Deletes all build artifacts."
     delete(rootProject.layout.buildDirectory)
 }

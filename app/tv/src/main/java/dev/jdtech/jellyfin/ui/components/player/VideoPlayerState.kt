@@ -33,6 +33,7 @@ internal constructor(@param:IntRange(from = 0) private val hideSeconds: Int) {
 }
 
 @Composable
-fun rememberVideoPlayerState(@IntRange(from = 0) hideSeconds: Int = 2) =
-    remember { VideoPlayerState(hideSeconds = hideSeconds) }
-        .also { LaunchedEffect(it) { it.observe() } }
+fun rememberVideoPlayerState(@IntRange(from = 0) hideSeconds: Int = 2) = remember {
+    VideoPlayerState(hideSeconds = hideSeconds)
+}
+    .also { LaunchedEffect(it) { it.observe() } }

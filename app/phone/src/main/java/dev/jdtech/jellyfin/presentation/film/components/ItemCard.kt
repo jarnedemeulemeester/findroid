@@ -24,6 +24,7 @@ import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
@@ -35,6 +36,7 @@ fun ItemCard(
     direction: Direction,
     onClick: (FindroidItem) -> Unit,
     modifier: Modifier = Modifier,
+    showSeriesName: Boolean = false,
 ) {
     val width =
         when (direction) {
@@ -72,28 +74,39 @@ fun ItemCard(
             }
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
-        val titleText = if (item is FindroidEpisode) item.seriesName else item.name
+        val title =
+            when (item) {
+                is FindroidEpisode -> item.seriesName
+                is FindroidSeason -> if (showSeriesName) item.seriesName else item.name
+                else -> item.name
+            }
+        val subtitle =
+            when (item) {
+                is FindroidEpisode ->
+                    stringResource(
+                        id = R.string.episode_name_extended,
+                        item.parentIndexNumber,
+                        item.indexNumber,
+                        item.name,
+                    )
+                is FindroidSeason -> if (showSeriesName) item.name else null
+                else -> null
+            }
         Text(
-            text = titleText,
-            modifier = Modifier.copyOnLongClick(titleText),
+            text = title,
             style = MaterialTheme.typography.bodyMedium,
-            maxLines = if (item is FindroidEpisode) 1 else 2,
+            maxLines = if (subtitle == null) 2 else 1,
             overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.copyOnLongClick(title),
         )
-        if (item is FindroidEpisode) {
-            val episodeText = stringResource(
-                id = R.string.episode_name_extended,
-                item.parentIndexNumber,
-                item.indexNumber,
-                item.name,
-            )
+        if (subtitle != null) {
             Text(
-                text = episodeText,
-                modifier = Modifier.copyOnLongClick(episodeText),
+                text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.copyOnLongClick(subtitle),
             )
         }
         Spacer(Modifier.height(2.dp))

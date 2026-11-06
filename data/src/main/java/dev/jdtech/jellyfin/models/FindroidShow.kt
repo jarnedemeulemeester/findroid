@@ -59,7 +59,10 @@ fun BaseItemDto.toFindroidShow(jellyfinRepository: JellyfinRepository): Findroid
     )
 }
 
-fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): FindroidShow {
+suspend fun FindroidShowDto.toFindroidShow(
+    database: ServerDatabaseDao,
+    userId: UUID,
+): FindroidShow {
     val userData = database.getUserDataOrCreateNew(id, userId)
     return FindroidShow(
         id = id,

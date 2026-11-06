@@ -8,13 +8,16 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.settings.R
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.models.PermissionDefinitions
 import dev.jdtech.jellyfin.settings.presentation.enums.DeviceType
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceAppLanguage
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceCategory
+import dev.jdtech.jellyfin.settings.presentation.models.PreferenceFileEdit
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceGroup
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceIntInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceLongInput
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceMultiSelect
+import dev.jdtech.jellyfin.settings.presentation.models.PreferencePermission
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSelect
 import dev.jdtech.jellyfin.settings.presentation.models.PreferenceSwitch
 import javax.inject.Inject
@@ -32,6 +35,31 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
 
     private val eventsChannel = Channel<SettingsEvent>()
     val events = eventsChannel.receiveAsFlow()
+
+    private val permissionPreferences =
+        PermissionDefinitions.all.map { permission ->
+            PreferencePermission(permission = permission)
+        }
+
+    private val permissionsPreferenceGroup =
+        PreferenceGroup(
+            preferences =
+                listOf(
+                    PreferenceCategory(
+                        nameStringResource = R.string.settings_category_permissions,
+                        iconDrawableId = R.drawable.ic_shield_check,
+                        onClick = {
+                            viewModelScope.launch {
+                                eventsChannel.send(
+                                    SettingsEvent.NavigateToSettings(listOf(it.nameStringResource))
+                                )
+                            }
+                        },
+                        nestedPreferenceGroups =
+                            listOf(PreferenceGroup(preferences = permissionPreferences)),
+                    )
+                )
+        )
 
     private val topLevelPreferences =
         listOf(
@@ -62,7 +90,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                 viewModelScope.launch {
                                     eventsChannel.send(
                                         SettingsEvent.NavigateToSettings(
-                                            intArrayOf(it.nameStringResource)
+                                            listOf(it.nameStringResource)
                                         )
                                     )
                                 }
@@ -121,7 +149,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                 viewModelScope.launch {
                                     eventsChannel.send(
                                         SettingsEvent.NavigateToSettings(
-                                            intArrayOf(it.nameStringResource)
+                                            listOf(it.nameStringResource)
                                         )
                                     )
                                 }
@@ -156,7 +184,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         Build.VERSION.SDK_INT >=
                                                             Build.VERSION_CODES.S,
                                                     supportedDeviceTypes = listOf(DeviceType.PHONE),
-                                                    backendPreference = appPreferences.dynamicColors,
+                                                    backendPreference =
+                                                        appPreferences.dynamicColors,
                                                 ),
                                             ),
                                     ),
@@ -211,7 +240,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                 viewModelScope.launch {
                                     eventsChannel.send(
                                         SettingsEvent.NavigateToSettings(
-                                            intArrayOf(it.nameStringResource)
+                                            listOf(it.nameStringResource)
                                         )
                                     )
                                 }
@@ -242,41 +271,124 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                             )
                                     ),
                                     PreferenceGroup(
-                                        nameStringResource = R.string.mpv_player,
                                         preferences =
                                             listOf(
-                                                PreferenceSwitch(
-                                                    nameStringResource = R.string.mpv_player,
-                                                    descriptionStringRes =
-                                                        R.string.mpv_player_summary,
-                                                    backendPreference = appPreferences.playerMpv,
-                                                ),
                                                 PreferenceSelect(
                                                     nameStringResource =
-                                                        R.string.pref_player_mpv_hwdec,
-                                                    dependencies = listOf(appPreferences.playerMpv),
+                                                        R.string.pref_player_backend,
                                                     backendPreference =
-                                                        appPreferences.playerMpvHwdec,
-                                                    options = R.array.mpv_hwdec,
-                                                    optionValues = R.array.mpv_hwdec,
+                                                        appPreferences.playerBackend,
+                                                    options = R.array.player_backends,
+                                                    optionValues = R.array.player_backends,
                                                 ),
-                                                PreferenceSelect(
-                                                    nameStringResource =
-                                                        R.string.pref_player_mpv_vo,
-                                                    dependencies = listOf(appPreferences.playerMpv),
-                                                    backendPreference = appPreferences.playerMpvVo,
-                                                    options = R.array.mpv_vos,
-                                                    optionValues = R.array.mpv_vos,
+                                                PreferenceCategory(
+                                                    nameStringResource = R.string.mpv_options,
+                                                    onClick = {
+                                                        viewModelScope.launch {
+                                                            eventsChannel.send(
+                                                                SettingsEvent.NavigateToSettings(
+                                                                    listOf(
+                                                                        R.string
+                                                                            .settings_category_player,
+                                                                        it.nameStringResource,
+                                                                    )
+                                                                )
+                                                            )
+                                                        }
+                                                    },
+                                                    nestedPreferenceGroups =
+                                                        listOf(
+                                                            PreferenceGroup(
+                                                                preferences =
+                                                                    listOf(
+                                                                        PreferenceSelect(
+                                                                            nameStringResource =
+                                                                                R.string
+                                                                                    .pref_player_mpv_hwdec,
+                                                                            backendPreference =
+                                                                                appPreferences
+                                                                                    .playerMpvHwdec,
+                                                                            options =
+                                                                                R.array.mpv_hwdec,
+                                                                            optionValues =
+                                                                                R.array.mpv_hwdec,
+                                                                        ),
+                                                                        PreferenceSelect(
+                                                                            nameStringResource =
+                                                                                R.string
+                                                                                    .pref_player_mpv_vo,
+                                                                            backendPreference =
+                                                                                appPreferences
+                                                                                    .playerMpvVo,
+                                                                            options =
+                                                                                R.array.mpv_vos,
+                                                                            optionValues =
+                                                                                R.array.mpv_vos,
+                                                                        ),
+                                                                        PreferenceSelect(
+                                                                            nameStringResource =
+                                                                                R.string
+                                                                                    .pref_player_mpv_ao,
+                                                                            backendPreference =
+                                                                                appPreferences
+                                                                                    .playerMpvAo,
+                                                                            options =
+                                                                                R.array.mpv_aos,
+                                                                            optionValues =
+                                                                                R.array.mpv_aos,
+                                                                        ),
+                                                                    )
+                                                            ),
+                                                            PreferenceGroup(
+                                                                nameStringResource =
+                                                                    R.string.advanced,
+                                                                preferences =
+                                                                    listOf(
+                                                                        PreferenceFileEdit(
+                                                                            nameStringResource =
+                                                                                R.string
+                                                                                    .edit_file_title,
+                                                                            filePath =
+                                                                                "mpv/mpv.conf",
+                                                                            onClick = {
+                                                                                viewModelScope
+                                                                                    .launch {
+                                                                                        eventsChannel
+                                                                                            .send(
+                                                                                                SettingsEvent
+                                                                                                    .NavigateToSettingsFileEdit(
+                                                                                                        it
+                                                                                                            .filePath
+                                                                                                    )
+                                                                                            )
+                                                                                    }
+                                                                            },
+                                                                        ),
+                                                                        PreferenceFileEdit(
+                                                                            nameStringResource =
+                                                                                R.string
+                                                                                    .edit_file_title,
+                                                                            filePath =
+                                                                                "mpv/input.conf",
+                                                                            onClick = {
+                                                                                viewModelScope
+                                                                                    .launch {
+                                                                                        eventsChannel
+                                                                                            .send(
+                                                                                                SettingsEvent
+                                                                                                    .NavigateToSettingsFileEdit(
+                                                                                                        it
+                                                                                                            .filePath
+                                                                                                    )
+                                                                                            )
+                                                                                    }
+                                                                            },
+                                                                        ),
+                                                                    ),
+                                                            ),
+                                                        ),
                                                 ),
-                                                PreferenceSelect(
-                                                    nameStringResource =
-                                                        R.string.pref_player_mpv_ao,
-                                                    dependencies = listOf(appPreferences.playerMpv),
-                                                    backendPreference = appPreferences.playerMpvAo,
-                                                    options = R.array.mpv_aos,
-                                                    optionValues = R.array.mpv_aos,
-                                                ),
-                                            ),
+                                            )
                                     ),
                                     PreferenceGroup(
                                         nameStringResource = R.string.gestures,
@@ -400,7 +512,8 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         R.string
                                                             .pref_player_media_segments_skip_button_summary,
                                                     backendPreference =
-                                                        appPreferences.playerMediaSegmentsSkipButton,
+                                                        appPreferences
+                                                            .playerMediaSegmentsSkipButton,
                                                 ),
                                                 PreferenceMultiSelect(
                                                     nameStringResource =
@@ -571,7 +684,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                 viewModelScope.launch {
                                     eventsChannel.send(
                                         SettingsEvent.NavigateToSettings(
-                                            intArrayOf(it.nameStringResource)
+                                            listOf(it.nameStringResource)
                                         )
                                     )
                                 }
@@ -614,7 +727,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                 viewModelScope.launch {
                                     eventsChannel.send(
                                         SettingsEvent.NavigateToSettings(
-                                            intArrayOf(it.nameStringResource)
+                                            listOf(it.nameStringResource)
                                         )
                                     )
                                 }
@@ -661,7 +774,7 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                 viewModelScope.launch {
                                     eventsChannel.send(
                                         SettingsEvent.NavigateToSettings(
-                                            intArrayOf(it.nameStringResource)
+                                            listOf(it.nameStringResource)
                                         )
                                     )
                                 }
@@ -695,23 +808,32 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                         )
                     )
             ),
-            PreferenceGroup(
-                preferences =
-                    listOf(
-                        PreferenceCategory(
-                            nameStringResource = R.string.about,
-                            iconDrawableId = R.drawable.ic_info,
-                            onClick = {
-                                viewModelScope.launch {
-                                    eventsChannel.send(SettingsEvent.NavigateToAbout)
-                                }
-                            },
+        ) +
+            // Show the Permissions category only if at least one permission applies on this Android
+            // version.
+            (if (permissionPreferences.any { Build.VERSION.SDK_INT >= it.minSdk }) {
+                listOf(permissionsPreferenceGroup)
+            } else {
+                emptyList()
+            }) +
+            listOf(
+                PreferenceGroup(
+                    preferences =
+                        listOf(
+                            PreferenceCategory(
+                                nameStringResource = R.string.about,
+                                iconDrawableId = R.drawable.ic_info,
+                                onClick = {
+                                    viewModelScope.launch {
+                                        eventsChannel.send(SettingsEvent.NavigateToAbout)
+                                    }
+                                },
+                            )
                         )
-                    )
-            ),
-        )
+                )
+            )
 
-    fun loadPreferences(indexes: IntArray = intArrayOf(), deviceType: DeviceType) {
+    fun loadPreferences(indexes: List<Int> = emptyList(), deviceType: DeviceType) {
         viewModelScope.launch {
             var preferences = topLevelPreferences
 
@@ -739,6 +861,11 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                             preferences =
                                 preferenceGroup.preferences
                                     .filter { it.supportedDeviceTypes.contains(deviceType) }
+                                    .filter { preference ->
+                                        preference.minSdk?.let { sdk ->
+                                            Build.VERSION.SDK_INT >= sdk
+                                        } ?: true
+                                    }
                                     .map { preference ->
                                         when (preference) {
                                             is PreferenceSwitch -> {
