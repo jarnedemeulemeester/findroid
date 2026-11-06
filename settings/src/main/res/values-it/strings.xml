@@ -59,7 +59,6 @@
     <string name="picture_in_picture_gesture_summary">Usa il gesto/pulsante Home durante la riproduzione del video per attivare la modalità immagine nell\'immagine</string>
     <string name="pref_player_gestures_seek_trickplay">Anteprima in gesto posizionamento</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Visualizza le immagini di anteprima quando si usa il gesto di posizionamento</string>
-    <string name="player_gestures_chapter_skip">Gesto per le scene</string>
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_trickplay_summary">Visualizza le immagini di anteprima quando si cambia posizione</string>
     <string name="pref_player_chapter_markers">Marcatori delle scene</string>

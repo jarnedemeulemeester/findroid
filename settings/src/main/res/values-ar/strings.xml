@@ -36,10 +36,8 @@
     <string name="player_gestures_vb">إيماءات السطوع و الصوت</string>
     <string name="player_gestures_zoom">إيماءة التكبير</string>
     <string name="player_gestures_seek">إيماءة التنقل</string>
-    <string name="player_gestures_chapter_skip">إيماءة الفصل</string>
     <string name="player_gestures_vb_summary">اسحب لأعلى ولأسفل على الجانب الأيمن من الشاشة لتغيير مستوى الصوت وعلى الجانب الأيسر لتغيير السطوع</string>
     <string name="player_gestures_zoom_summary">اقرص لملئ الشاشة</string>
-    <string name="player_gestures_chapter_skip_summary">اضغط مطولاً على الجانب الأيسر/الأيمن لتخطي الفصول (يتجاوز إيماءة السرعة 2x)</string>
     <string name="player_gestures_seek_summary">اسحب أفقياً للتنقل للأمام أو للخلف</string>
     <string name="player_brightness_remember">تذكر مستوى السطوع</string>
     <string name="player_start_maximized">بدء التشغيل بأقصى حجم</string>
