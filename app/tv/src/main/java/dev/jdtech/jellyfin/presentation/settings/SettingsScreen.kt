@@ -39,7 +39,7 @@ import timber.log.Timber
 
 @Composable
 fun SettingsScreen(
-    navigateToSubSettings: (indexes: IntArray) -> Unit,
+    navigateToSubSettings: (indexes: List<Int>) -> Unit,
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
@@ -48,7 +48,7 @@ fun SettingsScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) { viewModel.loadPreferences(intArrayOf(), DeviceType.TV) }
+    LaunchedEffect(true) { viewModel.loadPreferences(emptyList(), DeviceType.TV) }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -81,7 +81,7 @@ fun SettingsScreen(
             when (action) {
                 is SettingsAction.OnUpdate -> {
                     viewModel.onAction(action)
-                    viewModel.loadPreferences(intArrayOf(), DeviceType.TV)
+                    viewModel.loadPreferences(emptyList(), DeviceType.TV)
                 }
                 else -> Unit
             }

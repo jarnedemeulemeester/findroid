@@ -1,11 +1,11 @@
 package dev.jdtech.jellyfin.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
+import androidx.room3.Dao
+import androidx.room3.Insert
+import androidx.room3.OnConflictStrategy
+import androidx.room3.Query
+import androidx.room3.Transaction
+import androidx.room3.Update
 import dev.jdtech.jellyfin.models.FindroidEpisodeDto
 import dev.jdtech.jellyfin.models.FindroidMediaStreamDto
 import dev.jdtech.jellyfin.models.FindroidMovieDto
@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.models.ServerWithAddresses
 import dev.jdtech.jellyfin.models.ServerWithAddressesAndUsers
 import dev.jdtech.jellyfin.models.User
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ServerDatabaseDao {
@@ -63,6 +64,13 @@ interface ServerDatabaseDao {
     @Query("SELECT * FROM servers") suspend fun getServers(): List<Server>
 
     @Query("SELECT COUNT(*) FROM servers") suspend fun getServersCount(): Int
+
+    @Query("SELECT COUNT(*) FROM servers") fun observeServersCount(): Flow<Int>
+
+    @Query("SELECT * FROM servers WHERE id = :id") fun observeServer(id: String): Flow<Server?>
+
+    @Query("SELECT currentUserId FROM servers WHERE id = :id")
+    fun observeServerCurrentUserId(id: String): Flow<UUID?>
 
     @Query("DELETE FROM servers WHERE id = :id") suspend fun deleteServer(id: String)
 

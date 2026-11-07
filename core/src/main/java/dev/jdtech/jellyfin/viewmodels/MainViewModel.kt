@@ -12,6 +12,9 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -46,28 +49,11 @@ constructor(
                 _state.update {
                     it.copy(
                         isOfflineMode =
-                            checkIsOfflineMode() || connectivityState != ConnectivityState.Online
+                        appPreferences.getValue(appPreferences.offlineMode) ||
+                            connectivityState != ConnectivityState.Online
                     )
                 }
             }
-        }
-    }
-
-    private fun check() {
-        viewModelScope.launch {
-            _state.emit(MainState(isLoading = true))
-            val mainState =
-                MainState(
-                    isLoading = false,
-                    isDynamicColors = checkIsDynamicColors(),
-                    hasServers = checkHasServers(),
-                    hasCurrentServer = checkHasCurrentServer(),
-                    hasCurrentUser = checkHasCurrentUser(),
-                    isOfflineMode =
-                        checkIsOfflineMode() ||
-                            connectivityMonitor.state.value != ConnectivityState.Online,
-                )
-            _state.emit(mainState)
         }
     }
 
@@ -82,30 +68,65 @@ constructor(
         }
     }
 
-    private suspend fun checkHasServers(): Boolean {
-        val nServers = database.getServersCount()
-        return nServers > 0
+    /**
+     * Continuously derives [MainState] from the underlying preferences and database, so the state
+     * (and anything derived from it, e.g. the setup/main navigation condition) reacts to changes as
+     * soon as they happen.
+     */
+    private fun check() {
+        viewModelScope.launch {
+            _state.emit(MainState(isLoading = true))
+
+            val setupFlags =
+                appPreferences.observe(appPreferences.currentServer).flatMapLatest { serverId ->
+                    if (serverId == null) {
+                        database.observeServersCount().map { serverCount ->
+                            SetupFlags(
+                                hasServers = serverCount > 0,
+                                hasCurrentServer = false,
+                                hasCurrentUser = false,
+                            )
+                        }
+                    } else {
+                        combine(
+                            database.observeServersCount(),
+                            database.observeServer(serverId),
+                            database.observeServerCurrentUserId(serverId),
+                        ) { serverCount, server, currentUserId ->
+                            SetupFlags(
+                                hasServers = serverCount > 0,
+                                hasCurrentServer = server != null,
+                                hasCurrentUser = currentUserId != null,
+                            )
+                        }
+                    }
+                }
+
+            combine(
+                    setupFlags,
+                    appPreferences.observe(appPreferences.dynamicColors),
+                    appPreferences.observe(appPreferences.offlineMode),
+                ) { flags, dynamicColors, offlineMode ->
+                    MainState(
+                        isLoading = false,
+                        isDynamicColors = dynamicColors,
+                        hasServers = flags.hasServers,
+                        hasCurrentServer = flags.hasCurrentServer,
+                        hasCurrentUser = flags.hasCurrentUser,
+                        isOfflineMode =
+                            offlineMode ||
+                                connectivityMonitor.state.value != ConnectivityState.Online,
+                    )
+                }
+                .collect { mainState -> _state.emit(mainState) }
+        }
     }
 
-    private suspend fun checkHasCurrentServer(): Boolean {
-        return appPreferences.getValue(appPreferences.currentServer)?.let {
-            database.getServer(it) != null
-        } == true
-    }
-
-    private suspend fun checkHasCurrentUser(): Boolean {
-        return appPreferences.getValue(appPreferences.currentServer)?.let {
-            database.getServerCurrentUser(it) != null
-        } == true
-    }
-
-    private fun checkIsDynamicColors(): Boolean {
-        return appPreferences.getValue(appPreferences.dynamicColors)
-    }
-
-    private fun checkIsOfflineMode(): Boolean {
-        return appPreferences.getValue(appPreferences.offlineMode)
-    }
+    private data class SetupFlags(
+        val hasServers: Boolean,
+        val hasCurrentServer: Boolean,
+        val hasCurrentUser: Boolean,
+    )
 }
 
 data class MainState(

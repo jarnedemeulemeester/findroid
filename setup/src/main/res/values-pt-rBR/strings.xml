@@ -39,4 +39,8 @@
     <string name="cancel">Cancelar</string>
     <string name="or">OU</string>
     <string name="server_subtitle">Servidor: %s</string>
+    <string name="permission_btn_grant">Permitir</string>
+    <string name="permission_btn_not_now">Agora não</string>
+    <string name="permission_btn_open_settings">Abrir configurações</string>
+    <string name="permission_permanently_denied">%1$s foi negado. Para utilizá-lo, permita-o nas configurações do sistema.</string>
 </resources>

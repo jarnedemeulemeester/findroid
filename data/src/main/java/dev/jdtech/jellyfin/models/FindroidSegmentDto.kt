@@ -1,6 +1,6 @@
 package dev.jdtech.jellyfin.models
 
-import androidx.room.Entity
+import androidx.room3.Entity
 import java.util.UUID
 
 @Entity(tableName = "segments", primaryKeys = ["itemId", "type"])
