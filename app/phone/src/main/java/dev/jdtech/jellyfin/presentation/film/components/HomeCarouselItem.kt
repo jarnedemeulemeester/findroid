@@ -42,12 +42,11 @@ fun HomeCarouselItem(item: FindroidItem, onAction: (HomeAction) -> Unit) {
 
     Box(
         modifier =
-            Modifier
-                .aspectRatio(1.77f)
+            Modifier.aspectRatio(1.77f)
                 .clip(MaterialTheme.shapes.large)
                 .copyOnLongClick(
                     text = item.name,
-                    onClick = { onAction(HomeAction.OnItemClick(item)) }
+                    onClick = { onAction(HomeAction.OnItemClick(item)) },
                 )
     ) {
         AsyncImage(

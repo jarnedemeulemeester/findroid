@@ -160,10 +160,11 @@ private fun EpisodeScreenLayout(
                                             episode.parentIndexNumber,
                                         )
                                     }
-                            val episodeNumberText = stringResource(
-                                id = CoreR.string.episode_number,
-                                episode.indexNumber,
-                            )
+                            val episodeNumberText =
+                                stringResource(
+                                    id = CoreR.string.episode_number,
+                                    episode.indexNumber,
+                                )
                             val prefixText = "$seasonName - $episodeNumberText"
                             Text(
                                 text = prefixText,
@@ -196,10 +197,11 @@ private fun EpisodeScreenLayout(
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
-                        val runtimeText = stringResource(
-                            CoreR.string.runtime_minutes,
-                            episode.runtimeTicks.div(600000000),
-                        )
+                        val runtimeText =
+                            stringResource(
+                                CoreR.string.runtime_minutes,
+                                episode.runtimeTicks.div(600000000),
+                            )
                         Text(
                             text = runtimeText,
                             modifier = Modifier.copyOnLongClick(runtimeText),
@@ -209,7 +211,7 @@ private fun EpisodeScreenLayout(
                             val ratingText = "%.1f".format(communityRating)
                             Row(
                                 modifier = Modifier.copyOnLongClick(ratingText),
-                                verticalAlignment = Alignment.Bottom
+                                verticalAlignment = Alignment.Bottom,
                             ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),

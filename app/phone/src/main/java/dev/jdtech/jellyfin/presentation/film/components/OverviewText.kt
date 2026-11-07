@@ -25,14 +25,15 @@ fun OverviewText(text: String, maxCollapsedLines: Int = Int.MAX_VALUE) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = text,
-            modifier = Modifier
-                .copyOnLongClick(
-                    text = text,
-                    onClick = if (showChevron) {
-                        { isOverviewExpanded = !isOverviewExpanded }
-                    } else null
-                )
-                .animateContentSize(),
+            modifier =
+                Modifier.copyOnLongClick(
+                        text = text,
+                        onClick =
+                            if (showChevron) {
+                                { isOverviewExpanded = !isOverviewExpanded }
+                            } else null,
+                    )
+                    .animateContentSize(),
             overflow = TextOverflow.Ellipsis,
             maxLines = if (isOverviewExpanded) Int.MAX_VALUE else maxCollapsedLines,
             onTextLayout = { textLayoutResult ->

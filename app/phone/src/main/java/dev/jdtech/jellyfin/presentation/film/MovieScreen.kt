@@ -190,10 +190,11 @@ private fun MovieScreenLayout(
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
-                        val runtimeText = stringResource(
-                            CoreR.string.runtime_minutes,
-                            movie.runtimeTicks.div(600000000),
-                        )
+                        val runtimeText =
+                            stringResource(
+                                CoreR.string.runtime_minutes,
+                                movie.runtimeTicks.div(600000000),
+                            )
                         Text(
                             text = runtimeText,
                             modifier = Modifier.copyOnLongClick(runtimeText),
@@ -203,14 +204,14 @@ private fun MovieScreenLayout(
                             Text(
                                 text = officialRating,
                                 modifier = Modifier.copyOnLongClick(officialRating),
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         }
                         movie.communityRating?.let { communityRating ->
                             val ratingText = "%.1f".format(communityRating)
                             Row(
                                 modifier = Modifier.copyOnLongClick(ratingText),
-                                verticalAlignment = Alignment.Bottom
+                                verticalAlignment = Alignment.Bottom,
                             ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),

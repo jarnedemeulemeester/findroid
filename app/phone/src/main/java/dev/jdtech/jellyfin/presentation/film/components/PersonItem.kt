@@ -26,7 +26,10 @@ import dev.jdtech.jellyfin.utils.copyOnLongClick
 fun PersonItem(person: FindroidItemPerson, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier =
-            modifier.width(110.dp).clip(MaterialTheme.shapes.small).copyOnLongClick(person.name,onClick = onClick)
+            modifier
+                .width(110.dp)
+                .clip(MaterialTheme.shapes.small)
+                .copyOnLongClick(person.name, onClick = onClick)
     ) {
         AsyncImage(
             model = person.image.uri,
