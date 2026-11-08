@@ -1,6 +1,5 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +28,7 @@ import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.models.isDownloaded
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 
 @Composable
 fun ItemCard(
@@ -48,7 +48,7 @@ fun ItemCard(
             modifier
                 .width(width.dp)
                 .clip(MaterialTheme.shapes.small)
-                .clickable(onClick = { onClick(item) })
+                .copyOnLongClick(item.name, onClick = { onClick(item) })
     ) {
         Surface(shape = MaterialTheme.shapes.small) {
             Box {
@@ -97,6 +97,7 @@ fun ItemCard(
             style = MaterialTheme.typography.bodyMedium,
             maxLines = if (subtitle == null) 2 else 1,
             overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.copyOnLongClick(title),
         )
         if (subtitle != null) {
             Text(
@@ -105,6 +106,7 @@ fun ItemCard(
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.copyOnLongClick(subtitle),
             )
         }
         Spacer(Modifier.height(2.dp))

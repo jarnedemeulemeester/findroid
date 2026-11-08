@@ -49,6 +49,7 @@ import dev.jdtech.jellyfin.presentation.film.components.ItemTopBar
 import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
+import dev.jdtech.jellyfin.utils.copyOnLongClick
 import java.util.UUID
 import org.jellyfin.sdk.model.api.BaseItemKind
 
@@ -126,12 +127,14 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                                 Column(modifier = Modifier) {
                                     Text(
                                         text = season.seriesName,
+                                        modifier = Modifier.copyOnLongClick(season.seriesName),
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
                                         style = MaterialTheme.typography.bodyLarge,
                                     )
                                     Text(
                                         text = season.name,
+                                        modifier = Modifier.copyOnLongClick(season.name),
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 3,
                                         style = MaterialTheme.typography.headlineMedium,
