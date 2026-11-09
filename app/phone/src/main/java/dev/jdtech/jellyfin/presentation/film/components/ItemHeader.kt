@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film.components
 
 import android.net.Uri
+import android.os.Build
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
@@ -12,8 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -22,10 +25,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.transformations
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidSeason
 import dev.jdtech.jellyfin.presentation.theme.spacings
+import dev.jdtech.jellyfin.presentation.utils.EpisodeThumbnailBlurTransformation
+import dev.jdtech.jellyfin.presentation.utils.LocalBlurEpisodeThumbnails
 import dev.jdtech.jellyfin.presentation.utils.parallaxLayoutModifier
 
 @Composable
@@ -36,6 +43,8 @@ fun ItemHeader(
     content: @Composable (BoxScope.() -> Unit) = {},
 ) {
     val context = LocalContext.current
+    val blurEpisodeHeader =
+        LocalBlurEpisodeThumbnails.current && item is FindroidEpisode && !item.played
     var backdropUri =
         when (item) {
             is FindroidEpisode -> item.images.primary
@@ -51,16 +60,35 @@ fun ItemHeader(
                 .build()
     }
 
+    val blurTransformation = remember(backdropUri) { EpisodeThumbnailBlurTransformation(context) }
+
+    val backdropModel =
+        if (blurEpisodeHeader && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            ImageRequest.Builder(context).data(backdropUri).transformations(blurTransformation).build()
+        } else {
+            backdropUri
+        }
+
     ItemHeaderBase(
         item = item,
         showLogo = showLogo,
         backdropImage = {
             AsyncImage(
-                model = backdropUri,
+                model = backdropModel,
                 contentDescription = null,
                 modifier =
                     Modifier.fillMaxSize()
-                        .parallaxLayoutModifier(scrollState = scrollState, rate = 2),
+                        .parallaxLayoutModifier(scrollState = scrollState, rate = 2)
+                        .then(
+                            if (
+                                blurEpisodeHeader &&
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                            ) {
+                                Modifier.blur(30.dp)
+                            } else {
+                                Modifier
+                            }
+                        ),
                 placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                 contentScale = ContentScale.Crop,
             )

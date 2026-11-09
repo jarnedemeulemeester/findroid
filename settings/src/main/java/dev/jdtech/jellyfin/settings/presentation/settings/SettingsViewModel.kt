@@ -223,7 +223,15 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
                                                         R.string.extra_info_summary,
                                                     backendPreference =
                                                         appPreferences.displayExtraInfo,
-                                                )
+                                                ),
+                                                PreferenceSwitch(
+                                                    nameStringResource =
+                                                        R.string.blur_episode_thumbnails,
+                                                    descriptionStringRes =
+                                                        R.string.blur_episode_thumbnails_summary,
+                                                    backendPreference =
+                                                        appPreferences.blurEpisodeThumbnails,
+                                                ),
                                             )
                                     ),
                                 ),

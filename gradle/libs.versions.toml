@@ -69,6 +69,7 @@ androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.re
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
 androidx-work = { group = "androidx.work", name = "work-runtime", version.ref = "androidx-work" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-core = { group = "io.coil-kt.coil3", name = "coil-core", version.ref = "coil" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 coil-network-cache-control = { group = "io.coil-kt.coil3", name = "coil-network-cache-control", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
