@@ -81,11 +81,19 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
                     }
                 }
 
+            val preferenceFlags =
+                combine(
+                    appPreferences.observe(appPreferences.offlineMode),
+                    appPreferences.observe(appPreferences.blurEpisodeThumbnails),
+                ) { offlineMode, blurEpisodeThumbnails ->
+                    offlineMode to blurEpisodeThumbnails
+                }
+
             combine(
                     setupFlags,
                     appPreferences.observe(appPreferences.dynamicColors),
-                    appPreferences.observe(appPreferences.offlineMode),
-                ) { flags, dynamicColors, offlineMode ->
+                    preferenceFlags,
+                ) { flags, dynamicColors, (offlineMode, blurEpisodeThumbnails) ->
                     MainState(
                         isLoading = false,
                         isDynamicColors = dynamicColors,
@@ -93,6 +101,7 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
                         hasCurrentServer = flags.hasCurrentServer,
                         hasCurrentUser = flags.hasCurrentUser,
                         isOfflineMode = offlineMode,
+                        blurEpisodeThumbnails = blurEpisodeThumbnails,
                     )
                 }
                 .collect { mainState -> _state.emit(mainState) }
@@ -113,4 +122,5 @@ data class MainState(
     val hasCurrentServer: Boolean = false,
     val hasCurrentUser: Boolean = false,
     val isOfflineMode: Boolean = false,
+    val blurEpisodeThumbnails: Boolean = false,
 )
