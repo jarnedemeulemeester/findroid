@@ -61,10 +61,7 @@ fun ItemPoster(item: FindroidItem, direction: Direction, modifier: Modifier = Mo
             !item.played
     val imageModel =
         if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            ImageRequest.Builder(context)
-                .data(imageUri)
-                .transformations(blurTransformation)
-                .build()
+            ImageRequest.Builder(context).data(imageUri).transformations(blurTransformation).build()
         } else {
             imageUri
         }

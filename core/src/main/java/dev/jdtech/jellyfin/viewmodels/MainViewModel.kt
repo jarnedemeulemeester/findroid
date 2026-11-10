@@ -85,7 +85,9 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
                 combine(
                     appPreferences.observe(appPreferences.offlineMode),
                     appPreferences.observe(appPreferences.blurEpisodeThumbnails),
-                ) { offlineMode, blurEpisodeThumbnails -> offlineMode to blurEpisodeThumbnails }
+                ) { offlineMode, blurEpisodeThumbnails ->
+                    offlineMode to blurEpisodeThumbnails
+                }
 
             combine(
                     setupFlags,

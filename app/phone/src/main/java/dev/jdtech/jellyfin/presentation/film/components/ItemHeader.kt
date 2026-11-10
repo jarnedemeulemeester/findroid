@@ -64,7 +64,10 @@ fun ItemHeader(
 
     val backdropModel =
         if (blurEpisodeHeader && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            ImageRequest.Builder(context).data(backdropUri).transformations(blurTransformation).build()
+            ImageRequest.Builder(context)
+                .data(backdropUri)
+                .transformations(blurTransformation)
+                .build()
         } else {
             backdropUri
         }
@@ -81,8 +84,7 @@ fun ItemHeader(
                         .parallaxLayoutModifier(scrollState = scrollState, rate = 2)
                         .then(
                             if (
-                                blurEpisodeHeader &&
-                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                blurEpisodeHeader && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                             ) {
                                 Modifier.blur(30.dp)
                             } else {
