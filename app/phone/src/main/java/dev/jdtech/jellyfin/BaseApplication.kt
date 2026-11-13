@@ -5,9 +5,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import coil3.ImageLoader
@@ -24,7 +22,7 @@ import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.MpvCleanupWorker
-import dev.jdtech.jellyfin.work.SyncWorker
+import dev.jdtech.jellyfin.work.scheduleUserDataSync
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 import okio.Path.Companion.toOkioPath
@@ -63,7 +61,7 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
 
         val workManager = WorkManager.getInstance(applicationContext)
 
-        scheduleUserDataSync(workManager)
+        scheduleUserDataSync(applicationContext)
 
         if (!appPreferences.getValue(appPreferences.mpvMigrated)) {
             scheduleMpvCleanup(workManager)
@@ -91,20 +89,6 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             }
             .crossfade(true)
             .build()
-    }
-
-    private fun scheduleUserDataSync(workManager: WorkManager) {
-        val constraints =
-            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-        val syncWorkRequest =
-            OneTimeWorkRequestBuilder<SyncWorker>().setConstraints(constraints).build()
-
-        workManager.enqueueUniqueWork(
-            uniqueWorkName = "syncUserData",
-            existingWorkPolicy = ExistingWorkPolicy.KEEP,
-            request = syncWorkRequest,
-        )
     }
 
     private fun scheduleMpvCleanup(workManager: WorkManager) {
