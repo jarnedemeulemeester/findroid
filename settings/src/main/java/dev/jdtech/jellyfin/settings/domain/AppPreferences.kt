@@ -88,6 +88,8 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
     val smartDownloads = Preference("pref_downloads_smart", false)
     val smartDownloadsEpisodeCount = Preference("pref_downloads_smart_episode_count", 3)
     val smartDownloadsMovieCount = Preference("pref_downloads_smart_movie_count", 2)
+    val smartDownloadedEpisodeIds =
+        Preference<Set<String>>("pref_downloads_smart_episode_ids", emptySet())
     val smartDownloadedMovieIds =
         Preference<Set<String>>("pref_downloads_smart_movie_ids", emptySet())
 

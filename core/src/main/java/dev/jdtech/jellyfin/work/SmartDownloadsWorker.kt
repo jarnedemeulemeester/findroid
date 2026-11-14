@@ -81,6 +81,7 @@ constructor(
                     pushPendingUserData(database, jellyfinApi, userId, downloadedItems)
                     removeFailedDownloads(downloadedItems)
                     deleteWatchedItems(userId, downloadedItems)
+                    forgetRemovedEpisodes(serverId)
                     downloadUpcomingEpisodes(userId)
                     updateMovies(serverId, userId)
                     Result.success()
@@ -110,7 +111,12 @@ constructor(
         }
     }
 
+    /** Items downloaded by hand are never removed, only the ones this worker downloaded. */
     private suspend fun deleteWatchedItems(userId: UUID, items: List<FindroidItem>) {
+        val smartIds =
+            appPreferences.getValue(appPreferences.smartDownloadedEpisodeIds) +
+                appPreferences.getValue(appPreferences.smartDownloadedMovieIds)
+
         for (item in items) {
             val localSource = item.localSource() ?: continue
             // The item may have been removed from the server, keep the download in that case.
@@ -122,11 +128,21 @@ constructor(
                 } ?: continue
 
             when {
-                remoteItem.played -> downloader.deleteItem(item, localSource)
+                remoteItem.played && item.id.toString() in smartIds ->
+                    downloader.deleteItem(item, localSource)
                 database.getUserDataToBeSynced(userId, item.id) == null ->
                     database.insertUserData(remoteItem.toFindroidUserDataDto(userId))
             }
         }
+    }
+
+    private suspend fun forgetRemovedEpisodes(serverId: String) {
+        val downloadedIds = database.getEpisodesByServerId(serverId).map { it.id.toString() }
+        val smartIds = appPreferences.getValue(appPreferences.smartDownloadedEpisodeIds)
+        appPreferences.setValue(
+            appPreferences.smartDownloadedEpisodeIds,
+            smartIds.intersect(downloadedIds.toSet()),
+        )
     }
 
     private suspend fun downloadUpcomingEpisodes(userId: UUID) {
@@ -161,7 +177,13 @@ constructor(
                 if (database.getSources(upcoming.id).isNotEmpty()) continue
 
                 when (download(repository.getEpisode(upcoming.id))) {
-                    DownloadResult.QUEUED,
+                    // Saved right away: a later failure must not turn it into a manual download.
+                    DownloadResult.QUEUED ->
+                        appPreferences.setValue(
+                            appPreferences.smartDownloadedEpisodeIds,
+                            appPreferences.getValue(appPreferences.smartDownloadedEpisodeIds) +
+                                upcoming.id.toString(),
+                        )
                     DownloadResult.UNAVAILABLE -> Unit
                     DownloadResult.NO_ROOM,
                     DownloadResult.FAILED -> return
@@ -171,8 +193,8 @@ constructor(
     }
 
     /**
-     * Keeps the wanted movies downloaded. Movies downloaded by hand are left alone until watched,
-     * so only the ones this worker downloaded are tracked and replaced.
+     * Keeps the wanted movies downloaded. Movies downloaded by hand are left alone, so only the
+     * ones this worker downloaded are tracked and replaced.
      */
     private suspend fun updateMovies(serverId: String, userId: UUID) {
         val movieCount = appPreferences.getValue(appPreferences.smartDownloadsMovieCount)
