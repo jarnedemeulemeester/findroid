@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.models.HomeItem
 import dev.jdtech.jellyfin.models.HomeSection
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.repository.JellyfinRepositoryOfflineImpl
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.utils.toView
 import java.util.UUID
@@ -25,6 +26,7 @@ class HomeViewModel
 @Inject
 constructor(
     val repository: JellyfinRepository,
+    private val downloads: JellyfinRepositoryOfflineImpl,
     val appPreferences: AppPreferences,
     val database: ServerDatabaseDao,
 ) : ViewModel() {
@@ -55,8 +57,52 @@ constructor(
                 loadViews()
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
+                loadDownloads()
             }
             _state.emit(_state.value.copy(isLoading = false))
+        }
+    }
+
+    /**
+     * Without the server, home shows what can still be played: the downloads to continue and the
+     * downloaded next up. The error stays in the header, with its retry button.
+     */
+    private suspend fun loadDownloads() {
+        try {
+            val resumeItems =
+                if (appPreferences.getValue(appPreferences.homeContinueWatching)) {
+                    downloads.getResumeItems()
+                } else {
+                    emptyList()
+                }
+            val nextUpItems =
+                if (appPreferences.getValue(appPreferences.homeNextUp)) {
+                    downloads.getNextUp()
+                } else {
+                    emptyList()
+                }
+            if (resumeItems.isEmpty() && nextUpItems.isEmpty()) return
+
+            _state.emit(
+                _state.value.copy(
+                    suggestionsSection = null,
+                    resumeSection =
+                        resumeItems
+                            .takeIf { it.isNotEmpty() }
+                            ?.let {
+                                HomeItem.Section(
+                                    HomeSection(uuidContinueWatching, uiTextContinueWatching, it)
+                                )
+                            },
+                    nextUpSection =
+                        nextUpItems
+                            .takeIf { it.isNotEmpty() }
+                            ?.let { HomeItem.Section(HomeSection(uuidNextUp, uiTextNextUp, it)) },
+                    views = emptyList(),
+                )
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
