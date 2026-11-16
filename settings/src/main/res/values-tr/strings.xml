@@ -51,10 +51,8 @@
     <string name="download_roaming">Dolaşımdayken indir</string>
     <string name="mpv_player_summary">Videoları oynatmak için deneysel mpv oynatıcısını kullanın. mpv daha fazla video, ses ve altyazı kedeğini destekler.</string>
     <string name="player_gestures_seek">İleri/geri sarma hareketi</string>
-    <string name="player_gestures_chapter_skip">Bölüm hareketi</string>
     <string name="player_gestures_vb_summary">Ekranın sağ ve sol tarafında aşağı yükarı kaydırarak ekran parlaklığı ve ses seviyenini kontrol ediniz</string>
     <string name="player_gestures_zoom_summary">Videoyu ekrana doldurmak için iki parmağınızla yakınlaştırın</string>
-    <string name="player_gestures_chapter_skip_summary">Sağ/Sol tarafa basılı tutarak bölüm (başlık) atlayın (2x hız özelliğini geçersiz kılar)</string>
     <string name="player_gestures_seek_summary">Yatay hareketle ileri veya geri kaydırın</string>
     <string name="player_start_maximized">Maksimize bir şekilde başlatın</string>
     <string name="player_start_maximized_summary">Videoyu varsayılan olarak maksimizie modda başlatın</string>

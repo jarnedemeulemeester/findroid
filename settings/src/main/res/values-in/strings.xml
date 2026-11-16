@@ -34,10 +34,8 @@
     <string name="player_gestures_vb">Genstur volume dan kecerahan</string>
     <string name="player_gestures_zoom">Gestur zoom</string>
     <string name="player_gestures_seek">Gestur mencari</string>
-    <string name="player_gestures_chapter_skip">Gestur bagian</string>
     <string name="player_gestures_vb_summary">Geser ke atas dan ke bawah di sisi kanan layar untuk mengubah volume dan di sisi kiri untuk mengubah kecerahan</string>
     <string name="player_gestures_zoom_summary">Cubit untuk memenuhi layar dengan video</string>
-    <string name="player_gestures_chapter_skip_summary">Tekan lama di sisi kiri/kanan untuk melewati bagian (menggantikan gestur kecepatan 2x)</string>
     <string name="player_gestures_seek_summary">Geser secara horizontal untuk maju atau mundur</string>
     <string name="player_brightness_remember">Ingat tingkat kecerahan</string>
     <string name="player_start_maximized">Mulai dalam mode besar</string>

@@ -53,9 +53,7 @@
     <string name="pref_player_trickplay">Trickplay</string>
     <string name="pref_player_chapter_markers">Značky kapitol</string>
     <string name="player_gestures_zoom">Gesta přiblížení</string>
-    <string name="player_gestures_chapter_skip">Gesta kapitol</string>
     <string name="player_gestures_zoom_summary">Přiblížením vyplníte obrazovku videem</string>
-    <string name="player_gestures_chapter_skip_summary">Dlouhým stisknutím levé/pravé strany přeskočíte kapitolu (přepíše gesto 2x rychlosti)</string>
     <string name="player_gestures_seek_summary">Přejeďte prstem vodorovně, abyste posunuli video dopředu nebo dozadu</string>
     <string name="player_start_maximized">Spustit maximalizované</string>
     <string name="player_start_maximized_summary">Otevřít video automaticky v maximalizovaném režimu</string>
