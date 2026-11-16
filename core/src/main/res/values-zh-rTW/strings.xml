@@ -108,4 +108,5 @@
     <string name="download_paused">已暖停</string>
     <string name="download_downloading">下載中…</string>
     <string name="download_failed">下載失敗</string>
+    <string name="discard">放棄</string>
 </resources>
