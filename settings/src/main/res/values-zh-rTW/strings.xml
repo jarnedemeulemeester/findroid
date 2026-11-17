@@ -83,7 +83,7 @@
     <string name="save">保存</string>
     <string name="media_segments">媒體片段</string>
     <string name="pref_player_media_segments_skip_button">顯示跳過按鈕</string>
-    <string name="pref_player_media_segments_skip_button_summary">提供一個按鈕以輕鬆跳過部分</string>
+    <string name="pref_player_media_segments_skip_button_summary">提供一個按鈕以輕鬆跳過片段</string>
     <string name="pref_player_media_segments_skip_button_type">顯示跳過按鈕的片段類型</string>
     <string name="pref_player_media_segments_skip_button_duration">顯示跳過按鈕的時長</string>
     <string name="pref_player_media_segments_auto_skip">自動跳過</string>
