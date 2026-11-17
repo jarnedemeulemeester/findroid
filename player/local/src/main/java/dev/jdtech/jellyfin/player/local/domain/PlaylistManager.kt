@@ -209,7 +209,10 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         val mediaSources = repository.getMediaSources(id, true)
         val mediaSource =
             if (mediaSourceIndex == null) {
-                mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
+                // Only use a local source when its download has finished, otherwise stream it
+                mediaSources.firstOrNull {
+                    it.type == FindroidSourceType.LOCAL && !it.path.endsWith(".download")
+                } ?: mediaSources[0]
             } else {
                 mediaSources[mediaSourceIndex]
             }
