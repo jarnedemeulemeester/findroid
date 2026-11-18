@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
+import dev.jdtech.jellyfin.settings.domain.models.PlayerBackend
 import java.io.File
 
 /** Clean up any files from before the mpv config and cache directories were changed. */
@@ -31,7 +32,7 @@ constructor(
         // Migrate to new player backend preference
         val defaultMpv = appPreferences.getValue(appPreferences.playerMpv)
         if (defaultMpv) {
-            appPreferences.setValue(appPreferences.playerBackend, "mpv")
+            appPreferences.setValue(appPreferences.playerBackend, PlayerBackend.MPV.value)
         }
     }
 

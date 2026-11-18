@@ -5,25 +5,31 @@ import androidx.media3.common.MimeTypes
 import dev.jdtech.jellyfin.models.FindroidChapter
 import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
+import dev.jdtech.jellyfin.models.FindroidMediaStream
 import dev.jdtech.jellyfin.models.FindroidMovie
 import dev.jdtech.jellyfin.models.FindroidSourceType
 import dev.jdtech.jellyfin.models.FindroidSources
 import dev.jdtech.jellyfin.player.core.domain.models.ExternalSubtitle
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerStream
 import dev.jdtech.jellyfin.player.core.domain.models.TrickplayInfo
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.DeviceProfile
 import org.jellyfin.sdk.model.api.ItemFields
 import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
 import timber.log.Timber
 
 class PlaylistManager @Inject internal constructor(private val repository: JellyfinRepository) {
     private var startItem: FindroidItem? = null
     private var items: List<FindroidItem> = emptyList()
     private val playerItems: MutableList<PlayerItem> = mutableListOf()
+    private var deviceProfile: DeviceProfile? = null
+    var maxStreamingBitrate: Int? = null
     var currentItemIndex: Int = 0
 
     suspend fun getInitialItem(
@@ -31,8 +37,11 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         itemKind: BaseItemKind,
         mediaSourceIndex: Int? = null,
         startFromBeginning: Boolean = false,
+        deviceProfile: DeviceProfile,
     ): PlayerItem? {
         Timber.d("Retrieving initial player item")
+
+        this.deviceProfile = deviceProfile
 
         val initialItem =
             when (itemKind) {
@@ -196,6 +205,24 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
         return playerItem
     }
 
+    suspend fun reloadPlayerItem(
+        playerItem: PlayerItem,
+        playbackPosition: Long,
+        audioStreamIndex: Int? = null,
+        subtitleStreamIndex: Int? = null,
+    ): PlayerItem? {
+        Timber.d("Reloading player item ${playerItem.itemId}")
+
+        val item = items.firstOrNull { it.id == playerItem.itemId } ?: return null
+        return item.toPlayerItem(
+            null,
+            playbackPosition,
+            playerItem.mediaSourceId,
+            audioStreamIndex,
+            subtitleStreamIndex,
+        )
+    }
+
     fun setCurrentMediaItemIndex(itemId: UUID) {
         currentItemIndex = items.indexOfFirst { it.id == itemId }
     }
@@ -203,23 +230,37 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
     private suspend fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
+        mediaSourceId: String? = null,
+        audioStreamIndex: Int? = null,
+        subtitleStreamIndex: Int? = null,
     ): PlayerItem {
         Timber.d("Converting FindroidItem ${this.id} to PlayerItem")
 
-        val mediaSources = repository.getMediaSources(id, true)
+        val mediaSources =
+            repository.getMediaSources(
+                itemId = id,
+                includePath = true,
+                deviceProfile = deviceProfile,
+                maxStreamingBitrate = maxStreamingBitrate,
+                mediaSourceId = mediaSourceId,
+                audioStreamIndex = audioStreamIndex,
+                subtitleStreamIndex = subtitleStreamIndex,
+            )
         val mediaSource =
-            if (mediaSourceIndex == null) {
-                mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
-            } else {
-                mediaSources[mediaSourceIndex]
+            when {
+                mediaSourceId != null ->
+                    mediaSources.firstOrNull {
+                        it.id == mediaSourceId && it.type == FindroidSourceType.LOCAL
+                    } ?: mediaSources.first { it.id == mediaSourceId }
+                mediaSourceIndex == null ->
+                    mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL }
+                        ?: mediaSources[0]
+                else -> mediaSources[mediaSourceIndex]
             }
+        val videoStream = mediaSource.mediaStreams.firstOrNull { it.type == MediaStreamType.VIDEO }
         val externalSubtitles =
             mediaSource.mediaStreams
-                .filter { mediaStream ->
-                    mediaStream.isExternal &&
-                        mediaStream.type == MediaStreamType.SUBTITLE &&
-                        !mediaStream.path.isNullOrBlank()
-                }
+                .filter { it.type == MediaStreamType.SUBTITLE && it.isLoadedAsExternal() }
                 .map { mediaStream ->
                     ExternalSubtitle(
                         mediaStream.title,
@@ -262,8 +303,35 @@ class PlaylistManager @Inject internal constructor(private val repository: Jelly
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
+            playSessionId = mediaSource.playSessionId,
+            isTranscoding = mediaSource.isTranscoding,
+            isDownloaded = mediaSource.type == FindroidSourceType.LOCAL,
+            videoBitrate = videoStream?.bitrate,
+            videoCodec = videoStream?.codec,
+            audioStreams = mediaSource.mediaStreams.toPlayerStreams(MediaStreamType.AUDIO),
+            subtitleStreams = mediaSource.mediaStreams.toPlayerStreams(MediaStreamType.SUBTITLE),
+            audioStreamIndex = mediaSource.defaultAudioStreamIndex,
+            subtitleStreamIndex = mediaSource.defaultSubtitleStreamIndex,
         )
     }
+
+    private fun FindroidMediaStream.isLoadedAsExternal(): Boolean =
+        (isExternal || deliveryMethod == SubtitleDeliveryMethod.EXTERNAL) && !path.isNullOrBlank()
+
+    private fun List<FindroidMediaStream>.toPlayerStreams(
+        type: MediaStreamType
+    ): List<PlayerStream> = filter {
+        it.type == type && it.index != null
+    }
+        .map { mediaStream ->
+            PlayerStream(
+                index = mediaStream.index!!,
+                title = mediaStream.displayTitle ?: mediaStream.title,
+                isEmbedded = !mediaStream.isExternal,
+                isExternal = type == MediaStreamType.SUBTITLE && mediaStream.isLoadedAsExternal(),
+                isBurnedIn = mediaStream.deliveryMethod == SubtitleDeliveryMethod.ENCODE,
+            )
+        }
 
     private fun List<FindroidChapter>.toPlayerChapters(): List<PlayerChapter> {
         return this.map { chapter ->

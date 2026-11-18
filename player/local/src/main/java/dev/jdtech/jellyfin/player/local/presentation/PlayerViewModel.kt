@@ -13,6 +13,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.Tracks
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -21,13 +22,17 @@ import dev.jdtech.jellyfin.models.FindroidSegment
 import dev.jdtech.jellyfin.models.FindroidSegmentType
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerChapter
 import dev.jdtech.jellyfin.player.core.domain.models.PlayerItem
+import dev.jdtech.jellyfin.player.core.domain.models.PlayerStream
 import dev.jdtech.jellyfin.player.core.domain.models.Trickplay
 import dev.jdtech.jellyfin.player.local.R
+import dev.jdtech.jellyfin.player.local.deviceprofile.DeviceProfiles
 import dev.jdtech.jellyfin.player.local.domain.PlaylistManager
+import dev.jdtech.jellyfin.player.local.domain.VideoQualityOptions
 import dev.jdtech.jellyfin.player.local.mpv.MPVPlayer
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.settings.domain.Constants
+import dev.jdtech.jellyfin.settings.domain.models.PlayerBackend
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -43,6 +48,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.PlayMethod
 import timber.log.Timber
 
 @HiltViewModel
@@ -57,6 +63,10 @@ constructor(
 ) : ViewModel(), Player.Listener {
     val player: Player
 
+    private val playerBackend =
+        PlayerBackend.fromValue(appPreferences.getValue(appPreferences.playerBackend))
+    private val deviceProfile by lazy { DeviceProfiles.create(playerBackend) }
+
     private val _uiState =
         MutableStateFlow(
             UiState(
@@ -66,6 +76,7 @@ constructor(
                 currentTrickplay = null,
                 currentChapters = emptyList(),
                 fileLoaded = false,
+                currentItemIsDownloaded = false,
             )
         )
     val uiState = _uiState.asStateFlow()
@@ -80,9 +91,18 @@ constructor(
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>,
         val fileLoaded: Boolean,
+        val currentItemIsDownloaded: Boolean,
     )
 
     private var items: MutableList<PlayerItem> = mutableListOf()
+
+    private data class StreamSelection(
+        val itemId: UUID,
+        val audioStreamIndex: Int?,
+        val subtitleStreamIndex: Int?,
+    )
+
+    private var pendingStreamSelection: StreamSelection? = null
 
     private val trackSelector = DefaultTrackSelector(application)
     var playWhenReady = true
@@ -102,7 +122,22 @@ constructor(
 
     var isInPictureInPictureMode: Boolean = false
 
+    var canTranscodeVideo: Boolean = true
+        private set
+
     init {
+        playlistManager.maxStreamingBitrate =
+            appPreferences.getValue(appPreferences.playerMaxStreamingBitrate).takeIf { it > 0 }
+        viewModelScope.launch {
+            try {
+                repository.getUserPolicy()?.let {
+                    canTranscodeVideo = it.enableVideoPlaybackTranscoding
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+
         segmentsSkipButton = appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButton)
         segmentsSkipButtonTypes =
             appPreferences.getValue(appPreferences.playerMediaSegmentsSkipButtonType)
@@ -132,10 +167,9 @@ constructor(
                 )
         )
 
-        val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
         player =
             when (playerBackend) {
-                "exoplayer" -> {
+                PlayerBackend.EXOPLAYER -> {
                     val renderersFactory =
                         DefaultRenderersFactory(application)
                             .setExtensionRendererMode(
@@ -153,7 +187,7 @@ constructor(
                         .setPauseAtEndOfMediaItems(true)
                         .build()
                 }
-                "mpv" -> {
+                PlayerBackend.MPV -> {
                     MPVPlayer.Builder(application)
                         .setAudioAttributes(audioAttributes, true)
                         .setTrackSelectionParameters(trackSelector.parameters)
@@ -169,8 +203,6 @@ constructor(
                         .setHwDec(appPreferences.getValue(appPreferences.playerMpvHwdec))
                         .build()
                 }
-
-                else -> throw RuntimeException("$playerBackend is not a valid player backend")
             }
     }
 
@@ -185,6 +217,7 @@ constructor(
                         itemKind = BaseItemKind.fromName(itemKind),
                         mediaSourceIndex = null,
                         startFromBeginning = startFromBeginning,
+                        deviceProfile = deviceProfile,
                     )
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -222,6 +255,165 @@ constructor(
         }
     }
 
+    val maxStreamingBitrate: Int?
+        get() = playlistManager.maxStreamingBitrate
+
+    fun getVideoQualityOptions(): List<Int> {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId)
+        return VideoQualityOptions.get(item?.videoBitrate, item?.videoCodec)
+    }
+
+    fun setMaxStreamingBitrate(bitrate: Int?) {
+        if (bitrate == playlistManager.maxStreamingBitrate) return
+        playlistManager.maxStreamingBitrate = bitrate
+        appPreferences.setValue(appPreferences.playerMaxStreamingBitrate, bitrate ?: 0)
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return
+        reloadItems(getSelectedAudioStreamIndex(item), getSelectedSubtitleStreamIndex(item))
+    }
+
+    val isTranscoding: Boolean
+        get() = getPlayerItem(player.currentMediaItem?.mediaId)?.isTranscoding == true
+
+    fun getStreams(trackType: @C.TrackType Int): List<PlayerStream> {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return emptyList()
+        return when (trackType) {
+            C.TRACK_TYPE_AUDIO -> item.audioStreams
+            C.TRACK_TYPE_TEXT -> item.subtitleStreams
+            else -> emptyList()
+        }
+    }
+
+    fun getSelectedStreamIndex(trackType: @C.TrackType Int): Int? {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return null
+        return when (trackType) {
+            C.TRACK_TYPE_AUDIO -> getSelectedAudioStreamIndex(item)
+            C.TRACK_TYPE_TEXT -> getSelectedSubtitleStreamIndex(item)
+            else -> null
+        }
+    }
+
+    // Index -1 disables subtitles
+    fun selectStream(trackType: @C.TrackType Int, index: Int) {
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return
+        val audioStreamIndex = getSelectedAudioStreamIndex(item)
+        val subtitleStreamIndex = getSelectedSubtitleStreamIndex(item)
+        when (trackType) {
+            C.TRACK_TYPE_AUDIO -> {
+                if (index != audioStreamIndex) reloadItems(index, subtitleStreamIndex)
+            }
+            C.TRACK_TYPE_TEXT -> {
+                if (index == subtitleStreamIndex) return
+                val stream = item.subtitleStreams.firstOrNull { it.index == index }
+                val isBurnedIn =
+                    item.subtitleStreams.any { it.index == subtitleStreamIndex && it.isBurnedIn }
+                if (isBurnedIn || stream?.isBurnedIn == true) {
+                    reloadItems(audioStreamIndex, index)
+                } else {
+                    selectTrackGroup(
+                        C.TRACK_TYPE_TEXT,
+                        getTrackGroups(C.TRACK_TYPE_TEXT)
+                            .getOrNull(item.playerSubtitleStreams.indexOf(stream)),
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getTrackGroups(trackType: @C.TrackType Int): List<Tracks.Group> =
+        player.currentTracks.groups.filter { it.type == trackType }
+
+    private fun getSelectedAudioStreamIndex(item: PlayerItem): Int? {
+        if (item.isTranscoding) return item.audioStreamIndex
+        val groupIndex = getTrackGroups(C.TRACK_TYPE_AUDIO).indexOfFirst { it.isSelected }
+        return item.audioStreams.getOrNull(groupIndex)?.index
+    }
+
+    private fun getSelectedSubtitleStreamIndex(item: PlayerItem): Int {
+        val groupIndex = getTrackGroups(C.TRACK_TYPE_TEXT).indexOfFirst { it.isSelected }
+        item.playerSubtitleStreams.getOrNull(groupIndex)?.let {
+            return it.index
+        }
+        // Burned in subtitles have no player track
+        val burnedIn =
+            item.subtitleStreams.firstOrNull {
+                it.index == item.subtitleStreamIndex && it.isBurnedIn
+            }
+        return if (item.isTranscoding && burnedIn != null) burnedIn.index else -1
+    }
+
+    private fun applyStreamSelection(item: PlayerItem, selection: StreamSelection) {
+        if (!item.isTranscoding) {
+            val audioGroupIndex =
+                item.audioStreams.indexOfFirst { it.index == selection.audioStreamIndex }
+            getTrackGroups(C.TRACK_TYPE_AUDIO).getOrNull(audioGroupIndex)?.let {
+                selectTrackGroup(C.TRACK_TYPE_AUDIO, it)
+            }
+        }
+        if (selection.subtitleStreamIndex != null) {
+            val textGroupIndex =
+                item.playerSubtitleStreams.indexOfFirst {
+                    it.index == selection.subtitleStreamIndex
+                }
+            selectTrackGroup(
+                C.TRACK_TYPE_TEXT,
+                getTrackGroups(C.TRACK_TYPE_TEXT).getOrNull(textGroupIndex),
+            )
+        }
+    }
+
+    override fun onTracksChanged(tracks: Tracks) {
+        val selection = pendingStreamSelection ?: return
+        val item = getPlayerItem(player.currentMediaItem?.mediaId) ?: return
+        if (item.itemId != selection.itemId) return
+        // mpv adds external subtitles one by one, wait for all of them
+        if (getTrackGroups(C.TRACK_TYPE_TEXT).size < item.playerSubtitleStreams.size) return
+
+        pendingStreamSelection = null
+        applyStreamSelection(item, selection)
+    }
+
+    private fun reloadItems(audioStreamIndex: Int?, subtitleStreamIndex: Int?) {
+        val index = items.indexOfFirst { it.itemId.toString() == player.currentMediaItem?.mediaId }
+        if (index == -1) return
+        val currentItem = items[index]
+        val position = player.currentPosition
+
+        viewModelScope.launch {
+            try {
+                val newItems = items.map { item ->
+                    if (item == currentItem) {
+                        playlistManager.reloadPlayerItem(
+                            item,
+                            position,
+                            audioStreamIndex,
+                            subtitleStreamIndex,
+                        )
+                    } else {
+                        playlistManager.reloadPlayerItem(item, 0L)
+                    } ?: item
+                }
+                items = newItems.toMutableList()
+                pendingStreamSelection =
+                    StreamSelection(currentItem.itemId, audioStreamIndex, subtitleStreamIndex)
+                player.setMediaItems(items.map { it.toMediaItem() }, index, position)
+                player.prepare()
+
+                if (currentItem.isTranscoding) {
+                    currentItem.playSessionId?.let { repository.stopEncoding(it) }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    private fun getPlayerItem(mediaId: String?): PlayerItem? = items.firstOrNull {
+        it.itemId.toString() == mediaId
+    }
+
+    private val PlayerItem?.playMethod: PlayMethod
+        get() = if (this?.isTranscoding == true) PlayMethod.TRANSCODE else PlayMethod.DIRECT_PLAY
+
     private fun PlayerItem.toMediaItem(): MediaItem {
         val streamUrl = mediaSourceUri
         val mediaSubtitles = externalSubtitles.map { externalSubtitle ->
@@ -249,6 +441,7 @@ constructor(
     @OptIn(DelicateCoroutinesApi::class)
     private fun releasePlayer() {
         val mediaId = player.currentMediaItem?.mediaId
+        val playSessionId = getPlayerItem(mediaId)?.playSessionId
         val position = player.currentPosition
         val duration = player.duration
         GlobalScope.launch {
@@ -260,6 +453,7 @@ constructor(
                         UUID.fromString(mediaId),
                         position.times(10000),
                         position.div(duration.toFloat()).times(100).toInt(),
+                        playSessionId,
                     )
                 }
             } catch (e: Exception) {
@@ -280,12 +474,15 @@ constructor(
         viewModelScope.launch(Dispatchers.Main) {
             savedStateHandle["position"] = player.currentPosition
             if (player.currentMediaItem != null && player.currentMediaItem!!.mediaId.isNotEmpty()) {
+                val playerItem = getPlayerItem(player.currentMediaItem!!.mediaId)
                 val itemId = UUID.fromString(player.currentMediaItem!!.mediaId)
                 try {
                     repository.postPlaybackProgress(
                         itemId,
                         player.currentPosition.times(10000),
                         !player.isPlaying,
+                        playerItem?.playSessionId,
+                        playerItem.playMethod,
                     )
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -365,10 +562,15 @@ constructor(
                                 currentSegment = null,
                                 currentChapters = item.chapters,
                                 fileLoaded = false,
+                                currentItemIsDownloaded = item.isDownloaded,
                             )
                         }
 
-                        repository.postPlaybackStart(item.itemId)
+                        repository.postPlaybackStart(
+                            item.itemId,
+                            item.playSessionId,
+                            item.playMethod,
+                        )
 
                         if (segmentsSkipButton || segmentsAutoSkip) {
                             getSegments(item.itemId)
@@ -422,6 +624,7 @@ constructor(
                         UUID.fromString(mediaId),
                         position.times(10000),
                         position.div(duration.toFloat()).times(100).toInt(),
+                        getPlayerItem(mediaId)?.playSessionId,
                     )
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -461,28 +664,29 @@ constructor(
 
     fun switchToTrack(trackType: @C.TrackType Int, index: Int) {
         // Index -1 equals disable track
-        if (index == -1) {
-            player.trackSelectionParameters =
+        selectTrackGroup(
+            trackType,
+            player.currentTracks.groups
+                .filter { it.type == trackType && it.isSupported }
+                .getOrNull(index),
+        )
+    }
+
+    private fun selectTrackGroup(trackType: @C.TrackType Int, group: Tracks.Group?) {
+        player.trackSelectionParameters =
+            if (group == null) {
                 player.trackSelectionParameters
                     .buildUpon()
                     .clearOverridesOfType(trackType)
                     .setTrackTypeDisabled(trackType, true)
                     .build()
-        } else {
-            player.trackSelectionParameters =
+            } else {
                 player.trackSelectionParameters
                     .buildUpon()
-                    .setOverrideForType(
-                        TrackSelectionOverride(
-                            player.currentTracks.groups
-                                .filter { it.type == trackType && it.isSupported }[index]
-                                .mediaTrackGroup,
-                            0,
-                        )
-                    )
+                    .setOverrideForType(TrackSelectionOverride(group.mediaTrackGroup, 0))
                     .setTrackTypeDisabled(trackType, false)
                     .build()
-        }
+            }
     }
 
     fun selectSpeed(speed: Float) {

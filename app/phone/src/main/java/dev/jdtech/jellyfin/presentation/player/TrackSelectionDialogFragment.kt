@@ -24,6 +24,9 @@ class TrackSelectionDialogFragment(
                 C.TRACK_TYPE_TEXT -> R.string.select_subtitle_track
                 else -> throw IllegalStateException("TrackType must be AUDIO or TEXT")
             }
+        if (viewModel.isTranscoding) {
+            return createStreamDialog(titleResource)
+        }
         val tracksGroups =
             viewModel.player.currentTracks.groups.filter { it.type == type && it.isSupported }
         return activity?.let { activity ->
@@ -39,6 +42,30 @@ class TrackSelectionDialogFragment(
                     which - 1, // Minus 1 to get the correct group without the "None" item. "None"
                     // becomes -1
                 )
+                dialog.dismiss()
+            }
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    // The transcoded stream only contains the selected streams, so list the ones of the server
+    private fun createStreamDialog(titleResource: Int): Dialog {
+        val streams = viewModel.getStreams(type)
+        val indexes = streams.map { it.index }
+        val titles = streams.map { it.title }
+        val (allIndexes, allTitles) =
+            if (type == C.TRACK_TYPE_TEXT) {
+                (listOf(-1) + indexes) to (listOf(getString(R.string.none)) + titles)
+            } else {
+                indexes to titles
+            }
+        return activity?.let { activity ->
+            val builder = MaterialAlertDialogBuilder(activity)
+            builder.setTitle(getString(titleResource)).setSingleChoiceItems(
+                allTitles.toTypedArray(),
+                allIndexes.indexOf(viewModel.getSelectedStreamIndex(type)),
+            ) { dialog, which ->
+                viewModel.selectStream(type, allIndexes[which])
                 dialog.dismiss()
             }
             builder.create()
