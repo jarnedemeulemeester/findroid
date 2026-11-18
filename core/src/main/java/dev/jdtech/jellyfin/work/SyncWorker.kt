@@ -35,6 +35,7 @@ constructor(
             )
 
         val servers = database.getServers()
+        var allSynced = true
 
         for (server in servers) {
             val serverWithAddressesAndUsers =
@@ -57,19 +58,24 @@ constructor(
                         it.toFindroidEpisode(database, user.id)
                     }
 
-                syncUserData(jellyfinApi, user, movies)
-                syncUserData(jellyfinApi, user, episodes)
+                if (!syncUserData(jellyfinApi, user, movies)) allSynced = false
+                if (!syncUserData(jellyfinApi, user, episodes)) allSynced = false
             }
         }
 
-        return Result.success()
+        return when {
+            allSynced -> Result.success()
+            runAttemptCount < MAX_RETRIES -> Result.retry()
+            else -> Result.failure()
+        }
     }
 
     private suspend fun syncUserData(
         jellyfinApi: JellyfinApi,
         user: User,
         items: List<FindroidItem>,
-    ) {
+    ): Boolean {
+        var allSynced = true
         for (item in items) {
             val userData = database.getUserDataToBeSynced(user.id, item.id) ?: continue
 
@@ -86,7 +92,14 @@ constructor(
                 )
 
                 database.setUserDataToBeSynced(user.id, item.id, false)
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+                allSynced = false
+            }
         }
+        return allSynced
+    }
+
+    companion object {
+        private const val MAX_RETRIES = 5
     }
 }
