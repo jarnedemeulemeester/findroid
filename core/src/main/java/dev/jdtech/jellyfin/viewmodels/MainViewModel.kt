@@ -3,6 +3,8 @@ package dev.jdtech.jellyfin.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jdtech.jellyfin.connectivity.ConnectivityMonitor
+import dev.jdtech.jellyfin.connectivity.ConnectivityState
 import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.models.Server
 import dev.jdtech.jellyfin.models.User
@@ -13,13 +15,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel
 @Inject
-constructor(private val appPreferences: AppPreferences, private val database: ServerDatabaseDao) :
-    ViewModel() {
+constructor(
+    private val appPreferences: AppPreferences,
+    private val database: ServerDatabaseDao,
+    private val connectivityMonitor: ConnectivityMonitor,
+) : ViewModel() {
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
 
@@ -34,6 +40,21 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
 
     init {
         check()
+        observeConnectivity()
+    }
+
+    private fun observeConnectivity() {
+        viewModelScope.launch {
+            connectivityMonitor.state.collect { connectivityState ->
+                _state.update {
+                    it.copy(
+                        isOfflineMode =
+                        appPreferences.getValue(appPreferences.offlineMode) ||
+                            connectivityState != ConnectivityState.Online
+                    )
+                }
+            }
+        }
     }
 
     fun loadServerAndUser() {
@@ -92,7 +113,9 @@ constructor(private val appPreferences: AppPreferences, private val database: Se
                         hasServers = flags.hasServers,
                         hasCurrentServer = flags.hasCurrentServer,
                         hasCurrentUser = flags.hasCurrentUser,
-                        isOfflineMode = offlineMode,
+                        isOfflineMode =
+                            offlineMode ||
+                                connectivityMonitor.state.value != ConnectivityState.Online,
                     )
                 }
                 .collect { mainState -> _state.emit(mainState) }
