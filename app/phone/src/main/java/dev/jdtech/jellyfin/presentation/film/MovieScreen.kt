@@ -22,6 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,9 +46,11 @@ import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyMovie
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.movie.MovieAction
+import dev.jdtech.jellyfin.film.presentation.movie.MovieEvent
 import dev.jdtech.jellyfin.film.presentation.movie.MovieState
 import dev.jdtech.jellyfin.film.presentation.movie.MovieViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
+import dev.jdtech.jellyfin.presentation.film.components.DeleteFromServerDialog
 import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.InfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
@@ -77,6 +82,8 @@ fun MovieScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(true) { viewModel.loadMovie(movieId = movieId) }
 
     LaunchedEffect(state.movie) { state.movie?.let { movie -> downloaderViewModel.update(movie) } }
@@ -96,9 +103,28 @@ fun MovieScreen(
         }
     }
 
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is MovieEvent.ItemDeleted -> {
+                Toast.makeText(
+                        context,
+                        CoreR.string.delete_from_server_success,
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
+                navigateBack()
+            }
+            is MovieEvent.DeleteFailed -> {
+                Toast.makeText(context, CoreR.string.delete_from_server_failed, Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+
     MovieScreenLayout(
         state = state,
         downloaderState = downloaderState,
+        onDeleteClick = { showDeleteDialog = true },
         onAction = { action ->
             when (action) {
                 is MovieAction.Play -> {
@@ -124,6 +150,17 @@ fun MovieScreen(
         },
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
+
+    if (showDeleteDialog) {
+        DeleteFromServerDialog(
+            itemName = state.movie?.name.orEmpty(),
+            onConfirm = {
+                showDeleteDialog = false
+                viewModel.onAction(MovieAction.DeleteFromServer)
+            },
+            onDismiss = { showDeleteDialog = false },
+        )
+    }
 }
 
 @Composable
@@ -132,6 +169,7 @@ private fun MovieScreenLayout(
     downloaderState: DownloaderState,
     onAction: (MovieAction) -> Unit,
     onDownloaderAction: (DownloaderAction) -> Unit,
+    onDeleteClick: () -> Unit = {},
 ) {
     val safePadding = rememberSafePadding()
 
@@ -244,6 +282,8 @@ private fun MovieScreenLayout(
                         onDownloadDeleteClick = {
                             onDownloaderAction(DownloaderAction.DeleteDownload(movie))
                         },
+                        canDeleteFromServer = state.canDeleteFromServer,
+                        onDeleteClick = onDeleteClick,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))

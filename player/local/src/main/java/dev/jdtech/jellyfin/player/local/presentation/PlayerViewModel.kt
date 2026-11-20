@@ -80,6 +80,7 @@ constructor(
         val currentTrickplay: Trickplay?,
         val currentChapters: List<PlayerChapter>,
         val fileLoaded: Boolean,
+        val canDeleteFromServer: Boolean = false,
     )
 
     private var items: MutableList<PlayerItem> = mutableListOf()
@@ -172,6 +173,17 @@ constructor(
 
                 else -> throw RuntimeException("$playerBackend is not a valid player backend")
             }
+
+        viewModelScope.launch {
+            val canDeleteFromServer =
+                try {
+                    repository.canDeleteFromServer()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    false
+                }
+            _uiState.update { it.copy(canDeleteFromServer = canDeleteFromServer) }
+        }
     }
 
     fun initializePlayer(itemId: UUID, itemKind: String, startFromBeginning: Boolean) {
@@ -459,6 +471,47 @@ constructor(
         releasePlayer()
     }
 
+    private val currentItemId: UUID?
+        get() =
+            player.currentMediaItem
+                ?.mediaId
+                ?.takeIf { it.isNotEmpty() }
+                ?.let { UUID.fromString(it) }
+
+    private var isDeletingItem = false
+
+    /**
+     * Delete the item that is currently playing from the server.
+     *
+     * Playback is paused while the request is in flight. On success a [PlayerEvents.ItemDeleted]
+     * event is sent so the UI can close the player, on failure the previous playback state is
+     * restored and a [PlayerEvents.ItemDeleteFailed] event is sent.
+     */
+    fun deleteCurrentItem() {
+        val itemId = currentItemId ?: return
+        if (isDeletingItem) return
+        isDeletingItem = true
+
+        val position = player.currentPosition
+        val wasPlaying = player.isPlaying
+        player.pause()
+
+        viewModelScope.launch {
+            try {
+                repository.deleteItem(itemId)
+                eventsChannel.send(PlayerEvents.ItemDeleted)
+            } catch (e: Exception) {
+                Timber.e(e)
+                // The item is still on the server, resume where the user left off
+                player.seekTo(position)
+                player.playWhenReady = wasPlaying
+                eventsChannel.send(PlayerEvents.ItemDeleteFailed)
+            } finally {
+                isDeletingItem = false
+            }
+        }
+    }
+
     fun switchToTrack(trackType: @C.TrackType Int, index: Int) {
         // Index -1 equals disable track
         if (index == -1) {
@@ -678,6 +731,10 @@ constructor(
 
 sealed interface PlayerEvents {
     data object NavigateBack : PlayerEvents
+
+    data object ItemDeleted : PlayerEvents
+
+    data object ItemDeleteFailed : PlayerEvents
 
     data class IsPlayingChanged(val isPlaying: Boolean) : PlayerEvents
 }

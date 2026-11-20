@@ -15,6 +15,8 @@ sealed interface MovieAction {
 
     data object UnmarkAsFavorite : MovieAction
 
+    data object DeleteFromServer : MovieAction
+
     data object OnBackClick : MovieAction
 
     data object OnHomeClick : MovieAction

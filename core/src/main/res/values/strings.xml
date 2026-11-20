@@ -93,6 +93,22 @@
     <string name="cancel_download_message">Are you sure you want to cancel the download?</string>
     <string name="delete_download">Delete download</string>
     <string name="delete_download_message">Are you sure you want to delete this download from you device?</string>
+    <string name="delete_from_server">Delete from server</string>
+    <string name="delete_from_server_title">Delete from server?</string>
+    <string name="delete_from_server_message">Do you want to permanently delete \"%1$s\" from the server? The media file will be removed from disk and this cannot be undone.</string>
+    <string name="delete_from_server_success">Deleted from server</string>
+    <string name="delete_from_server_failed">Failed to delete from server</string>
+    <string name="delete_episodes">Delete episodes</string>
+    <string name="delete_episodes_title">Select episodes to delete</string>
+    <string name="delete_episodes_selected">%1$d selected</string>
+    <string name="delete_episodes_confirm">Delete (%1$d)</string>
+    <string name="delete_episodes_success">Deleted %1$d episode(s)</string>
+    <string name="delete_episodes_partial">Deleted %1$d of %2$d episodes</string>
+    <string name="delete_episodes_failed">Failed to delete episodes</string>
+    <string name="episodes_load_failed">Failed to load episodes</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="no_episodes">No episodes</string>
     <string name="stop_download">Stop download</string>
     <string name="privacy_policy_notice">By using Findroid you agree with the <a href='https://raw.githubusercontent.com/jarnedemeulemeester/findroid/main/PRIVACY'>Privacy Policy</a> which states that we do not collect any data</string>
     <string name="live_tv">Live TV</string>

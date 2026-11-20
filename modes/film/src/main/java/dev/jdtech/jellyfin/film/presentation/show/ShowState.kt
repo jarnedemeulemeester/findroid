@@ -12,5 +12,8 @@ data class ShowState(
     val actors: List<FindroidItemPerson> = emptyList(),
     val director: FindroidItemPerson? = null,
     val writers: List<FindroidItemPerson> = emptyList(),
+    val canDeleteFromServer: Boolean = false,
+    val episodesForDeletion: List<FindroidEpisode> = emptyList(),
+    val isLoadingEpisodes: Boolean = false,
     val error: Exception? = null,
 )

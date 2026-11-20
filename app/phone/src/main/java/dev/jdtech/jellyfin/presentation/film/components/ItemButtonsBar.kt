@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
@@ -52,6 +53,9 @@ fun ItemButtonsBar(
     modifier: Modifier = Modifier,
     downloaderState: DownloaderState? = null,
     canPlay: Boolean = true,
+    canDeleteFromServer: Boolean = false,
+    onDeleteClick: (() -> Unit)? = null,
+    onDeleteEpisodesClick: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -149,6 +153,24 @@ fun ItemButtonsBar(
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_heart),
                                 contentDescription = null,
+                            )
+                        }
+                    }
+                }
+                if (canDeleteFromServer) {
+                    if (onDeleteEpisodesClick != null) {
+                        FilledTonalIconButton(onClick = onDeleteEpisodesClick) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_delete_forever),
+                                contentDescription = stringResource(CoreR.string.delete_episodes),
+                            )
+                        }
+                    } else if (onDeleteClick != null) {
+                        FilledTonalIconButton(onClick = onDeleteClick) {
+                            Icon(
+                                painter = painterResource(CoreR.drawable.ic_delete_forever),
+                                contentDescription =
+                                    stringResource(CoreR.string.delete_from_server),
                             )
                         }
                     }

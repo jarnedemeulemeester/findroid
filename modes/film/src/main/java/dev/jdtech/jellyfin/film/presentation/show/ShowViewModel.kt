@@ -10,16 +10,23 @@ import dev.jdtech.jellyfin.repository.JellyfinRepository
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.PersonKind
+import timber.log.Timber
 
 @HiltViewModel
 class ShowViewModel @Inject constructor(private val repository: JellyfinRepository) : ViewModel() {
     private val _state = MutableStateFlow(ShowState())
     val state = _state.asStateFlow()
+
+    private val eventsChannel = Channel<ShowEvent>()
+    val events = eventsChannel.receiveAsFlow()
 
     lateinit var showId: UUID
 
@@ -33,6 +40,13 @@ class ShowViewModel @Inject constructor(private val repository: JellyfinReposito
                 val actors = getActors(show)
                 val director = getDirector(show)
                 val writers = getWriters(show)
+                val canDeleteFromServer =
+                    try {
+                        repository.canDeleteFromServer()
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                        false
+                    }
                 _state.emit(
                     _state.value.copy(
                         show = show,
@@ -41,6 +55,7 @@ class ShowViewModel @Inject constructor(private val repository: JellyfinReposito
                         actors = actors,
                         director = director,
                         writers = writers,
+                        canDeleteFromServer = canDeleteFromServer,
                     )
                 )
             } catch (e: Exception) {
@@ -101,7 +116,60 @@ class ShowViewModel @Inject constructor(private val repository: JellyfinReposito
                     loadShow(showId)
                 }
             }
+            is ShowAction.LoadEpisodesForDeletion -> loadEpisodesForDeletion()
+            is ShowAction.DeleteEpisodes -> deleteEpisodes(action.episodeIds)
             else -> Unit
+        }
+    }
+
+    private fun loadEpisodesForDeletion() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingEpisodes = true) }
+            try {
+                val seasons = _state.value.seasons
+                val episodes =
+                    seasons
+                        .flatMap { season ->
+                            repository.getEpisodes(seriesId = showId, seasonId = season.id)
+                        }
+                        .sortedWith(
+                            compareBy<FindroidEpisode>(
+                                { it.parentIndexNumber },
+                                { it.indexNumber },
+                            )
+                        )
+                _state.update {
+                    it.copy(episodesForDeletion = episodes, isLoadingEpisodes = false)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                _state.update { it.copy(isLoadingEpisodes = false) }
+                eventsChannel.send(ShowEvent.EpisodesLoadFailed)
+            }
+        }
+    }
+
+    private fun deleteEpisodes(episodeIds: List<UUID>) {
+        if (episodeIds.isEmpty()) return
+        viewModelScope.launch {
+            val deletedCount =
+                try {
+                    repository.deleteItems(episodeIds)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    eventsChannel.send(ShowEvent.DeleteFailed)
+                    return@launch
+                }
+            if (deletedCount == 0) {
+                eventsChannel.send(ShowEvent.DeleteFailed)
+            } else {
+                eventsChannel.send(
+                    ShowEvent.EpisodesDeleted(
+                        deletedCount = deletedCount,
+                        requestedCount = episodeIds.size,
+                    )
+                )
+            }
         }
     }
 }

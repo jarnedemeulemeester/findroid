@@ -22,4 +22,9 @@
     <string name="player_controls_skip_preview">Skip preview</string>
     <string name="player_controls_skip_commercial">Skip commercial</string>
     <string name="player_controls_skip_unknown">Skip</string>
+    <string name="player_controls_delete_from_server">Delete from server</string>
+    <string name="player_delete_from_server_title">Delete from server?</string>
+    <string name="player_delete_from_server_message">Do you want to permanently delete \"%1$s\" from the server? The media file will be removed from disk and this cannot be undone.</string>
+    <string name="player_delete_from_server_success">Deleted from server</string>
+    <string name="player_delete_from_server_failed">Failed to delete from server</string>
 </resources>

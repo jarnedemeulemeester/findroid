@@ -11,11 +11,14 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.PersonKind
+import timber.log.Timber
 
 @HiltViewModel
 class EpisodeViewModel
@@ -28,6 +31,9 @@ constructor(
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.asStateFlow()
 
+    private val eventsChannel = Channel<EpisodeEvent>()
+    val events = eventsChannel.receiveAsFlow()
+
     lateinit var episodeId: UUID
 
     fun loadEpisode(episodeId: UUID) {
@@ -38,12 +44,20 @@ constructor(
                 val videoMetadata = videoMetadataParser.parse(episode.sources.first())
                 val actors = getActors(episode)
                 val displayExtraInfo = appPreferences.getValue(appPreferences.displayExtraInfo)
+                val canDeleteFromServer =
+                    try {
+                        repository.canDeleteFromServer()
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                        false
+                    }
                 _state.emit(
                     _state.value.copy(
                         episode = episode,
                         videoMetadata = videoMetadata,
                         actors = actors,
                         displayExtraInfo = displayExtraInfo,
+                        canDeleteFromServer = canDeleteFromServer,
                     )
                 )
             } catch (e: Exception) {
@@ -85,6 +99,17 @@ constructor(
                 viewModelScope.launch {
                     repository.unmarkAsFavorite(episodeId)
                     loadEpisode(episodeId)
+                }
+            }
+            is EpisodeAction.DeleteFromServer -> {
+                viewModelScope.launch {
+                    try {
+                        repository.deleteItem(episodeId)
+                        eventsChannel.send(EpisodeEvent.ItemDeleted)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                        eventsChannel.send(EpisodeEvent.DeleteFailed)
+                    }
                 }
             }
             else -> Unit

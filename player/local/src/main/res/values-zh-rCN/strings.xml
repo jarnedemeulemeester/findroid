@@ -22,5 +22,10 @@
     <string name="player_controls_skip_recap">跳过回顾</string>
     <string name="player_controls_skip_commercial">跳过广告</string>
     <string name="player_controls_skip_unknown">跳过</string>
+    <string name="player_controls_delete_from_server">从服务器删除</string>
+    <string name="player_delete_from_server_title">从服务器删除？</string>
+    <string name="player_delete_from_server_message">确定要从服务器永久删除“%1$s”吗？媒体文件会被从磁盘移除，且无法恢复。</string>
+    <string name="player_delete_from_server_success">已从服务器删除</string>
+    <string name="player_delete_from_server_failed">从服务器删除失败</string>
     <string name="player_controls_skip_preview">跳过预告</string>
 </resources>

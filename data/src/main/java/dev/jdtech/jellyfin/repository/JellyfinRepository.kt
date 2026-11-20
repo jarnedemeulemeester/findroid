@@ -110,6 +110,31 @@ interface JellyfinRepository {
 
     suspend fun markAsUnplayed(itemId: UUID)
 
+    /**
+     * Delete an item from the server. This removes the media file(s) from the server's storage.
+     * Requires the current user to have content deletion permissions.
+     *
+     * @param [itemId] the id of the item to delete
+     */
+    suspend fun deleteItem(itemId: UUID)
+
+    /**
+     * Delete multiple items from the server.
+     *
+     * Items are deleted one by one so a single failure does not abort the whole batch.
+     *
+     * @param [itemIds] the ids of the items to delete
+     * @return the number of items that were deleted successfully
+     */
+    suspend fun deleteItems(itemIds: List<UUID>): Int
+
+    /**
+     * Check whether the current user is allowed to delete media from the server.
+     *
+     * @return true when the user is an administrator with content deletion enabled
+     */
+    suspend fun canDeleteFromServer(): Boolean
+
     fun getBaseUrl(): String
 
     suspend fun updateDeviceName(name: String)

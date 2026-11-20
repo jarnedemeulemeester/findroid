@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.presentation.film
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,9 +49,11 @@ import dev.jdtech.jellyfin.core.presentation.downloader.DownloaderViewModel
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyEpisode
 import dev.jdtech.jellyfin.core.presentation.dummy.dummyVideoMetadata
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeAction
+import dev.jdtech.jellyfin.film.presentation.episode.EpisodeEvent
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeState
 import dev.jdtech.jellyfin.film.presentation.episode.EpisodeViewModel
 import dev.jdtech.jellyfin.presentation.film.components.ActorsRow
+import dev.jdtech.jellyfin.presentation.film.components.DeleteFromServerDialog
 import dev.jdtech.jellyfin.presentation.film.components.ExtraInfoText
 import dev.jdtech.jellyfin.presentation.film.components.ItemButtonsBar
 import dev.jdtech.jellyfin.presentation.film.components.ItemHeader
@@ -79,6 +85,8 @@ fun EpisodeScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val downloaderState by downloaderViewModel.state.collectAsStateWithLifecycle()
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(true) { viewModel.loadEpisode(episodeId = episodeId) }
 
     LaunchedEffect(state.episode) {
@@ -100,9 +108,28 @@ fun EpisodeScreen(
         }
     }
 
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is EpisodeEvent.ItemDeleted -> {
+                Toast.makeText(
+                        context,
+                        CoreR.string.delete_from_server_success,
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
+                navigateBack()
+            }
+            is EpisodeEvent.DeleteFailed -> {
+                Toast.makeText(context, CoreR.string.delete_from_server_failed, Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+
     EpisodeScreenLayout(
         state = state,
         downloaderState = downloaderState,
+        onDeleteClick = { showDeleteDialog = true },
         onAction = { action ->
             when (action) {
                 is EpisodeAction.Play -> {
@@ -122,6 +149,17 @@ fun EpisodeScreen(
         },
         onDownloaderAction = { action -> downloaderViewModel.onAction(action) },
     )
+
+    if (showDeleteDialog) {
+        DeleteFromServerDialog(
+            itemName = state.episode?.name.orEmpty(),
+            onConfirm = {
+                showDeleteDialog = false
+                viewModel.onAction(EpisodeAction.DeleteFromServer)
+            },
+            onDismiss = { showDeleteDialog = false },
+        )
+    }
 }
 
 @Composable
@@ -130,6 +168,7 @@ private fun EpisodeScreenLayout(
     downloaderState: DownloaderState,
     onAction: (EpisodeAction) -> Unit,
     onDownloaderAction: (DownloaderAction) -> Unit,
+    onDeleteClick: () -> Unit = {},
 ) {
     val safePadding = rememberSafePadding()
 
@@ -247,6 +286,8 @@ private fun EpisodeScreenLayout(
                         onDownloadDeleteClick = {
                             onDownloaderAction(DownloaderAction.DeleteDownload(episode))
                         },
+                        canDeleteFromServer = state.canDeleteFromServer,
+                        onDeleteClick = onDeleteClick,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
