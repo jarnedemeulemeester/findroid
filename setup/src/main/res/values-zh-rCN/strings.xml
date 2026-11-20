@@ -39,4 +39,10 @@
     <string name="cancel">取消</string>
     <string name="or">或</string>
     <string name="server_subtitle">服务器：%s</string>
+    <string name="address_latency_ms">%1$d 毫秒</string>
+    <string name="address_latency_measuring">测速中…</string>
+    <string name="address_latency_timeout">无法连接</string>
+    <string name="address_current">当前使用</string>
+    <string name="auto_select_fastest_address">优先使用最快地址</string>
+    <string name="auto_select_fastest_address_summary">启动时测试所有地址的延迟，自动使用最快的一个。重启应用后生效。</string>
 </resources>

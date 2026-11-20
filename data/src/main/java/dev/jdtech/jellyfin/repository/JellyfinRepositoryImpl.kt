@@ -536,6 +536,37 @@ class JellyfinRepositoryImpl(
         }
     }
 
+    override suspend fun deleteItem(itemId: UUID) {
+        withContext(Dispatchers.IO) { jellyfinApi.libraryApi.deleteItem(itemId) }
+    }
+
+    override suspend fun deleteItems(itemIds: List<UUID>): Int =
+        withContext(Dispatchers.IO) {
+            var deleted = 0
+            itemIds.forEach { itemId ->
+                try {
+                    jellyfinApi.libraryApi.deleteItem(itemId)
+                    deleted++
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
+            deleted
+        }
+
+    override suspend fun canDeleteFromServer(): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                val policy =
+                    jellyfinApi.userApi.getCurrentUser().content.policy
+                        ?: return@withContext false
+                policy.isAdministrator == true && policy.enableContentDeletion != false
+            } catch (e: Exception) {
+                Timber.e(e)
+                false
+            }
+        }
+
     override fun getBaseUrl() = jellyfinApi.api.baseUrl.orEmpty()
 
     override suspend fun updateDeviceName(name: String) {

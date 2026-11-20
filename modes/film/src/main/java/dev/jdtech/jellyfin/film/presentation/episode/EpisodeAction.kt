@@ -13,6 +13,8 @@ sealed interface EpisodeAction {
 
     data object UnmarkAsFavorite : EpisodeAction
 
+    data object DeleteFromServer : EpisodeAction
+
     data object OnBackClick : EpisodeAction
 
     data object OnHomeClick : EpisodeAction

@@ -11,5 +11,6 @@ data class MovieState(
     val director: FindroidItemPerson? = null,
     val writers: List<FindroidItemPerson> = emptyList(),
     val displayExtraInfo: Boolean = false,
+    val canDeleteFromServer: Boolean = false,
     val error: Exception? = null,
 )

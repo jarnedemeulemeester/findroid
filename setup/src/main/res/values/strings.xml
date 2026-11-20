@@ -43,4 +43,10 @@
    <string name="add_server_address">Add server address</string>
    <string name="remove_server_address">Remove server address</string>
    <string name="remove_server_address_dialog_text">Are you sure you want to remove the server address %1$s</string>
+   <string name="address_latency_ms">%1$d ms</string>
+   <string name="address_latency_measuring">Measuring…</string>
+   <string name="address_latency_timeout">Unreachable</string>
+   <string name="address_current">In use</string>
+   <string name="auto_select_fastest_address">Prefer fastest address</string>
+   <string name="auto_select_fastest_address_summary">Ping all addresses on startup and use the fastest one. Takes effect after an app restart.</string>
 </resources>

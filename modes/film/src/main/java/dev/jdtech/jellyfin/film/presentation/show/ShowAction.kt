@@ -23,4 +23,8 @@ sealed interface ShowAction {
     data class NavigateToItem(val item: FindroidItem) : ShowAction
 
     data class NavigateToPerson(val personId: UUID) : ShowAction
+
+    data object LoadEpisodesForDeletion : ShowAction
+
+    data class DeleteEpisodes(val episodeIds: List<UUID>) : ShowAction
 }

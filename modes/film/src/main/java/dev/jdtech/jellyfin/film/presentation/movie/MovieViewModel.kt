@@ -11,11 +11,14 @@ import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.PersonKind
+import timber.log.Timber
 
 @HiltViewModel
 class MovieViewModel
@@ -27,6 +30,9 @@ constructor(
 ) : ViewModel() {
     private val _state = MutableStateFlow(MovieState())
     val state = _state.asStateFlow()
+
+    private val eventsChannel = Channel<MovieEvent>()
+    val events = eventsChannel.receiveAsFlow()
 
     lateinit var movieId: UUID
 
@@ -40,6 +46,13 @@ constructor(
                 val director = getDirector(movie)
                 val writers = getWriters(movie)
                 val displayExtraInfo = appPreferences.getValue(appPreferences.displayExtraInfo)
+                val canDeleteFromServer =
+                    try {
+                        repository.canDeleteFromServer()
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                        false
+                    }
                 _state.emit(
                     _state.value.copy(
                         movie = movie,
@@ -48,6 +61,7 @@ constructor(
                         director = director,
                         writers = writers,
                         displayExtraInfo = displayExtraInfo,
+                        canDeleteFromServer = canDeleteFromServer,
                     )
                 )
             } catch (e: Exception) {
@@ -101,6 +115,17 @@ constructor(
                 viewModelScope.launch {
                     repository.unmarkAsFavorite(movieId)
                     loadMovie(movieId)
+                }
+            }
+            is MovieAction.DeleteFromServer -> {
+                viewModelScope.launch {
+                    try {
+                        repository.deleteItem(movieId)
+                        eventsChannel.send(MovieEvent.ItemDeleted)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                        eventsChannel.send(MovieEvent.DeleteFailed)
+                    }
                 }
             }
             else -> Unit

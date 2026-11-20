@@ -108,4 +108,20 @@
     <string name="download_paused">已暂停</string>
     <string name="download_downloading">正在下载…</string>
     <string name="download_failed">下载失败</string>
+    <string name="delete_from_server">从服务器删除</string>
+    <string name="delete_from_server_title">从服务器删除？</string>
+    <string name="delete_from_server_message">确定要从服务器永久删除“%1$s”吗？媒体文件会被从磁盘移除，且无法恢复。</string>
+    <string name="delete_from_server_success">已从服务器删除</string>
+    <string name="delete_from_server_failed">从服务器删除失败</string>
+    <string name="delete_episodes">删除剧集</string>
+    <string name="delete_episodes_title">选择要删除的剧集</string>
+    <string name="delete_episodes_selected">已选 %1$d 集</string>
+    <string name="delete_episodes_confirm">删除（%1$d）</string>
+    <string name="delete_episodes_success">已删除 %1$d 集</string>
+    <string name="delete_episodes_partial">已删除 %1$d/%2$d 集</string>
+    <string name="delete_episodes_failed">删除剧集失败</string>
+    <string name="episodes_load_failed">加载剧集失败</string>
+    <string name="select_all">全选</string>
+    <string name="deselect_all">取消全选</string>
+    <string name="no_episodes">没有剧集</string>
 </resources>

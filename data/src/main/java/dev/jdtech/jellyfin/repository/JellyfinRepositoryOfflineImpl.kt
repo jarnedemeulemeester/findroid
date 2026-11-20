@@ -295,6 +295,16 @@ class JellyfinRepositoryOfflineImpl(
         }
     }
 
+    override suspend fun deleteItem(itemId: UUID) {
+        throw IllegalStateException("Cannot delete items from the server in offline mode")
+    }
+
+    override suspend fun deleteItems(itemIds: List<UUID>): Int {
+        throw IllegalStateException("Cannot delete items from the server in offline mode")
+    }
+
+    override suspend fun canDeleteFromServer(): Boolean = false
+
     override fun getBaseUrl(): String {
         return ""
     }

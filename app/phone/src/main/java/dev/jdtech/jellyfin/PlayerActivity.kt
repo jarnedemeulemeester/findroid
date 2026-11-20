@@ -24,6 +24,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Space
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -33,8 +34,11 @@ import androidx.media3.common.C
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.databinding.ActivityPlayerBinding
+import dev.jdtech.jellyfin.player.local.R as PlayerR
 import dev.jdtech.jellyfin.player.local.presentation.PlayerEvents
 import dev.jdtech.jellyfin.player.local.presentation.PlayerViewModel
 import dev.jdtech.jellyfin.presentation.player.SpeedSelectionDialogFragment
@@ -138,6 +142,7 @@ class PlayerActivity : BasePlayerActivity() {
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
+        val deleteButton = binding.playerView.findViewById<ImageButton>(R.id.btn_delete)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -147,6 +152,10 @@ class PlayerActivity : BasePlayerActivity() {
                         uiState.apply {
                             // Title
                             videoNameTextView.text = currentItemTitle
+
+                            // Delete from server button, only for users that are allowed to
+                            // delete media on the server
+                            deleteButton.isVisible = canDeleteFromServer
 
                             // Media segment
                             currentSegment?.let { segment ->
@@ -209,6 +218,8 @@ class PlayerActivity : BasePlayerActivity() {
                                 speedButton.imageAlpha = 255
                                 pipButton.isEnabled = true
                                 pipButton.imageAlpha = 255
+                                deleteButton.isEnabled = true
+                                deleteButton.imageAlpha = 255
                             }
                         }
                     }
@@ -218,6 +229,22 @@ class PlayerActivity : BasePlayerActivity() {
                     viewModel.eventsChannelFlow.collect { event ->
                         when (event) {
                             is PlayerEvents.NavigateBack -> finishPlayback()
+                            is PlayerEvents.ItemDeleted -> {
+                                Toast.makeText(
+                                        this@PlayerActivity,
+                                        PlayerR.string.player_delete_from_server_success,
+                                        Toast.LENGTH_SHORT,
+                                    )
+                                    .show()
+                                finishPlayback()
+                            }
+                            is PlayerEvents.ItemDeleteFailed ->
+                                Toast.makeText(
+                                        this@PlayerActivity,
+                                        PlayerR.string.player_delete_from_server_failed,
+                                        Toast.LENGTH_LONG,
+                                    )
+                                    .show()
                             is PlayerEvents.IsPlayingChanged -> {
                                 if (event.isPlaying) {
                                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -270,6 +297,9 @@ class PlayerActivity : BasePlayerActivity() {
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
 
+        deleteButton.isEnabled = false
+        deleteButton.imageAlpha = 75
+
         if (isPipSupported) {
             pipButton.isEnabled = false
             pipButton.imageAlpha = 75
@@ -312,6 +342,22 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         pipButton.setOnClickListener { pictureInPicture() }
+
+        deleteButton.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(PlayerR.string.player_delete_from_server_title)
+                .setMessage(
+                    getString(
+                        PlayerR.string.player_delete_from_server_message,
+                        viewModel.uiState.value.currentItemTitle,
+                    )
+                )
+                .setNegativeButton(CoreR.string.cancel, null)
+                .setPositiveButton(PlayerR.string.player_controls_delete_from_server) { _, _ ->
+                    viewModel.deleteCurrentItem()
+                }
+                .show()
+        }
 
         // Set marker color
         val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)

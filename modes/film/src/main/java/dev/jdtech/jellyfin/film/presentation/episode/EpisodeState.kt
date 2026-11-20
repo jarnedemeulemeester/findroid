@@ -9,5 +9,6 @@ data class EpisodeState(
     val videoMetadata: VideoMetadata? = null,
     val actors: List<FindroidItemPerson> = emptyList(),
     val displayExtraInfo: Boolean = false,
+    val canDeleteFromServer: Boolean = false,
     val error: Exception? = null,
 )

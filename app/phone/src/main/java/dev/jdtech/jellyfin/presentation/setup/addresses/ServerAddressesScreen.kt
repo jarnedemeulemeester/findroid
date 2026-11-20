@@ -4,6 +4,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -23,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -32,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -132,13 +135,57 @@ fun ServerAddressesLayout(state: ServerAddressesState, onAction: (ServerAddresse
                     ),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
             ) {
+                item(key = "auto_select_fastest") {
+                    Surface(
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .clip(CardDefaults.outlinedShape)
+                                .padding(MaterialTheme.spacings.small)
+                    ) {
+                        Row(
+                            modifier =
+                                Modifier.fillMaxWidth().padding(MaterialTheme.spacings.small),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text =
+                                        stringResource(
+                                            SetupR.string.auto_select_fastest_address
+                                        ),
+                                    style = MaterialTheme.typography.titleSmall,
+                                )
+                                Text(
+                                    text =
+                                        stringResource(
+                                            SetupR.string.auto_select_fastest_address_summary
+                                        ),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            Switch(
+                                checked = state.autoSelectFastest,
+                                onCheckedChange = { enabled ->
+                                    onAction(
+                                        ServerAddressesAction.SetAutoSelectFastest(enabled)
+                                    )
+                                },
+                            )
+                        }
+                    }
+                }
                 items(items = state.addresses, key = { it.id }) { address ->
+                    val isCurrent = address.id == state.currentAddressId
+                    val latency = state.latencies[address.id]
                     Surface(
                         modifier =
                             Modifier.fillMaxWidth()
                                 .clip(CardDefaults.outlinedShape)
                                 .combinedClickable(
-                                    onClick = {},
+                                    onClick = {
+                                        onAction(ServerAddressesAction.OnServerClick(address.id))
+                                    },
                                     onLongClick = {
                                         selectedAddress = address
                                         openDeleteDialog = true
@@ -146,7 +193,40 @@ fun ServerAddressesLayout(state: ServerAddressesState, onAction: (ServerAddresse
                                 )
                                 .padding(MaterialTheme.spacings.small)
                     ) {
-                        Text(address.address)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(address.address)
+                                Text(
+                                    text =
+                                        when {
+                                            latency != null ->
+                                                stringResource(
+                                                    SetupR.string.address_latency_ms,
+                                                    latency,
+                                                )
+                                            state.isMeasuring ->
+                                                stringResource(
+                                                    SetupR.string.address_latency_measuring
+                                                )
+                                            else ->
+                                                stringResource(SetupR.string.address_latency_timeout)
+                                        },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            if (isCurrent) {
+                                Icon(
+                                    painter = painterResource(CoreR.drawable.ic_check),
+                                    contentDescription =
+                                        stringResource(SetupR.string.address_current),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
                     }
                 }
             }
