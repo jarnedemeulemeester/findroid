@@ -35,6 +35,9 @@ interface ServerDatabaseDao {
 
     @Update suspend fun updateServer(server: Server)
 
+    @Query("UPDATE servers SET currentServerAddressId = :addressId WHERE id = :serverId")
+    suspend fun updateServerCurrentAddress(serverId: String, addressId: UUID)
+
     @Query("SELECT * FROM servers WHERE id = :id") suspend fun getServer(id: String): Server?
 
     @Query("SELECT * FROM users WHERE id = :id") suspend fun getUser(id: UUID): User?

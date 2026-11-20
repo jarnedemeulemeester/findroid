@@ -9,5 +9,9 @@ sealed interface ServerAddressesAction {
 
     data class DeleteAddress(val addressId: UUID) : ServerAddressesAction
 
+    data object MeasureLatency : ServerAddressesAction
+
+    data class SetAutoSelectFastest(val enabled: Boolean) : ServerAddressesAction
+
     data object OnBackClick : ServerAddressesAction
 }

@@ -6,6 +6,8 @@
     <string name="settings_preferred_audio_language">偏好音频语言</string>
     <string name="settings_preferred_subtitle_language">偏好字幕语言</string>
     <string name="settings_category_servers">服务器</string>
+    <string name="settings_auto_select_fastest_address">优先使用最快的服务器地址</string>
+    <string name="settings_auto_select_fastest_address_summary">启动时测试当前服务器所有地址的延迟，自动切换到最快的一个。重启应用后生效。</string>
     <string name="settings_category_player">播放器</string>
     <string name="settings_category_download">下载</string>
     <string name="settings_category_appearance">外观</string>

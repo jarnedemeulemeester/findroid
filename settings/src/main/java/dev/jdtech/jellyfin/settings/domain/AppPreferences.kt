@@ -11,6 +11,8 @@ import timber.log.Timber
 class AppPreferences @Inject constructor(val sharedPreferences: SharedPreferences) {
     // Server
     val currentServer = Preference<String?>("pref_current_server", null)
+    val autoSelectFastestServerAddress =
+        Preference("pref_auto_select_fastest_server_address", true)
 
     // Language
     val preferredAudioLanguage = Preference<String?>("pref_audio_language", null)

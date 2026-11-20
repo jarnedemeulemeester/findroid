@@ -83,6 +83,19 @@ class SettingsViewModel @Inject constructor(private val appPreferences: AppPrefe
             PreferenceGroup(
                 preferences =
                     listOf(
+                        PreferenceSwitch(
+                            nameStringResource = R.string.settings_auto_select_fastest_address,
+                            descriptionStringRes =
+                                R.string.settings_auto_select_fastest_address_summary,
+                            iconDrawableId = R.drawable.ic_server,
+                            backendPreference =
+                                appPreferences.autoSelectFastestServerAddress,
+                        )
+                    )
+            ),
+            PreferenceGroup(
+                preferences =
+                    listOf(
                         PreferenceCategory(
                             nameStringResource = R.string.settings_category_language,
                             iconDrawableId = R.drawable.ic_languages,
