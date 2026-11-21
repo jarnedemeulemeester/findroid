@@ -35,4 +35,6 @@
     <string name="welcome_btn_learn_more">Kom meer te weten over Jellyfin</string>
     <string name="confirm">Bevestigen</string>
     <string name="cancel">Annuleren</string>
+    <string name="servers">Servers</string>
+    <string name="welcome_text">Findroid is een client van derden voor Jellyfin. Findroid bevat zelf geen mediabestanden.\n\nOm deze client te kunnen gebruiken heb je je eigen Jellyfin-server nodig.</string>
 </resources>
