@@ -12,7 +12,7 @@
     <string name="settings_cache_size">Zwischenspeichergröße</string>
     <string name="theme">Thema</string>
     <string name="privacy_policy">Datenschutzrichtlinien</string>
-    <string name="mpv_player">MPV Mediaplayer</string>
+    <string name="mpv_player">mpv-Player</string>
     <string name="download_mobile_data">Über mobile Daten herunterladen</string>
     <string name="download_roaming">Über Roaming herunterladen</string>
     <string name="settings_preferred_subtitle_language">Bevorzugte Untertitelsprache</string>
@@ -21,7 +21,7 @@
     <string name="settings_category_appearance">Aussehen</string>
     <string name="about">Über</string>
     <string name="settings_category_player">Player</string>
-    <string name="mpv_player_summary">Benutze den experimentellen MPV-Player. Dieser unterstützt mehr Codecs in Bezug auf sowohl Video, Audio als auch Untertitel.</string>
+    <string name="mpv_player_summary">Verwende den experimentellen mpv-Player, da er mehr Video-, Audio- und Untertitelformate unterstützt.</string>
     <string name="gestures">Gesten</string>
     <string name="player_gestures">Player-Gesten</string>
     <string name="player_brightness_remember">Helligkeitsniveau beibehalten</string>
@@ -106,4 +106,10 @@
     <string name="advanced">Fortgeschritten</string>
     <string name="discard_changes_dialog_title">Verwerfe Änderungen?</string>
     <string name="discard_changes_dialog_text">Es gibt ungespeicherte Änderungen.</string>
+    <string name="settings_category_permissions">Berechtigungen</string>
+    <string name="permission_local_network">Zugriff auf das lokale Netzwerk</string>
+    <string name="permission_local_network_summary">Erforderlich, um Server in Ihrem lokalen Netzwerk zu finden und eine Verbindung herzustellen</string>
+    <string name="permission_local_network_rationale">Findroid benötigt Zugriff auf dein lokales Netzwerk, um deinen Jellyfin-Server zu finden und eine Verbindung herzustellen. Dies hat keine Auswirkungen auf externe Server.</string>
+    <string name="permission_status_granted">Gewährt</string>
+    <string name="permission_status_denied">Verweigert</string>
 </resources>
