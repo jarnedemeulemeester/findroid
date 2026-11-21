@@ -37,7 +37,7 @@
     <string name="genres">Categorieën</string>
     <string name="director">Regisseur</string>
     <string name="writers">Schrijvers</string>
-    <string name="cast_amp_crew"><![CDATA[Cast & Bemanning]]></string>
+    <string name="cast_amp_crew"><![CDATA[Cast &amp; Bemanning]]></string>
     <string name="seasons">Seizoenen</string>
     <string name="play_button_description">Speel de media af</string>
     <string name="trailer_button_description">Kijk de trailer</string>
@@ -108,4 +108,5 @@
     <string name="download_paused">Gepauzeerd</string>
     <string name="download_downloading">Downloaden…</string>
     <string name="download_failed">Downloaden mislukt</string>
+    <string name="download_pending">In behandeling…</string>
 </resources>
