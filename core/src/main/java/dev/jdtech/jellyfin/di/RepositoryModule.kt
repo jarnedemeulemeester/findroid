@@ -10,6 +10,7 @@ import dev.jdtech.jellyfin.database.ServerDatabaseDao
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryImpl
 import dev.jdtech.jellyfin.repository.JellyfinRepositoryOfflineImpl
+import dev.jdtech.jellyfin.repository.JellyfinRepositoryWithDownloads
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import javax.inject.Singleton
 
@@ -55,7 +56,11 @@ object RepositoryModule {
         println("Creating new JellyfinRepository")
         return when (appPreferences.getValue(appPreferences.offlineMode)) {
             true -> jellyfinRepositoryOfflineImpl
-            false -> jellyfinRepositoryImpl
+            false ->
+                JellyfinRepositoryWithDownloads(
+                    online = jellyfinRepositoryImpl,
+                    downloads = jellyfinRepositoryOfflineImpl,
+                )
         }
     }
 }

@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
@@ -24,6 +25,7 @@ import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import dev.jdtech.jellyfin.settings.domain.AppPreferences
 import dev.jdtech.jellyfin.work.MpvCleanupWorker
+import dev.jdtech.jellyfin.work.SmartDownloadsWorker
 import dev.jdtech.jellyfin.work.SyncWorker
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
@@ -35,6 +37,9 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
     @Inject lateinit var appPreferences: AppPreferences
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
+
+    // Kept as a field: SharedPreferences only holds weak references to its listeners.
+    private lateinit var smartDownloadsListener: SharedPreferences.OnSharedPreferenceChangeListener
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
@@ -64,6 +69,7 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
         val workManager = WorkManager.getInstance(applicationContext)
 
         scheduleUserDataSync(workManager)
+        observeSmartDownloads(workManager)
 
         if (!appPreferences.getValue(appPreferences.mpvMigrated)) {
             scheduleMpvCleanup(workManager)
@@ -105,6 +111,26 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             existingWorkPolicy = ExistingWorkPolicy.KEEP,
             request = syncWorkRequest,
         )
+    }
+
+    private fun observeSmartDownloads(workManager: WorkManager) {
+        updateSmartDownloadsSchedule(workManager)
+        smartDownloadsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == appPreferences.smartDownloads.backendName) {
+                updateSmartDownloadsSchedule(workManager)
+            }
+        }
+        appPreferences.sharedPreferences.registerOnSharedPreferenceChangeListener(
+            smartDownloadsListener
+        )
+    }
+
+    private fun updateSmartDownloadsSchedule(workManager: WorkManager) {
+        if (appPreferences.getValue(appPreferences.smartDownloads)) {
+            SmartDownloadsWorker.schedule(workManager)
+        } else {
+            SmartDownloadsWorker.cancel(workManager)
+        }
     }
 
     private fun scheduleMpvCleanup(workManager: WorkManager) {
