@@ -20,10 +20,10 @@
     <string name="users">Gebruikers</string>
     <string name="users_btn_add_user">Gebruiker toevoegen</string>
     <string name="remove_user_dialog">Verwijder gebruiker</string>
-    <string name="remove_user_dialog_text">Weet je zeker dat je de gebruiker %1$s wilt verwijderen?</string>
+    <string name="remove_user_dialog_text">Weet je zeker dat je de gebruiker %s wilt verwijderen?</string>
     <string name="users_no_users">Geen gebruikers gevonden</string>
     <string name="remove_server_dialog">Server verwijderen</string>
-    <string name="remove_server_dialog_text">Weet je zeker dat je de server %1$s wilt verwijderen?</string>
+    <string name="remove_server_dialog_text">Weet je zeker dat je de server %s wilt verwijderen?</string>
     <string name="addresses">Adressen</string>
     <string name="add_server_address">Server adres toevoegen</string>
     <string name="add_address">Adres toevoegen</string>
@@ -37,4 +37,10 @@
     <string name="cancel">Annuleren</string>
     <string name="servers">Servers</string>
     <string name="welcome_text">Findroid is een Jellyfin client gemaakt door een derde partij. Findroid zelf bevat geen media. \n\nOm deze client te gebruiken moet een eigen Jellyfin server gehost worden.</string>
+    <string name="permission_btn_grant">Verleen</string>
+    <string name="permission_btn_not_now">Niet nu</string>
+    <string name="permission_btn_open_settings">Instellingen openen</string>
+    <string name="permission_permanently_denied">%1$s is geweigerd. Sta het toe in de systeeminstellingen om het te gebruiken.</string>
+    <string name="or">OF</string>
+    <string name="server_subtitle">Server: %s</string>
 </resources>
