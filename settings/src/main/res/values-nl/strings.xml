@@ -75,4 +75,11 @@
     <string name="media_segments">Media Segmenten</string>
     <string name="pref_player_media_segments_skip_button">Skip knop weergeven</string>
     <string name="pref_player_media_segments_skip_button_summary">Laat een knop zien om makkelijk delen over te slaan</string>
+    <string name="settings_category_interface">Interface</string>
+    <string name="settings_category_permissions">Machtigingen</string>
+    <string name="permission_local_network">Toegang tot het lokale netwerk</string>
+    <string name="permission_local_network_summary">Vereist om servers op je lokale netwerk te vinden en ermee te verbinden</string>
+    <string name="permission_local_network_rationale">Findroid heeft toegang tot je lokale netwerk nodig om je Jellyfin-server te vinden en ermee te verbinden. Externe servers worden hierdoor niet beïnvloed.</string>
+    <string name="permission_status_granted">Verleend</string>
+    <string name="permission_status_denied">Geweigerd</string>
 </resources>
