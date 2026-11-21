@@ -102,4 +102,10 @@
     <string name="show_stacktrace">Toon stacktrace</string>
     <string name="runtime_minutes_left">nog %1$d minuten</string>
     <string name="none">Geen</string>
+    <string name="discard">Verwerpen</string>
+    <string name="delete_download">Verwijder download</string>
+    <string name="delete_download_message">Weet je zeker dat je deze download van je apparaat wilt verwijderen?</string>
+    <string name="download_paused">Gepauzeerd</string>
+    <string name="download_downloading">Downloaden…</string>
+    <string name="download_failed">Downloaden mislukt</string>
 </resources>
