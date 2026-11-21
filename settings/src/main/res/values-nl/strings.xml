@@ -83,8 +83,8 @@
     <string name="permission_status_granted">Verleend</string>
     <string name="permission_status_denied">Geweigerd</string>
     <string name="pref_player_trickplay">Trickplay</string>
-    <string name="pref_player_trickplay_summary">Voorbeeldafbeeldingen boven de tijdlijn weergeven</string>
-    <string name="pref_player_gestures_seek_trickplay">Trickplay bij zoekgebaar</string>
+    <string name="pref_player_trickplay_summary">Laat voorbeeld afbeeldingen zien tijdens het doorspoelen</string>
+    <string name="pref_player_gestures_seek_trickplay">Trickplay tijdens zoekgebaar</string>
     <string name="pref_player_gestures_seek_trickplay_summary">Voorbeeldafbeeldingen weergeven bij het zoeken</string>
     <string name="trickplay">Trickplay</string>
     <string name="mb">MB</string>
