@@ -25,10 +25,10 @@ fun ProgressBar(item: FindroidItem, width: Int, modifier: Modifier = Modifier) {
                         item.playbackPositionTicks
                             .div(item.runtimeTicks.toFloat())
                             .times(width - 16)
-                            .dp
+                            .dp,
                     )
                     .clip(MaterialTheme.shapes.extraSmall)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(MaterialTheme.colorScheme.primary),
         )
     }
 }

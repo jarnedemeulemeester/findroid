@@ -48,7 +48,7 @@ fun ServerItem(
                     Border(
                         BorderStroke(4.dp, Color.White),
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-                    )
+                    ),
             ),
         modifier = Modifier.width(270.dp).height(115.dp),
     ) {

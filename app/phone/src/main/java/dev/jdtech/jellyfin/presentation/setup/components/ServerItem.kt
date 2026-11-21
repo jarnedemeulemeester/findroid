@@ -47,7 +47,7 @@ fun ServerItem(
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         onLongClick()
                     },
-                )
+                ),
     ) {
         Row(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)) {
             Icon(

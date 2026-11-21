@@ -42,7 +42,7 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     uriHandler.openUri("https://jellyfin.org/")
                 }
             }
-        }
+        },
     )
 }
 
@@ -75,7 +75,8 @@ private fun WelcomeScreenLayout(onAction: (WelcomeAction) -> Unit) {
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedButton(onClick = { onAction(WelcomeAction.OnLearnMoreClick) }) {
                 Text(
-                    text = stringResource(dev.jdtech.jellyfin.setup.R.string.welcome_btn_learn_more)
+                    text =
+                        stringResource(dev.jdtech.jellyfin.setup.R.string.welcome_btn_learn_more),
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))

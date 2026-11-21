@@ -61,7 +61,7 @@ fun VideoPlayerTrackSelectorDialog(
             LazyColumn(
                 verticalArrangement =
                     Arrangement.spacedBy(
-                        MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall
+                        MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall,
                     ),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {
@@ -85,7 +85,7 @@ fun VideoPlayerTrackSelectorDialog(
                                     Border(
                                         BorderStroke(4.dp, Color.White),
                                         shape = RoundedCornerShape(10.dp),
-                                    )
+                                    ),
                             ),
                         scale = ClickableSurfaceScale.None,
                     ) {

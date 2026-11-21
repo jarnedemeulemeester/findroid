@@ -58,8 +58,8 @@ fun ServerSelectionItem(
                             .clip(CircleShape)
                             .background(
                                 if (selected) MaterialTheme.colorScheme.primaryContainer
-                                else Color.Transparent
-                            )
+                                else Color.Transparent,
+                            ),
                 ) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_server),
@@ -81,7 +81,7 @@ fun ServerSelectionItem(
                             .firstOrNull { it.id == server.server.currentServerAddressId }
                             ?.let { address ->
                                 Spacer(
-                                    modifier = Modifier.height(MaterialTheme.spacings.extraSmall)
+                                    modifier = Modifier.height(MaterialTheme.spacings.extraSmall),
                                 )
                                 Text(
                                     text = address.address,
@@ -99,7 +99,7 @@ fun ServerSelectionItem(
                         modifier =
                             Modifier.fillMaxWidth()
                                 .clip(RoundedCornerShape(MaterialTheme.spacings.medium))
-                                .clickable(onClick = { onClickAddress(address.id) })
+                                .clickable(onClick = { onClickAddress(address.id) }),
                     ) {
                         Row(
                             modifier = Modifier.padding(all = MaterialTheme.spacings.medium),
@@ -112,8 +112,8 @@ fun ServerSelectionItem(
                                         .background(
                                             if (address.id == server.server.currentServerAddressId)
                                                 MaterialTheme.colorScheme.primaryContainer
-                                            else Color.Transparent
-                                        )
+                                            else Color.Transparent,
+                                        ),
                             )
                             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
                             Text(

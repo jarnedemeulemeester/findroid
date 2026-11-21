@@ -39,7 +39,7 @@ constructor(private val repository: SetupRepository, private val appPreferences:
                         serverDiscoveryInfo.id,
                         serverDiscoveryInfo.name,
                         serverDiscoveryInfo.address,
-                    )
+                    ),
                 )
                 _state.emit(_state.value.copy(discoveredServers = discoveredServers))
             }
@@ -66,9 +66,9 @@ constructor(private val repository: SetupRepository, private val appPreferences:
                         error =
                             listOf(
                                 if (e.message != null) UiText.DynamicString(e.message!!)
-                                else UiText.StringResource(CoreR.string.unknown_error)
+                                else UiText.StringResource(CoreR.string.unknown_error),
                             ),
-                    )
+                    ),
                 )
             }
         }

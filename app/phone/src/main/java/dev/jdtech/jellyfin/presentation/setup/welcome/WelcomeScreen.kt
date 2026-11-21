@@ -41,7 +41,7 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     uriHandler.openUri("https://jellyfin.org/")
                 }
             }
-        }
+        },
     )
 }
 

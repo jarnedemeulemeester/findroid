@@ -112,7 +112,7 @@ private fun MediaScreenLayout(
     val minColumnSize =
         when {
             windowSizeClass.isWidthAtLeastBreakpoint(
-                WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
+                WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND,
             ) -> 320.dp
             windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) ->
                 240.dp

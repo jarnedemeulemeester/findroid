@@ -93,7 +93,7 @@ private fun SettingsFileEditScreenLayout(
                         onClick = {
                             if (isModified) showDiscardDialog = true
                             else onAction(SettingsFileEditAction.OnBackClick)
-                        }
+                        },
                     ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),

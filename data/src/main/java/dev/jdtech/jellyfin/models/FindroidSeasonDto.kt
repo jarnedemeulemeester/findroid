@@ -15,7 +15,7 @@ import java.util.UUID
                 parentColumns = arrayOf("id"),
                 childColumns = arrayOf("seriesId"),
                 onDelete = ForeignKey.CASCADE,
-            )
+            ),
         ],
     indices = [Index("seriesId")],
 )

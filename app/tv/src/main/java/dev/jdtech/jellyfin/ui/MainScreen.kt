@@ -110,7 +110,7 @@ private fun MainScreenLayout(
             modifier =
                 Modifier.fillMaxWidth()
                     .height(80.dp)
-                    .padding(horizontal = MaterialTheme.spacings.default)
+                    .padding(horizontal = MaterialTheme.spacings.default),
         ) {
             Icon(
                 painter = painterResource(id = CoreR.drawable.ic_logo),

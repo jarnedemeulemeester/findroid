@@ -53,7 +53,7 @@ fun ItemCard(
             border =
                 ClickableSurfaceDefaults.border(
                     focusedBorder =
-                        Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp))
+                        Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp)),
                 ),
             scale = ClickableSurfaceScale.None,
         ) {
@@ -68,7 +68,7 @@ fun ItemCard(
                     Column(
                         modifier =
                             Modifier.align(Alignment.BottomStart)
-                                .padding(MaterialTheme.spacings.small)
+                                .padding(MaterialTheme.spacings.small),
                     ) {
                         Box(
                             modifier =
@@ -77,10 +77,10 @@ fun ItemCard(
                                         item.playbackPositionTicks
                                             .div(item.runtimeTicks.toFloat())
                                             .times(width - 16)
-                                            .dp
+                                            .dp,
                                     )
                                     .clip(MaterialTheme.shapes.extraSmall)
-                                    .background(MaterialTheme.colorScheme.primary)
+                                    .background(MaterialTheme.colorScheme.primary),
                         )
                     }
                 }

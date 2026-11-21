@@ -79,13 +79,13 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             }
             .diskCachePolicy(
                 if (appPreferences.getValue(appPreferences.imageCache)) CachePolicy.ENABLED
-                else CachePolicy.DISABLED
+                else CachePolicy.DISABLED,
             )
             .diskCache {
                 DiskCache.Builder()
                     .directory(context.cacheDir.resolve("image_cache").toOkioPath())
                     .maxSizeBytes(
-                        appPreferences.getValue(appPreferences.imageCacheSize) * 1024L * 1024
+                        appPreferences.getValue(appPreferences.imageCacheSize) * 1024L * 1024,
                     )
                     .build()
             }

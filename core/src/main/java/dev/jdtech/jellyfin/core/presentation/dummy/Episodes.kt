@@ -42,9 +42,9 @@ val dummyEpisode =
                                 height = 1080,
                                 width = 1920,
                                 videoDoViTitle = null,
-                            )
+                            ),
                         ),
-                )
+                ),
             ),
         played = true,
         favorite = true,

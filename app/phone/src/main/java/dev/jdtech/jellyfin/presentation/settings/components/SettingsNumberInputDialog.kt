@@ -79,7 +79,7 @@ fun SettingsNumberInputDialog(
 ) {
     var textFieldValue by remember {
         mutableStateOf(
-            TextFieldValue(text = initialValue, selection = TextRange(initialValue.length))
+            TextFieldValue(text = initialValue, selection = TextRange(initialValue.length)),
         )
     }
 

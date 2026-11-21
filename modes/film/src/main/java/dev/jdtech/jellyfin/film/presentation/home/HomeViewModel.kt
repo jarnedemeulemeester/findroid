@@ -100,7 +100,7 @@ constructor(
                 null
             } else {
                 HomeItem.Section(
-                    HomeSection(uuidContinueWatching, uiTextContinueWatching, resumeItems)
+                    HomeSection(uuidContinueWatching, uiTextContinueWatching, resumeItems),
                 )
             }
 

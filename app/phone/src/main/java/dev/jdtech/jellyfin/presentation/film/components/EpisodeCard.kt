@@ -41,7 +41,7 @@ fun EpisodeCard(episode: FindroidEpisode, onClick: () -> Unit, modifier: Modifie
                 .height(84.dp)
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.medium)
-                .clickable(onClick = onClick)
+                .clickable(onClick = onClick),
     ) {
         Box {
             ItemPoster(
@@ -83,14 +83,14 @@ fun EpisodeCard(episode: FindroidEpisode, onClick: () -> Unit, modifier: Modifie
                 modifier =
                     Modifier.align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .height(MaterialTheme.spacings.default)
+                        .height(MaterialTheme.spacings.default),
             ) {
                 drawRect(
                     brush =
                         Brush.verticalGradient(
                             colors = listOf(Color.Transparent, backgroundColor),
                             startY = 0f,
-                        )
+                        ),
                 )
             }
         }

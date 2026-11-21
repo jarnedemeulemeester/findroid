@@ -69,8 +69,8 @@ fun SettingsGroupCard(
                                 onClick = {
                                     onAction(
                                         SettingsAction.OnUpdate(
-                                            preference.copy(value = !preference.value)
-                                        )
+                                            preference.copy(value = !preference.value),
+                                        ),
                                     )
                                 },
                                 modifier =

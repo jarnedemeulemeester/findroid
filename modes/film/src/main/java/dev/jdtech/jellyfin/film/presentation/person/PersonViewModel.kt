@@ -39,7 +39,7 @@ class PersonViewModel @Inject internal constructor(private val repository: Jelly
                         person = person,
                         starredInMovies = movies,
                         starredInShows = shows,
-                    )
+                    ),
                 )
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))

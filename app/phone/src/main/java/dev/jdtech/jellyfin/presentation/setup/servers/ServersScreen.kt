@@ -105,7 +105,7 @@ private fun ServersScreenLayout(
                 Modifier.padding(horizontal = 24.dp)
                     .widthIn(max = 480.dp)
                     .fillMaxWidth()
-                    .align(Alignment.Center)
+                    .align(Alignment.Center),
         ) {
             Spacer(modifier = Modifier.weight(0.2f))
             Image(
@@ -175,7 +175,7 @@ private fun ServersScreenLayout(
                         stringResource(
                             SetupR.string.remove_server_dialog_text,
                             selectedServer!!.server.name,
-                        )
+                        ),
                 )
             },
             onDismissRequest = { openDeleteDialog = false },
@@ -191,7 +191,7 @@ private fun ServersScreenLayout(
                                 }
                             }
                         onAction(ServersAction.DeleteServer(selectedServer!!.server.id))
-                    }
+                    },
                 ) {
                     Text(text = stringResource(SetupR.string.confirm))
                 }
@@ -232,8 +232,8 @@ private fun ServersScreenLayoutPreview() {
                                 server = dummyServer,
                                 addresses = listOf(dummyServerAddress),
                                 user = null,
-                            )
-                        )
+                            ),
+                        ),
                 ),
             onAction = {},
         )

@@ -39,7 +39,7 @@ fun SettingsAppLanguageCard(preference: Preference, modifier: Modifier = Modifie
                     Intent(
                         Settings.ACTION_APP_LOCALE_SETTINGS,
                         "package:${context.packageName}".toUri(),
-                    )
+                    ),
                 )
             }
         },

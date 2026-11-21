@@ -63,6 +63,6 @@ fun PillBorderIndicator(
             .width(width)
             .height(height)
             .border(width = 4.dp, color = borderColor, shape = RoundedCornerShape(50))
-            .zIndex(-1f)
+            .zIndex(-1f),
     )
 }

@@ -129,13 +129,13 @@ fun AboutScreen(navigateBack: () -> Unit) {
                             Spacer(Modifier.height(MaterialTheme.spacings.medium))
                             Row(
                                 horizontalArrangement =
-                                    Arrangement.spacedBy(MaterialTheme.spacings.small)
+                                    Arrangement.spacedBy(MaterialTheme.spacings.small),
                             ) {
                                 FilledTonalIconButton(
                                     onClick = {
                                         try {
                                             uriHandler.openUri(
-                                                "https://github.com/jarnedemeulemeester/findroid"
+                                                "https://github.com/jarnedemeulemeester/findroid",
                                             )
                                         } catch (e: IllegalArgumentException) {
                                             Toast.makeText(
@@ -145,7 +145,7 @@ fun AboutScreen(navigateBack: () -> Unit) {
                                                 )
                                                 .show()
                                         }
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         painter = painterResource(CoreR.drawable.ic_github),
@@ -156,7 +156,7 @@ fun AboutScreen(navigateBack: () -> Unit) {
                                     onClick = {
                                         try {
                                             uriHandler.openUri(
-                                                "https://ko-fi.com/jarnedemeulemeester"
+                                                "https://ko-fi.com/jarnedemeulemeester",
                                             )
                                         } catch (e: IllegalArgumentException) {
                                             Toast.makeText(
@@ -166,7 +166,7 @@ fun AboutScreen(navigateBack: () -> Unit) {
                                                 )
                                                 .show()
                                         }
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         painter = painterResource(CoreR.drawable.ic_coffee),

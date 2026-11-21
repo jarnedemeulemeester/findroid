@@ -20,6 +20,6 @@ object PermissionModule {
             PermissionRequest(
                 permission = PermissionDefinitions.localNetwork,
                 decidedPreference = appPreferences.localNetworkPermissionDecided,
-            )
+            ),
         )
 }

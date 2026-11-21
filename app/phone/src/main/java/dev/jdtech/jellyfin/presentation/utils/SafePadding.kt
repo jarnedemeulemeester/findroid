@@ -26,10 +26,10 @@ fun rememberSafePadding(handleStartInsets: Boolean = true): SafePadding {
             // Navigation rail handles safe drawing inset in medium and expanded width
             when {
                 windowSizeClass.isWidthAtLeastBreakpoint(
-                    WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
+                    WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND,
                 ) -> 0.dp
                 windowSizeClass.isWidthAtLeastBreakpoint(
-                    WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
+                    WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND,
                 ) -> 0.dp
                 else ->
                     with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }

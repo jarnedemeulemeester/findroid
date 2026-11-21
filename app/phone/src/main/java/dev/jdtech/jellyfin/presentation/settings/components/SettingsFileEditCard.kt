@@ -68,7 +68,7 @@ private fun SettingsFileEditCardPreview() {
                 PreferenceFileEdit(
                     nameStringResource = SettingsR.string.settings_category_player,
                     filePath = "",
-                )
+                ),
         )
     }
 }
@@ -83,7 +83,7 @@ private fun SettingsFileEditCardDescriptionPreview() {
                     nameStringResource = SettingsR.string.settings_category_player,
                     descriptionStringRes = SettingsR.string.settings_category_player,
                     filePath = "",
-                )
+                ),
         )
     }
 }
@@ -98,7 +98,7 @@ private fun SettingsFileEditCardIconPreview() {
                     nameStringResource = SettingsR.string.settings_category_player,
                     iconDrawableId = CoreR.drawable.ic_play,
                     filePath = "",
-                )
+                ),
         )
     }
 }

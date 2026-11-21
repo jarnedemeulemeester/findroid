@@ -46,7 +46,7 @@ fun VideoPlayerSeekBar(
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.onSurface
-                }
+                },
         )
     val animatedHeight by animateDpAsState(targetValue = 8.dp.times(if (isFocused) 2f else 1f))
     var seekProgress by remember { mutableFloatStateOf(0f) }
@@ -88,7 +88,7 @@ fun VideoPlayerSeekBar(
                         }
                     },
                 )
-                .focusable(interactionSource = interactionSource)
+                .focusable(interactionSource = interactionSource),
     ) {
         val yOffset = size.height.div(2)
         drawLine(

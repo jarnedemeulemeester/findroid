@@ -70,7 +70,7 @@ fun SettingsSelectCard(
         border =
             ClickableSurfaceDefaults.border(
                 focusedBorder =
-                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp))
+                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp)),
             ),
         scale = ClickableSurfaceScale.None,
         modifier = modifier.fillMaxWidth(),

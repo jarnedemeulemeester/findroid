@@ -113,7 +113,7 @@ fun SettingsPermissionCard(
                             CoreR.drawable.ic_check
                         } else {
                             CoreR.drawable.ic_x
-                        }
+                        },
                     ),
                 contentDescription =
                     stringResource(
@@ -121,7 +121,7 @@ fun SettingsPermissionCard(
                             SettingsR.string.permission_status_granted
                         } else {
                             SettingsR.string.permission_status_denied
-                        }
+                        },
                     ),
                 tint =
                     if (isGranted) {
@@ -139,7 +139,7 @@ fun SettingsPermissionCard(
 private fun SettingsPermissionCardPreview() {
     FindroidTheme {
         SettingsPermissionCard(
-            preference = PreferencePermission(permission = PermissionDefinitions.localNetwork)
+            preference = PreferencePermission(permission = PermissionDefinitions.localNetwork),
         )
     }
 }

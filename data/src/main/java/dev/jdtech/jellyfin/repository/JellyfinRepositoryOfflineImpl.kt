@@ -313,12 +313,12 @@ class JellyfinRepositoryOfflineImpl(
             items.addAll(
                 database
                     .getMoviesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) }
+                    .map { it.toFindroidMovie(database, jellyfinApi.userId!!) },
             )
             items.addAll(
                 database
                     .getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) }
+                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
             )
             items
         }

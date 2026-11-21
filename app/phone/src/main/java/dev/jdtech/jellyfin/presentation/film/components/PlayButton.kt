@@ -42,7 +42,7 @@ fun PlayButton(
                     stringResource(CoreR.string.runtime_minutes_left, runtimeMinutesLeft)
                 } else {
                     stringResource(CoreR.string.play)
-                }
+                },
         )
     }
 }

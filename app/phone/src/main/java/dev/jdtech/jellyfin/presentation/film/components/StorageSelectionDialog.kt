@@ -30,7 +30,7 @@ fun StorageSelectionDialog(
         onDismiss = onDismiss,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.spacings.default)
+            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.spacings.default),
         ) {
             storageLocations.forEachIndexed { i, storageLocation ->
                 Row(

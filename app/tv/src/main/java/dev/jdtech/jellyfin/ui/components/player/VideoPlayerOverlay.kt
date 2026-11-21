@@ -58,9 +58,9 @@ fun VideoPlayerOverlay(
                                 listOf(
                                     Color.Black.copy(alpha = 0.4f),
                                     Color.Black.copy(alpha = 0.8f),
-                                )
-                            )
-                        )
+                                ),
+                            ),
+                        ),
             )
 
             Column(Modifier.padding(MaterialTheme.spacings.default * 2)) { controls() }

@@ -40,7 +40,7 @@ object VideoMetadataParser {
                                 AudioChannel.CH_5_1.raw -> AudioChannel.CH_5_1
                                 AudioChannel.CH_7_1.raw -> AudioChannel.CH_7_1
                                 else -> AudioChannel.CH_2_0
-                            }
+                            },
                         )
 
                         /**
@@ -62,7 +62,7 @@ object VideoMetadataParser {
                                 AudioCodec.TRUEHD.toString() -> AudioCodec.TRUEHD
                                 AudioCodec.DTS.toString() -> AudioCodec.DTS
                                 else -> null
-                            }
+                            },
                         )
                     }
 
@@ -105,7 +105,7 @@ object VideoMetadataParser {
                                     }
 
                                     else -> Resolution.SD
-                                }
+                                },
                             )
 
                             videoCodecs.add(
@@ -115,7 +115,7 @@ object VideoMetadataParser {
                                     VideoCodec.VVC.toString() -> VideoCodec.VVC
                                     VideoCodec.AV1.toString() -> VideoCodec.AV1
                                     else -> null
-                                }
+                                },
                             )
                         }
                     }

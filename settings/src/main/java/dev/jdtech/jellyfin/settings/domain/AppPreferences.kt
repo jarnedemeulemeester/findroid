@@ -136,7 +136,7 @@ class AppPreferences @Inject constructor(val sharedPreferences: SharedPreference
             }
         } catch (_: Exception) {
             Timber.w(
-                "Failed to load ${preference.backendName} preference. Resetting to default value..."
+                "Failed to load ${preference.backendName} preference. Resetting to default value...",
             )
             setValue(preference, preference.defaultValue)
             preference.defaultValue

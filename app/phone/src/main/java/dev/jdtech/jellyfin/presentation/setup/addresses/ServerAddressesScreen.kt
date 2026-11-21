@@ -144,7 +144,7 @@ fun ServerAddressesLayout(state: ServerAddressesState, onAction: (ServerAddresse
                                         openDeleteDialog = true
                                     },
                                 )
-                                .padding(MaterialTheme.spacings.small)
+                                .padding(MaterialTheme.spacings.small),
                     ) {
                         Text(address.address)
                     }

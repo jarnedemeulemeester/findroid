@@ -36,7 +36,7 @@ fun ItemTopBar(
                     start = safePadding.start + MaterialTheme.spacings.small,
                     top = safePadding.top + MaterialTheme.spacings.small,
                     end = safePadding.end + MaterialTheme.spacings.small,
-                )
+                ),
     ) {
         if (hasBackButton) {
             IconButton(

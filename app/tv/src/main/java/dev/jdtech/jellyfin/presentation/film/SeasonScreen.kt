@@ -63,7 +63,7 @@ private fun SeasonScreenLayout(state: SeasonState, onAction: (SeasonAction) -> U
                                 start = MaterialTheme.spacings.extraLarge,
                                 top = MaterialTheme.spacings.large,
                                 end = MaterialTheme.spacings.large,
-                            )
+                            ),
                 ) {
                     Text(text = season.name, style = MaterialTheme.typography.displayMedium)
                     Text(text = season.seriesName, style = MaterialTheme.typography.headlineMedium)

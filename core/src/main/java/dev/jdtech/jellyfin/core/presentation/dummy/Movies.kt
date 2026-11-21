@@ -39,9 +39,9 @@ val dummyMovie =
                                 height = 1080,
                                 width = 1920,
                                 videoDoViTitle = null,
-                            )
+                            ),
                         ),
-                )
+                ),
             ),
         played = false,
         favorite = true,

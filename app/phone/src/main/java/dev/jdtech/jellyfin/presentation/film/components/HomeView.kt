@@ -51,8 +51,8 @@ fun HomeView(
                                 name = view.view.name,
                                 images = FindroidImages(),
                                 type = view.view.type,
-                            )
-                        )
+                            ),
+                        ),
                     )
                 },
                 modifier = Modifier.align(Alignment.CenterEnd),

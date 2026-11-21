@@ -42,7 +42,7 @@ fun DiscoveredServerItem(name: String, modifier: Modifier = Modifier, onClick: (
             border =
                 ClickableSurfaceDefaults.border(
                     focusedBorder =
-                        Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(16.dp))
+                        Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(16.dp)),
                 ),
             modifier = Modifier.fillMaxWidth().aspectRatio(1f),
         ) {

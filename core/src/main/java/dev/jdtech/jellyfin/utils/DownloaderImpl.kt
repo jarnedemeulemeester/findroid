@@ -94,13 +94,13 @@ class DownloaderImpl(
                 DownloadManager.Request(source.path.toUri())
                     .setTitle(item.name)
                     .setAllowedOverMetered(
-                        appPreferences.getValue(appPreferences.downloadOverMobileData)
+                        appPreferences.getValue(appPreferences.downloadOverMobileData),
                     )
                     .setAllowedOverRoaming(
-                        appPreferences.getValue(appPreferences.downloadWhenRoaming)
+                        appPreferences.getValue(appPreferences.downloadWhenRoaming),
                     )
                     .setNotificationVisibility(
-                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED,
                     )
                     .setDestinationUri(path)
             val downloadId = downloadManager.enqueue(request)
@@ -109,23 +109,23 @@ class DownloaderImpl(
                 is FindroidMovie -> {
                     database.insertMovie(
                         item.toFindroidMovieDto(
-                            appPreferences.getValue(appPreferences.currentServer)
-                        )
+                            appPreferences.getValue(appPreferences.currentServer),
+                        ),
                     )
                 }
                 is FindroidEpisode -> {
                     val show = jellyfinRepository.getShow(item.seriesId)
                     database.insertShow(
                         show.toFindroidShowDto(
-                            appPreferences.getValue(appPreferences.currentServer)
-                        )
+                            appPreferences.getValue(appPreferences.currentServer),
+                        ),
                     )
                     val season = jellyfinRepository.getSeason(item.seasonId)
                     database.insertSeason(season.toFindroidSeasonDto())
                     database.insertEpisode(
                         item.toFindroidEpisodeDto(
-                            appPreferences.getValue(appPreferences.currentServer)
-                        )
+                            appPreferences.getValue(appPreferences.currentServer),
+                        ),
                     )
 
                     startImagesDownloader(show)
@@ -226,15 +226,15 @@ class DownloaderImpl(
                         val totalBytes =
                             cursor.getLong(
                                 cursor.getColumnIndexOrThrow(
-                                    DownloadManager.COLUMN_TOTAL_SIZE_BYTES
-                                )
+                                    DownloadManager.COLUMN_TOTAL_SIZE_BYTES,
+                                ),
                             )
                         if (totalBytes > 0) {
                             val downloadedBytes =
                                 cursor.getLong(
                                     cursor.getColumnIndexOrThrow(
-                                        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
-                                    )
+                                        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR,
+                                    ),
                                 )
                             progress = downloadedBytes.times(100).div(totalBytes).toInt()
                         }
@@ -261,19 +261,19 @@ class DownloaderImpl(
             val id = UUID.randomUUID()
             val streamPath =
                 Uri.fromFile(
-                    File(storageLocation, "downloads/${item.id}.${source.id}.$id.download")
+                    File(storageLocation, "downloads/${item.id}.${source.id}.$id.download"),
                 )
             database.insertMediaStream(
-                mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty())
+                mediaStream.toFindroidMediaStreamDto(id, source.id, streamPath.path.orEmpty()),
             )
             val request =
                 DownloadManager.Request(mediaStream.path!!.toUri())
                     .setTitle(mediaStream.title)
                     .setAllowedOverMetered(
-                        appPreferences.getValue(appPreferences.downloadOverMobileData)
+                        appPreferences.getValue(appPreferences.downloadOverMobileData),
                     )
                     .setAllowedOverRoaming(
-                        appPreferences.getValue(appPreferences.downloadWhenRoaming)
+                        appPreferences.getValue(appPreferences.downloadWhenRoaming),
                     )
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                     .setDestinationUri(streamPath)
@@ -291,7 +291,7 @@ class DownloaderImpl(
             ceil(
                     trickplayInfo.thumbnailCount
                         .toDouble()
-                        .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)
+                        .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight),
                 )
                 .toInt()
         val byteArrays = mutableListOf<ByteArray>()

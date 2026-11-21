@@ -44,12 +44,12 @@ class DownloadReceiver : BroadcastReceiver() {
                             items.addAll(
                                 database.getMovies().map {
                                     it.toFindroidMovie(database, repository.getUserId())
-                                }
+                                },
                             )
                             items.addAll(
                                 database.getEpisodes().map {
                                     it.toFindroidEpisode(database, repository.getUserId())
-                                }
+                                },
                             )
 
                             items

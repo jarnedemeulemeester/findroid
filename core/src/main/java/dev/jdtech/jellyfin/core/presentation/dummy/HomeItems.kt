@@ -15,7 +15,7 @@ val dummyHomeSection =
             id = UUID.randomUUID(),
             name = UiText.DynamicString("Continue watching"),
             items = dummyMovies + dummyEpisodes,
-        )
+        ),
     )
 
 val dummyHomeView =
@@ -25,5 +25,5 @@ val dummyHomeView =
             name = "Movies",
             items = dummyMovies,
             type = CollectionType.Movies,
-        )
+        ),
     )

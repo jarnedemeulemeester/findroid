@@ -56,7 +56,7 @@ class JellyfinApi(
                     requestTimeout = requestTimeout.toDuration(DurationUnit.MILLISECONDS),
                     connectTimeout = connectTimeout.toDuration(DurationUnit.MILLISECONDS),
                     socketTimeout = socketTimeout.toDuration(DurationUnit.MILLISECONDS),
-                )
+                ),
         )
     var userId: UUID? = null
 

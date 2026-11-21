@@ -63,7 +63,7 @@ private fun SettingsCategoryCardPreview() {
     FindroidTheme {
         SettingsCategoryCard(
             preference =
-                PreferenceCategory(nameStringResource = SettingsR.string.settings_category_player)
+                PreferenceCategory(nameStringResource = SettingsR.string.settings_category_player),
         )
     }
 }
@@ -77,7 +77,7 @@ private fun SettingsCategoryCardDescriptionPreview() {
                 PreferenceCategory(
                     nameStringResource = SettingsR.string.settings_category_player,
                     descriptionStringRes = SettingsR.string.settings_category_player,
-                )
+                ),
         )
     }
 }
@@ -91,7 +91,7 @@ private fun SettingsCategoryCardIconPreview() {
                 PreferenceCategory(
                     nameStringResource = SettingsR.string.settings_category_player,
                     iconDrawableId = CoreR.drawable.ic_play,
-                )
+                ),
         )
     }
 }

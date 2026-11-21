@@ -63,7 +63,7 @@ fun SettingsSelectDetailsCard(
                 Modifier.padding(
                     horizontal = MaterialTheme.spacings.default,
                     vertical = MaterialTheme.spacings.medium,
-                )
+                ),
         ) {
             Text(
                 text = stringResource(id = preference.nameStringResource),
@@ -77,7 +77,7 @@ fun SettingsSelectDetailsCard(
             LazyColumn(
                 verticalArrangement =
                     Arrangement.spacedBy(
-                        MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall
+                        MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall,
                     ),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
             ) {
@@ -112,7 +112,7 @@ private fun SettingsSelectDetailsCardItem(
         border =
             ClickableSurfaceDefaults.border(
                 focusedBorder =
-                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp))
+                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp)),
             ),
         scale = ClickableSurfaceScale.None,
     ) {

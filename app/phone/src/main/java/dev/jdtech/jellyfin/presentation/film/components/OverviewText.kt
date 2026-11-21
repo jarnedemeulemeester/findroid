@@ -29,7 +29,7 @@ fun OverviewText(text: String, maxCollapsedLines: Int = Int.MAX_VALUE) {
                 Modifier.then(
                         if (showChevron)
                             Modifier.clickable { isOverviewExpanded = !isOverviewExpanded }
-                        else Modifier
+                        else Modifier,
                     )
                     .animateContentSize(),
             overflow = TextOverflow.Ellipsis,

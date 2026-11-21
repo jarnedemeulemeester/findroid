@@ -49,7 +49,7 @@ private fun VideoPlayerControlsLayoutPreview() {
                     Modifier.border(2.dp, Color.Red)
                         .background(Color.LightGray)
                         .fillMaxWidth()
-                        .height(96.dp)
+                        .height(96.dp),
                 )
             },
             seeker = {
@@ -57,7 +57,7 @@ private fun VideoPlayerControlsLayoutPreview() {
                     Modifier.border(2.dp, Color.Red)
                         .background(Color.LightGray)
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(48.dp),
                 )
             },
             mediaActions = {
@@ -65,7 +65,7 @@ private fun VideoPlayerControlsLayoutPreview() {
                     Modifier.border(2.dp, Color.Red)
                         .background(Color.LightGray)
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(48.dp),
                 )
             },
         )

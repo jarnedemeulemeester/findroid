@@ -17,7 +17,7 @@ fun List<Tracks.Group>.getTrackNames(): Array<String> {
                         } else {
                             @Suppress("DEPRECATION") Locale(it.split("-").last()).displayLanguage
                         }
-                    }
+                    },
                 )
                 add(format.codecs)
                 filterNotNull().joinToString(separator = " - ")

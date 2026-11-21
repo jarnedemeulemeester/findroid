@@ -48,7 +48,7 @@ fun ItemCard(
             modifier
                 .width(width.dp)
                 .clip(MaterialTheme.shapes.small)
-                .clickable(onClick = { onClick(item) })
+                .clickable(onClick = { onClick(item) }),
     ) {
         Surface(shape = MaterialTheme.shapes.small) {
             Box {

@@ -82,12 +82,12 @@ interface ServerDatabaseDao {
     suspend fun updateServerCurrentUser(serverId: String, userId: UUID)
 
     @Query(
-        "SELECT * FROM users WHERE id = (SELECT currentUserId FROM servers WHERE id = :serverId)"
+        "SELECT * FROM users WHERE id = (SELECT currentUserId FROM servers WHERE id = :serverId)",
     )
     suspend fun getServerCurrentUser(serverId: String): User?
 
     @Query(
-        "SELECT * FROM serverAddresses WHERE id = (SELECT currentServerAddressId FROM servers WHERE id = :serverId)"
+        "SELECT * FROM serverAddresses WHERE id = (SELECT currentServerAddressId FROM servers WHERE id = :serverId)",
     )
     suspend fun getServerCurrentAddress(serverId: String): ServerAddress?
 
@@ -112,7 +112,7 @@ interface ServerDatabaseDao {
     @Query("DELETE FROM movies WHERE id = :id") suspend fun deleteMovie(id: UUID)
 
     @Query(
-        "UPDATE userdata SET playbackPositionTicks = :playbackPositionTicks WHERE itemId = :itemId AND userid = :userId"
+        "UPDATE userdata SET playbackPositionTicks = :playbackPositionTicks WHERE itemId = :itemId AND userid = :userId",
     )
     suspend fun setPlaybackPositionTicks(itemId: UUID, userId: UUID, playbackPositionTicks: Long)
 
@@ -176,7 +176,7 @@ interface ServerDatabaseDao {
     suspend fun getEpisode(id: UUID): FindroidEpisodeDto
 
     @Query(
-        "SELECT * FROM episodes WHERE seriesId = :seriesId ORDER BY parentIndexNumber ASC, indexNumber ASC"
+        "SELECT * FROM episodes WHERE seriesId = :seriesId ORDER BY parentIndexNumber ASC, indexNumber ASC",
     )
     suspend fun getEpisodesByShowId(seriesId: UUID): List<FindroidEpisodeDto>
 
@@ -184,7 +184,7 @@ interface ServerDatabaseDao {
     suspend fun getEpisodesBySeasonId(seasonId: UUID): List<FindroidEpisodeDto>
 
     @Query(
-        "SELECT * FROM episodes WHERE serverId = :serverId ORDER BY seriesName ASC, parentIndexNumber ASC, indexNumber ASC"
+        "SELECT * FROM episodes WHERE serverId = :serverId ORDER BY seriesName ASC, parentIndexNumber ASC, indexNumber ASC",
     )
     suspend fun getEpisodesByServerId(serverId: String): List<FindroidEpisodeDto>
 
@@ -232,7 +232,7 @@ interface ServerDatabaseDao {
     suspend fun getUserDataToBeSynced(userId: UUID, itemId: UUID): FindroidUserDataDto?
 
     @Query(
-        "UPDATE userdata SET toBeSynced = :toBeSynced WHERE itemId = :itemId AND userId = :userId"
+        "UPDATE userdata SET toBeSynced = :toBeSynced WHERE itemId = :itemId AND userId = :userId",
     )
     suspend fun setUserDataToBeSynced(userId: UUID, itemId: UUID, toBeSynced: Boolean)
 

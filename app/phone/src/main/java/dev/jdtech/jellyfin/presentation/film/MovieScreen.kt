@@ -151,7 +151,7 @@ private fun MovieScreenLayout(
                         Column(
                             modifier =
                                 Modifier.align(Alignment.BottomStart)
-                                    .padding(start = paddingStart, end = paddingEnd)
+                                    .padding(start = paddingStart, end = paddingEnd),
                         ) {
                             Text(
                                 text = movie.name,

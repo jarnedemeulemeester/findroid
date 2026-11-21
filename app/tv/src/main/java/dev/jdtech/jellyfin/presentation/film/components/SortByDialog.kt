@@ -89,7 +89,8 @@ fun SortByDialog(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 SingleChoiceSegmentedButtonRow(
                     modifier =
-                        Modifier.padding(horizontal = MaterialTheme.spacings.default).fillMaxWidth()
+                        Modifier.padding(horizontal = MaterialTheme.spacings.default)
+                            .fillMaxWidth(),
                 ) {
                     orderOptions.forEachIndexed { index, order ->
                         SegmentedButton(

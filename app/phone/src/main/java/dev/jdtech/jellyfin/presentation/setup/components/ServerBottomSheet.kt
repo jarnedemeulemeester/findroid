@@ -74,7 +74,7 @@ private fun ServerBottomSheetItem(
             modifier
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
-                .padding(MaterialTheme.spacings.medium)
+                .padding(MaterialTheme.spacings.medium),
     ) {
         Icon(painter = icon, contentDescription = null)
         Spacer(Modifier.width(MaterialTheme.spacings.medium))

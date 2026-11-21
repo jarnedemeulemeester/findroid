@@ -120,7 +120,7 @@ private fun SettingsSubScreenLayout(
                     start = MaterialTheme.spacings.large,
                     top = MaterialTheme.spacings.default * 2,
                     end = MaterialTheme.spacings.large,
-                )
+                ),
     ) {
         Column {
             Text(text = stringResource(id = title), style = MaterialTheme.typography.displayMedium)
@@ -158,7 +158,7 @@ private fun SettingsSubScreenLayout(
                                         .padding(bottom = MaterialTheme.spacings.large),
                                 onUpdate = { value ->
                                     onAction(
-                                        SettingsAction.OnUpdate(preference.copy(value = value))
+                                        SettingsAction.OnUpdate(preference.copy(value = value)),
                                     )
                                 },
                             )
@@ -171,7 +171,7 @@ private fun SettingsSubScreenLayout(
                                         .padding(bottom = MaterialTheme.spacings.large),
                                 onUpdate = { value ->
                                     onAction(
-                                        SettingsAction.OnUpdate(preference.copy(value = value))
+                                        SettingsAction.OnUpdate(preference.copy(value = value)),
                                     )
                                 },
                             )
@@ -203,10 +203,10 @@ private fun SettingsSubScreenLayoutPreview() {
                                             backendPreference = Preference("", ""),
                                             options = SettingsR.array.mpv_hwdec,
                                             optionValues = SettingsR.array.mpv_hwdec,
-                                        )
-                                    )
-                            )
-                        )
+                                        ),
+                                    ),
+                            ),
+                        ),
                 ),
             onAction = {},
         )

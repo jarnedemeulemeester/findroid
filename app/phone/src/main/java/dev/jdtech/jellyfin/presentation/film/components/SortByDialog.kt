@@ -79,7 +79,7 @@ fun SortByDialog(
             shape = MaterialTheme.shapes.extraLarge,
             colors =
                 CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
         ) {
             Column {
@@ -94,7 +94,8 @@ fun SortByDialog(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 SingleChoiceSegmentedButtonRow(
                     modifier =
-                        Modifier.padding(horizontal = MaterialTheme.spacings.default).fillMaxWidth()
+                        Modifier.padding(horizontal = MaterialTheme.spacings.default)
+                            .fillMaxWidth(),
                 ) {
                     orderOptions.forEachIndexed { index, order ->
                         SegmentedButton(
@@ -110,7 +111,7 @@ fun SortByDialog(
                                 ),
                             colors =
                                 SegmentedButtonDefaults.colors(
-                                    inactiveContainerColor = Color.Transparent
+                                    inactiveContainerColor = Color.Transparent,
                                 ),
                             icon = {
                                 AnimatedVisibility(

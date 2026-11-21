@@ -40,7 +40,7 @@ fun <T, U> resumedAction(calculation: @DisallowComposableCalls (T, U) -> Unit): 
 @CheckResult
 @Composable
 fun <T, U, V> resumedAction(
-    calculation: @DisallowComposableCalls (T, U, V) -> Unit
+    calculation: @DisallowComposableCalls (T, U, V) -> Unit,
 ): (T, U, V) -> Unit {
     val lifecycleOwner = LocalLifecycleOwner.current
     return { t, u, v ->

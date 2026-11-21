@@ -66,7 +66,7 @@ constructor(
                 currentTrickplay = null,
                 currentChapters = emptyList(),
                 fileLoaded = false,
-            )
+            ),
         )
     val uiState = _uiState.asStateFlow()
 
@@ -125,11 +125,11 @@ constructor(
                 .buildUponParameters()
                 .setTunnelingEnabled(true)
                 .setPreferredAudioLanguage(
-                    appPreferences.getValue(appPreferences.preferredAudioLanguage)
+                    appPreferences.getValue(appPreferences.preferredAudioLanguage),
                 )
                 .setPreferredTextLanguage(
-                    appPreferences.getValue(appPreferences.preferredSubtitleLanguage)
-                )
+                    appPreferences.getValue(appPreferences.preferredSubtitleLanguage),
+                ),
         )
 
         val playerBackend = appPreferences.getValue(appPreferences.playerBackend)
@@ -139,16 +139,16 @@ constructor(
                     val renderersFactory =
                         DefaultRenderersFactory(application)
                             .setExtensionRendererMode(
-                                DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+                                DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON,
                             )
                     ExoPlayer.Builder(application, renderersFactory)
                         .setAudioAttributes(audioAttributes, true)
                         .setTrackSelector(trackSelector)
                         .setSeekBackIncrementMs(
-                            appPreferences.getValue(appPreferences.playerSeekBackInc)
+                            appPreferences.getValue(appPreferences.playerSeekBackInc),
                         )
                         .setSeekForwardIncrementMs(
-                            appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                            appPreferences.getValue(appPreferences.playerSeekForwardInc),
                         )
                         .setPauseAtEndOfMediaItems(true)
                         .build()
@@ -158,10 +158,10 @@ constructor(
                         .setAudioAttributes(audioAttributes, true)
                         .setTrackSelectionParameters(trackSelector.parameters)
                         .setSeekBackIncrementMs(
-                            appPreferences.getValue(appPreferences.playerSeekBackInc)
+                            appPreferences.getValue(appPreferences.playerSeekBackInc),
                         )
                         .setSeekForwardIncrementMs(
-                            appPreferences.getValue(appPreferences.playerSeekForwardInc)
+                            appPreferences.getValue(appPreferences.playerSeekForwardInc),
                         )
                         .setPauseAtEndOfMediaItems(true)
                         .setVideoOutput(appPreferences.getValue(appPreferences.playerMpvVo))
@@ -227,7 +227,7 @@ constructor(
         val mediaSubtitles = externalSubtitles.map { externalSubtitle ->
             MediaItem.SubtitleConfiguration.Builder(externalSubtitle.uri)
                 .setLabel(
-                    externalSubtitle.title.ifBlank { application.getString(R.string.external) }
+                    externalSubtitle.title.ifBlank { application.getString(R.string.external) },
                 )
                 .setMimeType(externalSubtitle.mimeType)
                 .setLanguage(externalSubtitle.language)
@@ -478,7 +478,7 @@ constructor(
                                 .filter { it.type == trackType && it.isSupported }[index]
                                 .mediaTrackGroup,
                             0,
-                        )
+                        ),
                     )
                     .setTrackTypeDisabled(trackType, false)
                     .build()
@@ -508,7 +508,7 @@ constructor(
                 ceil(
                         trickplayInfo.thumbnailCount
                             .toDouble()
-                            .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight)
+                            .div(trickplayInfo.tileWidth * trickplayInfo.tileHeight),
                     )
                     .toInt()
             val bitmaps = mutableListOf<Bitmap>()

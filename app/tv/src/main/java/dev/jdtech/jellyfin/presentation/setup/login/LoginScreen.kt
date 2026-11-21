@@ -138,8 +138,8 @@ private fun LoginScreenLayout(
                     Text(
                         text =
                             stringResource(
-                                id = dev.jdtech.jellyfin.setup.R.string.edit_text_username_hint
-                            )
+                                id = dev.jdtech.jellyfin.setup.R.string.edit_text_username_hint,
+                            ),
                     )
                 },
                 singleLine = true,
@@ -167,8 +167,8 @@ private fun LoginScreenLayout(
                     Text(
                         text =
                             stringResource(
-                                id = dev.jdtech.jellyfin.setup.R.string.edit_text_password_hint
-                            )
+                                id = dev.jdtech.jellyfin.setup.R.string.edit_text_password_hint,
+                            ),
                     )
                 },
                 singleLine = true,
@@ -209,7 +209,7 @@ private fun LoginScreenLayout(
                         Text(
                             text =
                                 stringResource(
-                                    id = dev.jdtech.jellyfin.setup.R.string.login_btn_login
+                                    id = dev.jdtech.jellyfin.setup.R.string.login_btn_login,
                                 ),
                             modifier = Modifier.align(Alignment.Center),
                         )
@@ -224,7 +224,7 @@ private fun LoginScreenLayout(
                         modifier = Modifier.width(360.dp),
                     ) {
                         HorizontalDivider(
-                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp)
+                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
                         )
                         Text(
                             text = stringResource(dev.jdtech.jellyfin.setup.R.string.or),
@@ -232,7 +232,7 @@ private fun LoginScreenLayout(
                             style = MaterialTheme.typography.bodySmall,
                         )
                         HorizontalDivider(
-                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp)
+                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
                         )
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
@@ -256,7 +256,7 @@ private fun LoginScreenLayout(
                                         } else {
                                             stringResource(
                                                 dev.jdtech.jellyfin.setup.R.string
-                                                    .login_btn_quick_connect
+                                                    .login_btn_quick_connect,
                                             )
                                         },
                                     modifier = Modifier.align(Alignment.Center),

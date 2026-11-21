@@ -51,7 +51,7 @@ fun SettingsGroupCard(
             modifier = modifier,
             colors =
                 CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 ),
         ) {
             group.preferences.fastForEachIndexed { index, preference ->
@@ -67,8 +67,8 @@ fun SettingsGroupCard(
                             onClick = {
                                 onAction(
                                     SettingsAction.OnUpdate(
-                                        preference.copy(value = !preference.value)
-                                    )
+                                        preference.copy(value = !preference.value),
+                                    ),
                                 )
                                 preference.onClick(preference)
                             },

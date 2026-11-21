@@ -165,8 +165,8 @@ private fun PermissionScreenLayout(
                                     SetupR.string.permission_btn_open_settings
                                 } else {
                                     SetupR.string.permission_btn_grant
-                                }
-                            )
+                                },
+                            ),
                     )
                 }
             }

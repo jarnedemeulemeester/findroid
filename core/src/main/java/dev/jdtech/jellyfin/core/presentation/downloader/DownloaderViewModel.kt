@@ -56,7 +56,7 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
                 pollDownloadProgress(downloadId)
             } else {
                 _state.emit(
-                    DownloaderState(status = DownloadManager.STATUS_FAILED, errorText = uiText)
+                    DownloaderState(status = DownloadManager.STATUS_FAILED, errorText = uiText),
                 )
             }
         }
@@ -96,7 +96,7 @@ class DownloaderViewModel @Inject constructor(private val downloader: Downloader
                             DownloaderState(
                                 status = status,
                                 progress = progress.coerceAtLeast(0) / 100f,
-                            )
+                            ),
                         )
                     }
 

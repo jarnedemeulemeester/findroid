@@ -78,7 +78,7 @@ class SetupRepositoryImpl(
         // Check if address is not blank
         if (address.isBlank()) {
             throw ExceptionUiText(
-                UiText.StringResource(SetupR.string.add_server_error_empty_address)
+                UiText.StringResource(SetupR.string.add_server_error_empty_address),
             )
         }
 
@@ -112,7 +112,7 @@ class SetupRepositoryImpl(
             }
             else -> {
                 throw ExceptionUiText(
-                    UiText.StringResource(SetupR.string.add_server_error_not_found)
+                    UiText.StringResource(SetupR.string.add_server_error_not_found),
                 )
             }
         }
@@ -122,7 +122,7 @@ class SetupRepositoryImpl(
         val serverInfo =
             recommendedServerInfo.systemInfo.getOrNull()
                 ?: throw ExceptionUiText(
-                    UiText.StringResource(SetupR.string.add_server_error_no_id)
+                    UiText.StringResource(SetupR.string.add_server_error_no_id),
                 )
 
         Timber.d("Connecting to server: ${serverInfo.serverName}")
@@ -214,7 +214,7 @@ class SetupRepositoryImpl(
         withContext(Dispatchers.IO) {
             val authenticationResult by
                 jellyfinApi.authenticationApi.authenticateUserByName(
-                    data = AuthenticateUserByName(username = username, pw = password)
+                    data = AuthenticateUserByName(username = username, pw = password),
                 )
 
             saveAuthenticationResult(authenticationResult)
@@ -225,7 +225,7 @@ class SetupRepositoryImpl(
         withContext(Dispatchers.IO) {
             val authenticationResult by
                 jellyfinApi.authenticationApi.authenticateWithQuickConnect(
-                    data = QuickConnectDto(secret = secret)
+                    data = QuickConnectDto(secret = secret),
                 )
 
             saveAuthenticationResult(authenticationResult)

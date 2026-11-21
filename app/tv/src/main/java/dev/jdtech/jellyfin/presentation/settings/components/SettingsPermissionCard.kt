@@ -101,7 +101,7 @@ fun SettingsPermissionCard(
         border =
             ClickableSurfaceDefaults.border(
                 focusedBorder =
-                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp))
+                    Border(BorderStroke(4.dp, Color.White), shape = RoundedCornerShape(10.dp)),
             ),
         scale = ClickableSurfaceScale.None,
         modifier = modifier.fillMaxWidth(),
@@ -136,7 +136,7 @@ fun SettingsPermissionCard(
                             CoreR.drawable.ic_check
                         } else {
                             CoreR.drawable.ic_x
-                        }
+                        },
                     ),
                 contentDescription =
                     stringResource(
@@ -144,7 +144,7 @@ fun SettingsPermissionCard(
                             SettingsR.string.permission_status_granted
                         } else {
                             SettingsR.string.permission_status_denied
-                        }
+                        },
                     ),
                 tint =
                     if (isGranted) {
@@ -162,7 +162,7 @@ fun SettingsPermissionCard(
 private fun SettingsPermissionCardPreview() {
     FindroidTheme {
         SettingsPermissionCard(
-            preference = PreferencePermission(permission = PermissionDefinitions.localNetwork)
+            preference = PreferencePermission(permission = PermissionDefinitions.localNetwork),
         )
     }
 }

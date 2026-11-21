@@ -54,7 +54,7 @@ fun ErrorDialog(exception: Throwable, onDismissRequest: () -> Unit) {
                     modifier =
                         Modifier.weight(1f)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .verticalScroll(rememberScrollState())
+                            .verticalScroll(rememberScrollState()),
                 ) {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                     Text(
@@ -89,7 +89,7 @@ fun ErrorDialog(exception: Throwable, onDismissRequest: () -> Unit) {
                                 }
                             val shareIntent = Intent.createChooser(sendIntent, null)
                             context.startActivity(shareIntent)
-                        }
+                        },
                     ) {
                         Text(stringResource(CoreR.string.share))
                     }

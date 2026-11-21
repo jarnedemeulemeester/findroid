@@ -90,7 +90,7 @@ androidComponents {
                     .firstOrNull { it.filterType == FilterConfiguration.FilterType.ABI }
                     ?.identifier
             output.outputFileName.set(
-                "findroid-v${output.versionName.get()}-${variant.flavorName}-$abi.apk"
+                "findroid-v${output.versionName.get()}-${variant.flavorName}-$abi.apk",
             )
         }
     }
