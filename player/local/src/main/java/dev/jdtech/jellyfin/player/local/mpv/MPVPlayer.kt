@@ -310,6 +310,8 @@ class MPVPlayer(
 
     // MPV Custom
     private var isPlayerReady: Boolean = false
+    private var released: Boolean = false
+    private var currentSurfaceView: SurfaceView? = null
     private var isSeekable: Boolean = false
     private var currentMediaItemIndex: Int = 0
     private var currentPositionMs: Long? = null
@@ -327,6 +329,7 @@ class MPVPlayer(
 
     override fun eventProperty(property: String, value: String) {
         handler.post {
+            if (released) return@post
             when (property) {
                 "track-list" -> {
                     val newTracks = getTracks(value)
@@ -341,6 +344,7 @@ class MPVPlayer(
 
     override fun eventProperty(property: String, value: Boolean) {
         handler.post {
+            if (released) return@post
             when (property) {
                 "eof-reached" -> {
                     if (value && isPlayerReady) {
@@ -387,6 +391,7 @@ class MPVPlayer(
 
     override fun eventProperty(property: String, value: Long) {
         handler.post {
+            if (released) return@post
             when (property) {
                 "time-pos" -> currentPositionMs = value * C.MILLIS_PER_SECOND
                 "duration" -> {
@@ -426,6 +431,7 @@ class MPVPlayer(
 
     override fun eventProperty(property: String, value: Double) {
         handler.post {
+            if (released) return@post
             when (property) {
                 "speed" -> {
                     playbackParameters = playbackParameters.withSpeed(value.toFloat())
@@ -439,6 +445,7 @@ class MPVPlayer(
 
     override fun event(eventId: Int) {
         handler.post {
+            if (released) return@post
             when (eventId) {
                 MpvEvent.MPV_EVENT_START_FILE -> {
                     if (!isPlayerReady) {
@@ -1102,6 +1109,10 @@ class MPVPlayer(
             AudioManagerCompat.abandonAudioFocusRequest(audioManager, audioFocusRequest)
         }
         resetInternalState()
+        released = true
+        // Remove the surface callbacks before destroying mpv.
+        currentSurfaceView?.holder?.removeCallback(surfaceHolder)
+        currentSurfaceView = null
         mpvLib.removeObserver(this)
         mpvLib.destroy()
     }
@@ -1331,6 +1342,8 @@ class MPVPlayer(
      * @param surfaceView The surface view.
      */
     override fun setVideoSurfaceView(surfaceView: SurfaceView?) {
+        currentSurfaceView?.holder?.removeCallback(surfaceHolder)
+        currentSurfaceView = surfaceView
         surfaceView?.holder?.addCallback(surfaceHolder)
     }
 
@@ -1341,7 +1354,10 @@ class MPVPlayer(
      * @param surfaceView The texture view to clear.
      */
     override fun clearVideoSurfaceView(surfaceView: SurfaceView?) {
-        surfaceView?.holder?.removeCallback(surfaceHolder)
+        if (surfaceView === currentSurfaceView) {
+            surfaceView?.holder?.removeCallback(surfaceHolder)
+            currentSurfaceView = null
+        }
     }
 
     /**
