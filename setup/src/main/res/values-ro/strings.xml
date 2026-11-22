@@ -15,4 +15,5 @@
     <string name="remove_server_address">Eliminați adresa serverului</string>
     <string name="remove_server_address_dialog_text">Sunteți sigur că doriți să eliminați adresa serverului %1$s</string>
     <string name="add_server_btn_connect">Conectează-te</string>
+    <string name="cancel">Anulează</string>
 </resources>
