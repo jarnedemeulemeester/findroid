@@ -70,4 +70,16 @@
     <string name="amoled_theme">Tema întunecată AMOLED</string>
     <string name="amoled_theme_summary">Folsește tema AMOLED cu un fundal negru</string>
     <string name="none">Niciunul</string>
+    <string name="settings_category_interface">Interfața</string>
+    <string name="settings_category_permissions">Permisiuni</string>
+    <string name="permission_local_network">Acces rețea locală</string>
+    <string name="home">Acasă</string>
+    <string name="home_suggestions">Afișează sugestii</string>
+    <string name="home_latest">Afișează ultimele obiecte</string>
+    <string name="offline_mode_summary">Urmăriți filme și seriale fără o conexiune la server</string>
+    <string name="mb">MB</string>
+    <string name="ms">ms</string>
+    <string name="seconds">s</string>
+    <string name="save">Salvează</string>
+    <string name="cancel">Anulează</string>
 </resources>
