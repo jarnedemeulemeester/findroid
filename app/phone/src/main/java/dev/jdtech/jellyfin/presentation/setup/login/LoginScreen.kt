@@ -16,8 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextObfuscationMode
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
@@ -26,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,8 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -101,10 +101,10 @@ private fun LoginScreenLayout(
 ) {
     val scrollState = rememberScrollState()
     var username by rememberSaveable { mutableStateOf(prefilledUsername ?: "") }
-    var password by rememberSaveable { mutableStateOf("") }
+    val passwordState = rememberTextFieldState()
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    val doLogin = { onAction(LoginAction.OnLoginClick(username, password)) }
+    val doLogin = { onAction(LoginAction.OnLoginClick(username, passwordState.text.toString())) }
 
     RootLayout {
         Column(
@@ -150,8 +150,8 @@ private fun LoginScreenLayout(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = password,
+            OutlinedSecureTextField(
+                state = passwordState,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_lock),
@@ -168,19 +168,17 @@ private fun LoginScreenLayout(
                         )
                     }
                 },
-                onValueChange = { password = it },
                 label = { Text(text = stringResource(SetupR.string.edit_text_password_hint)) },
-                singleLine = true,
                 keyboardOptions =
                     KeyboardOptions(
                         autoCorrectEnabled = false,
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Go,
                     ),
-                keyboardActions = KeyboardActions(onGo = { doLogin() }),
-                visualTransformation =
-                    if (passwordVisible) VisualTransformation.None
-                    else PasswordVisualTransformation(),
+                onKeyboardAction = { doLogin() },
+                textObfuscationMode =
+                    if (passwordVisible) TextObfuscationMode.Visible
+                    else TextObfuscationMode.Hidden,
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {

@@ -15,8 +15,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -36,7 +35,7 @@ fun ServerBottomSheet(
     onAddresses: () -> Unit,
     onRemoveServer: () -> Unit,
     onDismissRequest: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState,
 ) {
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium)) {
@@ -93,7 +92,7 @@ private fun ServerBottomSheetPreview() {
             onAddresses = {},
             onRemoveServer = {},
             onDismissRequest = {},
-            sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Expanded),
+            sheetState = rememberBottomSheetState(initialValue = SheetValue.Expanded),
         )
     }
 }

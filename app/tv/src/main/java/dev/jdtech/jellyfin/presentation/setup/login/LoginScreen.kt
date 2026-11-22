@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextObfuscationMode
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -95,10 +96,10 @@ private fun LoginScreenLayout(
     prefilledUsername: String? = null,
 ) {
     var username by rememberSaveable { mutableStateOf(prefilledUsername ?: "") }
-    var password by rememberSaveable { mutableStateOf("") }
+    val passwordState = rememberTextFieldState()
 
     val focusRequester = remember { FocusRequester() }
-    val doLogin = { onAction(LoginAction.OnLoginClick(username, password)) }
+    val doLogin = { onAction(LoginAction.OnLoginClick(username, passwordState.text.toString())) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         IconButton(
@@ -154,15 +155,14 @@ private fun LoginScreenLayout(
                 modifier = Modifier.width(360.dp).focusRequester(focusRequester),
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
-            OutlinedTextField(
-                value = password,
+            OutlinedSecureTextField(
+                state = passwordState,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_lock),
                         contentDescription = null,
                     )
                 },
-                onValueChange = { password = it },
                 label = {
                     Text(
                         text =
@@ -171,15 +171,14 @@ private fun LoginScreenLayout(
                             ),
                     )
                 },
-                singleLine = true,
                 keyboardOptions =
                     KeyboardOptions(
                         autoCorrectEnabled = false,
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Go,
                     ),
-                keyboardActions = KeyboardActions(onGo = { doLogin() }),
-                visualTransformation = PasswordVisualTransformation(),
+                onKeyboardAction = { doLogin() },
+                textObfuscationMode = TextObfuscationMode.Hidden,
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {

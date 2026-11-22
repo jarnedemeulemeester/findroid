@@ -8,6 +8,7 @@ java { toolchain { languageVersion = Versions.JAVA } }
 android {
     namespace = "dev.jdtech.jellyfin.film"
     compileSdk = Versions.COMPILE_SDK
+    compileSdkMinor = Versions.COMPILE_SDK_MINOR
     buildToolsVersion = Versions.BUILD_TOOLS
 
     defaultConfig { minSdk = Versions.MIN_SDK }
