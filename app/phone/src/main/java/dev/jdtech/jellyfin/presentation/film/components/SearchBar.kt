@@ -20,14 +20,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -42,16 +41,14 @@ import dev.jdtech.jellyfin.film.presentation.search.SearchAction
 import dev.jdtech.jellyfin.film.presentation.search.SearchState
 import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.presentation.utils.GridCellsAdaptiveWithMinColumns
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun FilmSearchBar(
     state: SearchState,
-    expanded: Boolean,
-    onExpand: (Boolean) -> Unit,
+    searchBarState: SearchBarState,
     onAction: (SearchAction) -> Unit,
     modifier: Modifier = Modifier,
     paddingStart: Dp = 0.dp,
@@ -60,10 +57,10 @@ fun FilmSearchBar(
     val scope = rememberCoroutineScope()
 
     val textFieldState = rememberTextFieldState()
-    val searchBarState = rememberSearchBarState()
 
-    val currentExpanded by rememberUpdatedState(expanded)
-    val currentOnExpand by rememberUpdatedState(onExpand)
+    // The search bar expansion is owned by [searchBarState]; this is only used for the
+    // collapsed bar's padding animation and the leading icon.
+    val expanded = searchBarState.targetValue == SearchBarValue.Expanded
 
     val searchBarPaddingStart by
         animateDpAsState(
@@ -76,35 +73,6 @@ fun FilmSearchBar(
             targetValue = if (expanded) 0.dp else paddingEnd,
             label = "search_bar_padding_end",
         )
-
-    // Apply external expansion changes (e.g. navigating to the search tab) to the state
-    LaunchedEffect(expanded) {
-        val isExpanded = searchBarState.targetValue == SearchBarValue.Expanded
-        if (expanded != isExpanded) {
-            if (expanded) {
-                searchBarState.animateToExpanded()
-            } else {
-                searchBarState.animateToCollapsed()
-            }
-        }
-    }
-
-    // Propagate internal state changes (e.g. back navigation) to the parent
-    // Propagate internal state changes (e.g. tapping the bar, back navigation) to the parent.
-    // The initial emission is dropped: at first composition the state has not been synced with
-    // the hoisted [expanded] yet, and reporting it would immediately revert an external
-    // expansion request (e.g. the search button on the home screen navigating here with
-    // expanded = true). The initial state is applied by the effect above instead.
-    LaunchedEffect(searchBarState) {
-        snapshotFlow { searchBarState.targetValue }
-            .drop(1)
-            .collect { target ->
-                val isExpanded = target == SearchBarValue.Expanded
-                if (isExpanded != currentExpanded) {
-                    currentOnExpand(isExpanded)
-                }
-            }
-    }
 
     LaunchedEffect(textFieldState) {
         snapshotFlow { textFieldState.text.toString() }
@@ -121,7 +89,10 @@ fun FilmSearchBar(
         SearchBarDefaults.InputField(
             textFieldState = textFieldState,
             searchBarState = searchBarState,
-            onSearch = { onExpand(true) },
+            onSearch = {
+                // Nothing to do: the search bar is already expanded while the query is being
+                // edited, and results update live through the debounced search above.
+            },
             placeholder = {
                 Text(
                     text = stringResource(FilmR.string.search_placeholder),

@@ -12,7 +12,9 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,8 +49,7 @@ import dev.jdtech.jellyfin.presentation.utils.rememberSafePadding
 fun MediaScreen(
     onItemClick: (FindroidItem) -> Unit,
     onFavoritesClick: () -> Unit,
-    searchExpanded: Boolean,
-    onSearchExpand: (Boolean) -> Unit,
+    searchBarState: SearchBarState,
     viewModel: MediaViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
@@ -60,8 +61,7 @@ fun MediaScreen(
     MediaScreenLayout(
         state = state,
         searchState = searchState,
-        searchExpanded = searchExpanded,
-        onSearchExpand = onSearchExpand,
+        searchBarState = searchBarState,
         onAction = { action ->
             when (action) {
                 is MediaAction.OnItemClick -> onItemClick(action.item)
@@ -84,8 +84,7 @@ fun MediaScreen(
 private fun MediaScreenLayout(
     state: MediaState,
     searchState: SearchState,
-    searchExpanded: Boolean,
-    onSearchExpand: (Boolean) -> Unit,
+    searchBarState: SearchBarState,
     onAction: (MediaAction) -> Unit,
     onSearchAction: (SearchAction) -> Unit,
 ) {
@@ -122,8 +121,7 @@ private fun MediaScreenLayout(
     Box(modifier = Modifier.fillMaxSize()) {
         FilmSearchBar(
             state = searchState,
-            expanded = searchExpanded,
-            onExpand = onSearchExpand,
+            searchBarState = searchBarState,
             onAction = onSearchAction,
             modifier = Modifier.fillMaxWidth(),
             paddingStart = paddingStart,
@@ -184,8 +182,7 @@ private fun MediaScreenLayoutPreview() {
             state =
                 MediaState(libraries = dummyCollections, error = Exception("Failed to load data")),
             searchState = SearchState(),
-            searchExpanded = false,
-            onSearchExpand = {},
+            searchBarState = rememberSearchBarState(),
             onAction = {},
             onSearchAction = {},
         )
