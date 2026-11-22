@@ -149,12 +149,12 @@ private fun EntryProviderScope<NavKey>.tvEntries(
     }
     entry<ServersRoute> {
         ServersScreen(
-            navigateToUsers = dropUnlessResumed { navigate(UsersRoute) },
+            navigateToUsers = dropUnlessResumed { navigateOrReuse(UsersRoute) },
             onAddClick = dropUnlessResumed { navigate(AddServerRoute) },
         )
     }
     entry<AddServerRoute> {
-        AddServerScreen(onSuccess = dropUnlessResumed { navigate(UsersRoute) })
+        AddServerScreen(onSuccess = dropUnlessResumed { navigateOrReuse(UsersRoute) })
     }
     entry<UsersRoute> {
         UsersScreen(

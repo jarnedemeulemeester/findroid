@@ -374,7 +374,7 @@ private fun EntryProviderScope<NavKey>.setupEntries(
     }
     entry<ServersRoute> {
         ServersScreen(
-            navigateToUsers = dropUnlessResumed { navigate(UsersRoute) },
+            navigateToUsers = dropUnlessResumed { navigateOrReuse(UsersRoute) },
             navigateToAddresses =
                 resumedAction { serverId -> navigate(ServerAddressesRoute(serverId)) },
             onAddClick = dropUnlessResumed { navigate(AddServerRoute) },
@@ -384,7 +384,7 @@ private fun EntryProviderScope<NavKey>.setupEntries(
     }
     entry<AddServerRoute> {
         AddServerScreen(
-            onSuccess = dropUnlessResumed { navigate(UsersRoute) },
+            onSuccess = dropUnlessResumed { navigateOrReuse(UsersRoute) },
             onBackClick = dropUnlessResumed { goBack() },
         )
     }
