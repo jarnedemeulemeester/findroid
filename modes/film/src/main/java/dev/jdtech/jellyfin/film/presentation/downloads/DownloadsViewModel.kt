@@ -7,8 +7,8 @@ import dev.jdtech.jellyfin.core.Constants
 import dev.jdtech.jellyfin.core.R as CoreR
 import dev.jdtech.jellyfin.film.presentation.collection.CollectionState
 import dev.jdtech.jellyfin.models.CollectionSection
+import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidMovie
-import dev.jdtech.jellyfin.models.FindroidShow
 import dev.jdtech.jellyfin.models.UiText
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import javax.inject.Inject
@@ -45,9 +45,9 @@ class DownloadsViewModel @Inject constructor(private val repository: JellyfinRep
                             }
                         }
                     CollectionSection(
-                            Constants.FAVORITE_TYPE_SHOWS,
-                            UiText.StringResource(CoreR.string.shows_label),
-                            items.filterIsInstance<FindroidShow>(),
+                            Constants.FAVORITE_TYPE_EPISODES,
+                            UiText.StringResource(CoreR.string.episodes_label),
+                            items.filterIsInstance<FindroidEpisode>(),
                         )
                         .let {
                             if (it.items.isNotEmpty()) {

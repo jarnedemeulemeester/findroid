@@ -566,8 +566,8 @@ class JellyfinRepositoryImpl(
             )
             items.addAll(
                 database
-                    .getShowsByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
-                    .map { it.toFindroidShow(database, jellyfinApi.userId!!) },
+                    .getEpisodesByServerId(appPreferences.getValue(appPreferences.currentServer)!!)
+                    .map { it.toFindroidEpisode(database, jellyfinApi.userId!!) },
             )
             items
         }
