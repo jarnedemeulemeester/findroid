@@ -138,6 +138,8 @@ class PlayerActivity : BasePlayerActivity() {
         val pipButton = binding.playerView.findViewById<ImageButton>(R.id.btn_pip)
         val lockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_lockview)
         val unlockButton = binding.playerView.findViewById<ImageButton>(R.id.btn_unlock)
+        val previousItemButton = binding.playerView.findViewById<ImageButton>(R.id.exo_prev)
+        val nextItemButton = binding.playerView.findViewById<ImageButton>(R.id.exo_next)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -312,6 +314,9 @@ class PlayerActivity : BasePlayerActivity() {
         }
 
         pipButton.setOnClickListener { pictureInPicture() }
+
+        previousItemButton.setOnClickListener { viewModel.seekToPreviousWithStopReport() }
+        nextItemButton.setOnClickListener { viewModel.seekToNextMediaItemWithStopReport() }
 
         // Set marker color
         val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
