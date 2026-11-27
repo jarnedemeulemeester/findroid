@@ -17,6 +17,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -49,14 +50,22 @@ constructor(
                     loadServerName(serverId)
                 }
 
-                loadSuggestions()
-                loadResumeItems()
-                loadNextUpItems()
-                loadViews()
+                loadSection { loadSuggestions() }
+                loadSection { loadResumeItems() }
+                loadSection { loadNextUpItems() }
+                loadSection { loadViews() }
             } catch (e: Exception) {
                 _state.emit(_state.value.copy(error = e))
             }
             _state.emit(_state.value.copy(isLoading = false))
+        }
+    }
+
+    private suspend fun loadSection(load: suspend () -> Unit) {
+        try {
+            load()
+        } catch (e: Exception) {
+            _state.update { it.copy(error = it.error ?: e) }
         }
     }
 
